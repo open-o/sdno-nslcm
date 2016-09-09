@@ -58,15 +58,13 @@ import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 /**
- * The rest interface of nslcm. <br>
+ * The rest interface of nslcm.<br>
  * 
  * @author
- * @version SDNO 0.5 Aug 30, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
-@Service
 @Path("/sdnonslcm/v1")
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class NslcmSvcRoaResource {
@@ -88,7 +86,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Create SDN-O service instance based on a template. <br>
+     * Create SDN-O service instance based on a template.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
@@ -115,7 +113,7 @@ public class NslcmSvcRoaResource {
         // query service template information from Catalog
         Map<String, String> templateInfo = nslcmService.queryServiceTemplate(nsdId);
         if(null == templateInfo) {
-            ThrowException.throwParameterInvalid("nsdId[" + nsdId + "] is invalid, query from catalog failure");
+            throw new ServiceException("nsdId[" + nsdId + "] is invalid, query from catalog failure");
         }
 
         String templateName = templateInfo.get(Const.TEMPLATE_NAME);
@@ -132,18 +130,6 @@ public class NslcmSvcRoaResource {
         nsCreationInfoList.add(nsCreationInfo);
         dbOper.insert(nsCreationInfoList);
 
-        // call the service method to perform create operation
-        /*
-         * try {
-         * nslcmService.nsCreationPost(req, resp, nsCreationInfo);
-         * } catch(ServiceException e) {
-         * LOGGER.info("nsCreationPost exception: " + e);
-         * nsCreationInfoList.get(0).setActionState(ActionStatus.CREATE_EXCEPTION.getName());
-         * dbOper.update(NsCreationInfo.class, nsCreationInfoList, Const.ACTION_STATE);
-         * throw e;
-         * }
-         */
-
         // well all-is-well, set the response status as success and return result
         resp.setStatus(HttpCode.CREATE_OK);
 
@@ -156,7 +142,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Create SDN-O service instance with parameters. <br>
+     * Create SDN-O service instance with parameters.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
@@ -187,11 +173,9 @@ public class NslcmSvcRoaResource {
             if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
                 SiteToDcNbi siteToDcNbiMo = Translator.translateList2Overlay(nsInstantiationInfoList);
                 response = nslcmService.createOverlay(siteToDcNbiMo, instanceId);
-            } else if(Const.UNDERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
+            } else {
                 VpnVo vpnVo = Translator.translateList2Underlay(nsInstantiationInfoList);
                 response = nslcmService.createUnderlay(vpnVo, instanceId);
-            } else {
-                ThrowException.throwParameterInvalid("templateName[" + templateName + "] is invalid");
             }
         } catch(ServiceException e) {
             LOGGER.error("create business failed", e);
@@ -207,12 +191,12 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Terminate a SDN-O service instance. <br>
+     * Terminate a SDN-O service instance.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
      * @param instanceId ID of the SDN-O service instance to be terminated
-     * @param nsRequest The request used to terminate a SDN-O service instance
+     * @param nsTerminationRequest The request used to terminate a SDN-O service instance
      * @return The object of LongOperationResponse
      * @throws ServiceException When terminate failed
      * @since SDNO 0.5
@@ -233,10 +217,8 @@ public class NslcmSvcRoaResource {
 
             if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
                 response = nslcmService.deleteOverlay(instanceId);
-            } else if(Const.UNDERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
-                response = nslcmService.deleteUnderlay(instanceId, nsInstantiationInfoRsp.getData());
             } else {
-                ThrowException.throwParameterInvalid("templateName[" + templateName + "] is invalid");
+                response = nslcmService.deleteUnderlay(instanceId, nsInstantiationInfoRsp.getData());
             }
         } catch(ServiceException e) {
             LOGGER.error("create business failed", e);
@@ -253,7 +235,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Query one SDN-O service instance. <br>
+     * Query one SDN-O service instance.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
@@ -272,12 +254,11 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Delete a SDN-O service instance. <br>
+     * Delete a SDN-O service instance.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
      * @param instanceId ID of the SDN-O service instance to be deleted
-     * @return The object of nsDeletionDelete
      * @throws ServiceException When delete failed
      * @since SDNO 0.5
      */
@@ -287,25 +268,22 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void nsDeletionDelete(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId) throws ServiceException {
-        if(dbOper.checkRecordIsExisted(NsCreationInfo.class, Const.UUID, instanceId)) {
-            ThrowException.throwDataIsExisted(instanceId);
-        }
-        ResultRsp<List<NsCreationInfo>> nsCreationInfoRsp = dbOper.query(NsCreationInfo.class, Const.UUID, instanceId);
-
-        updateNsCreationInfoStatus(nsCreationInfoRsp.getData(), ActionStatus.DELETING.getName());
-
         ResultRsp<List<NsInstantiationInfo>> nsInstantiationInfoRsp = queryNsInstantiationInfo(instanceId);
-        updateNsInstantiationInfoStatus(nsInstantiationInfoRsp.getData(), ActionStatus.DELETING.getName());
-
         try {
-            dbOper.delete(NsInstantiationInfo.class, instanceId);
+            List<String> uuidList = getNsInstantiationInfoUuid(nsInstantiationInfoRsp.getData());
+            if(!uuidList.isEmpty()) {
+                updateNsInstantiationInfoStatus(nsInstantiationInfoRsp.getData(), ActionStatus.DELETING.getName());
+                dbOper.batchDelete(NsInstantiationInfo.class, uuidList);
+            }
         } catch(ServiceException e) {
             LOGGER.error("delete business failed", e);
             updateNsInstantiationInfoStatus(nsInstantiationInfoRsp.getData(), ActionStatus.DELETE_EXCEPTION.getName());
             throw e;
         }
 
+        ResultRsp<NsCreationInfo> nsCreationInfoRsp = dbOper.queryById(NsCreationInfo.class, instanceId);
         try {
+            updateNsCreationInfoStatus(nsCreationInfoRsp.getData(), ActionStatus.DELETING.getName());
             dbOper.delete(NsCreationInfo.class, instanceId);
         } catch(ServiceException e) {
             LOGGER.error("delete business failed", e);
@@ -316,7 +294,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Query one job that terminates or instantiates one SDN-O service. <br>
+     * Query one job that terminates or instantiates one SDN-O service.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
@@ -336,7 +314,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Onboarding a NS package. <br>
+     * Onboarding a NS package.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
@@ -355,7 +333,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Delete a NS package from SDN-O. <br>
+     * Delete a NS package from SDN-O.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object
@@ -381,11 +359,20 @@ public class NslcmSvcRoaResource {
         dbOper.update(NsInstantiationInfo.class, nsInstantiationInfoList, Const.ACTION_STATE);
     }
 
-    private void updateNsCreationInfoStatus(List<NsCreationInfo> nsCreationInfoList, String actionStatus)
+    private List<String> getNsInstantiationInfoUuid(List<NsInstantiationInfo> nsInstantiationInfoList)
             throws ServiceException {
-        for(NsCreationInfo nsCreationInfoMo : nsCreationInfoList) {
-            nsCreationInfoMo.setActionState(actionStatus);
+        List<String> uuidList = new ArrayList<String>();
+        for(NsInstantiationInfo nsInstantiationInfoMo : nsInstantiationInfoList) {
+            uuidList.add(nsInstantiationInfoMo.getUuid());
         }
+        return uuidList;
+    }
+
+    private void updateNsCreationInfoStatus(NsCreationInfo nsCreationInfo, String actionStatus)
+            throws ServiceException {
+        List<NsCreationInfo> nsCreationInfoList = new ArrayList<NsCreationInfo>();
+        nsCreationInfo.setActionState(actionStatus);
+        nsCreationInfoList.add(nsCreationInfo);
         dbOper.update(NsCreationInfo.class, nsCreationInfoList, Const.ACTION_STATE);
     }
 
@@ -404,21 +391,11 @@ public class NslcmSvcRoaResource {
     }
 
     private ResultRsp<List<NsInstantiationInfo>> queryNsInstantiationInfo(String instanceId) throws ServiceException {
-        if(dbOper.checkRecordIsExisted(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId)) {
-            ThrowException.throwDataIsExisted(instanceId);
-        }
-        ResultRsp<List<NsInstantiationInfo>> nsInstantiationInfoRsp =
-                dbOper.query(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId);
-        return nsInstantiationInfoRsp;
+        return dbOper.query(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId);
     }
 
     private String queryTemplateName(String instanceId) throws ServiceException {
-        if(dbOper.checkRecordIsExisted(NsCreationInfo.class, Const.UUID, instanceId)) {
-            ThrowException.throwDataIsExisted(instanceId);
-        }
-        ResultRsp<List<NsCreationInfo>> rsp = dbOper.query(NsCreationInfo.class, Const.UUID, instanceId);
-
-        String templateName = rsp.getData().get(0).getTemplateName();
-        return templateName;
+        ResultRsp<NsCreationInfo> rsp = dbOper.queryById(NsCreationInfo.class, instanceId);
+        return rsp.getData().getTemplateName();
     }
 }

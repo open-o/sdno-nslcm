@@ -50,7 +50,7 @@ public class OverlaySbiServiceImpl implements OverlaySbiService {
 
         LOGGER.info("deleteOverlay begin: " + url);
 
-        RestfulResponse response = RestfulProxy.delete(url, null);
+        RestfulResponse response = RestfulProxy.delete(url, RestfulParametesUtil.getRestfulParametes());
 
         String rspContent = ResponseUtils.transferResponse(response);
         Map<String, String> restResult = JsonUtil.fromJson(rspContent, new TypeReference<Map<String, String>>() {});

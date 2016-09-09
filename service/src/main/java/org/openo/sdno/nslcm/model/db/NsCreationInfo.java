@@ -21,13 +21,13 @@ import org.openo.sdno.overlayvpn.model.common.enums.ActionStatus;
 import org.openo.sdno.overlayvpn.model.uuid.AbstUuidModel;
 
 /**
- * Class of NsCreationInfo Model Data. <br>
+ * Class of NsCreationInfo Model Data.<br>
  * <p>
  * It is used to recode the NsCreationInfo data that passed by caller.
  * </p>
  * 
  * @author
- * @version SDNO 0.5 Aug 30, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
 @MOResType(infoModelName = "nscreationinfo")
 public class NsCreationInfo extends AbstUuidModel {
@@ -47,6 +47,15 @@ public class NsCreationInfo extends AbstUuidModel {
     /**
      * Constructor<br>
      * 
+     * @since SDNO 0.5
+     */
+    public NsCreationInfo() {
+        super();
+    }
+
+    /**
+     * Constructor<br>
+     * 
      * @param nsdId The NS creation ID
      * @param nsName The NS name
      * @param templateName The template name
@@ -55,6 +64,7 @@ public class NsCreationInfo extends AbstUuidModel {
      * @since SDNO 0.5
      */
     public NsCreationInfo(String nsdId, String nsName, String templateName, String description, String actionState) {
+        super();
         this.nsdId = nsdId;
         this.nsName = nsName;
         this.templateName = templateName;

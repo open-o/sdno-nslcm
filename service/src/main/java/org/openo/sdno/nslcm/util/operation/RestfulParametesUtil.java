@@ -35,7 +35,6 @@ public class RestfulParametesUtil {
      * Get restful parameters with body data.<br>
      * 
      * @param bodyData Creating body data
-     * @param ctrlUuid Controller UUID
      * @return Restful parameters object
      * @since SDNO 0.5
      */
@@ -52,7 +51,6 @@ public class RestfulParametesUtil {
     /**
      * Get restful parameters object.<br>
      * 
-     * @param ctrlUuid Controller UUID
      * @return Restful parameters object
      * @since SDNO 0.5
      */

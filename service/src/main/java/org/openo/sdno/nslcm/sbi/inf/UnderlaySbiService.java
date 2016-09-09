@@ -23,14 +23,31 @@ import org.openo.sdno.framework.container.service.IService;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 
 /**
- * DC gateway controller south branch interface. <br>
+ * DC gateway controller south branch interface.<br>
  * 
  * @author
- * @version SDNO 0.5 Jun 22, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
 public interface UnderlaySbiService extends IService {
 
+    /**
+     * Delete underlay.<br>
+     * 
+     * @param vpnUuid The vpn uuid
+     * @param serviceType The service type
+     * @return The delete result
+     * @throws ServiceException When delete failed
+     * @since SDNO 0.5
+     */
     Map<String, String> deleteUnderlay(String vpnUuid, String serviceType) throws ServiceException;
 
+    /**
+     * Create underlay.<br>
+     * 
+     * @param vpnVo The vpnVo object
+     * @return The create result
+     * @throws ServiceException When create failed
+     * @since SDNO 0.5
+     */
     Map<String, String> createUnderlay(VpnVo vpnVo) throws ServiceException;
 }

@@ -16,12 +16,15 @@
 
 package org.openo.sdno.nslcm.model.translator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.framework.container.util.UuidUtils;
+import org.openo.sdno.model.servicemodel.tp.EthernetTpSpec;
+import org.openo.sdno.model.servicemodel.tp.IpTpSpec;
 import org.openo.sdno.model.servicemodel.tp.Tp;
 import org.openo.sdno.model.servicemodel.tp.TpTypeSpec;
 import org.openo.sdno.model.servicemodel.vpn.Vpn;
@@ -47,6 +50,14 @@ public class Translator {
 
     }
 
+    /**
+     * Translate NsInstantiation Info List to SiteToDcNbi model.<br>
+     * 
+     * @param nsInstantiationInfoList NsInstantiation Info List
+     * @return The SiteToDcNbi object
+     * @throws ServiceException When translate failed
+     * @since SDNO 0.5
+     */
     public static SiteToDcNbi translateList2Overlay(List<NsInstantiationInfo> nsInstantiationInfoList)
             throws ServiceException {
         SiteToDcNbi siteToDcNbiMo = new SiteToDcNbi();
@@ -61,6 +72,14 @@ public class Translator {
 
     }
 
+    /**
+     * Translate NsInstantiation Info List to VpnVo model.<br>
+     * 
+     * @param nsInstantiationInfoList NsInstantiation Info List
+     * @return The VpnVo object
+     * @throws ServiceException When translate failed
+     * @since SDNO 0.5
+     */
     public static VpnVo translateList2Underlay(List<NsInstantiationInfo> nsInstantiationInfoList)
             throws ServiceException {
         Vpn vpnMo = new Vpn();
@@ -103,24 +122,45 @@ public class Translator {
             throws ServiceException {
         srcTpMo.setName(inputMap.get("ac1_port"));
         srcTpMo.setNeId(getMeUuid(inputMap.get("pe1_ip")));
-        srcTpTypeSpec.getEthernetTpSpec().setQinqSvlanList(inputMap.get("ac1_svlan"));
-        srcTpTypeSpec.getEthernetTpSpec().setAccessType("dot1q");
-        srcTpTypeSpec.getIpTpSpec().setMasterIp(inputMap.get("ac1_ip"));
+
+        EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
+        ethernetTpSpec.setQinqSvlanList(inputMap.get("ac1_svlan"));
+        ethernetTpSpec.setAccessType("dot1q");
+        srcTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
+
+        IpTpSpec ipTpSpec = new IpTpSpec();
+        ipTpSpec.setMasterIp(inputMap.get("ac1_ip"));
+        srcTpTypeSpec.setIpTpSpec(ipTpSpec);
+
         srcTpTypeSpec.setLayerRate("LR_Ethernet");
         setCommonTpModel(srcTpMo);
-        srcTpMo.getTypeSpecList().add(srcTpTypeSpec);
+
+        List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
+        tpTypeSpecList.add(srcTpTypeSpec);
+        srcTpMo.setTypeSpecList(tpTypeSpecList);
     }
 
     private static void setDstTpMo(Tp dstTpMo, TpTypeSpec dstTpTypeSpec, Map<String, String> inputMap)
             throws ServiceException {
+
         dstTpMo.setName(inputMap.get("ac2_port"));
         dstTpMo.setNeId(getMeUuid(inputMap.get("pe2_ip")));
-        dstTpTypeSpec.getEthernetTpSpec().setQinqSvlanList(inputMap.get("ac2_svlan"));
-        dstTpTypeSpec.getEthernetTpSpec().setAccessType("dot1q");
-        dstTpTypeSpec.getIpTpSpec().setMasterIp(inputMap.get("ac2_ip"));
+
+        EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
+        ethernetTpSpec.setQinqSvlanList(inputMap.get("ac2_svlan"));
+        ethernetTpSpec.setAccessType("dot1q");
+        dstTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
+
+        IpTpSpec ipTpSpec = new IpTpSpec();
+        ipTpSpec.setMasterIp(inputMap.get("ac2_ip"));
+        dstTpTypeSpec.setIpTpSpec(ipTpSpec);
+
         dstTpTypeSpec.setLayerRate("LR_Ethernet");
         setCommonTpModel(dstTpMo);
-        dstTpMo.getTypeSpecList().add(dstTpTypeSpec);
+
+        List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
+        tpTypeSpecList.add(dstTpTypeSpec);
+        dstTpMo.setTypeSpecList(tpTypeSpecList);
     }
 
     private static void setCommonTpModel(Tp tpMo) {
@@ -140,8 +180,12 @@ public class Translator {
         vpnMo.setDescription(inputMap.get("description"));
         vpnMo.setOperStatus("up");
         vpnMo.setSyncStatus("sync");
-        vpnMo.getAccessPointList().add(srcTpMo);
-        vpnMo.getAccessPointList().add(dstTpMo);
+
+        List<Tp> accessPointList = new ArrayList<Tp>();
+        accessPointList.add(srcTpMo);
+        accessPointList.add(dstTpMo);
+        vpnMo.setAccessPointList(accessPointList);
+
         vpnMo.setVpnBasicInfo(vpnBasicInfo);
     }
 

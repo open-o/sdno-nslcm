@@ -26,28 +26,19 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.overlayvpn.inventory.sdk.util.InventoryDaoUtil;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import net.sf.json.JSONObject;
 
 /**
- * It is used to operate table. <br>
+ * It is used to operate table.<br>
  * 
  * @param <T> DB Model Class
  * @author
- * @version SDNO 0.5 Aug 31, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
 public class DbOper<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbOper.class);
-
-    /**
-     * Constructor<br>
-     * 
-     * @since SDNO 0.5
-     */
     private DbOper() {
 
     }
@@ -106,13 +97,20 @@ public class DbOper<T> {
      * @since SDNO 0.5
      */
     public ResultRsp<List<T>> query(Class<?> clazz, String fieldName, String fieldValue) throws ServiceException {
-        ResultRsp<List<T>> queryDbRsp = queryByFilter(clazz, fieldName, fieldValue, null);
-        if(CollectionUtils.isEmpty(queryDbRsp.getData())) {
-            LOGGER.warn("query error, fieldName (" + fieldName + "), fieldValue (" + fieldValue + ") is not found");
-            return null;
-        }
+        return queryByFilter(clazz, fieldName, fieldValue, null);
+    }
 
-        return queryDbRsp;
+    /**
+     * It is used to query data.<br>
+     * 
+     * @param clazz object type
+     * @param uuid The uuid used to query
+     * @return The object data
+     * @throws ServiceException When query failed
+     * @since SDNO 0.5
+     */
+    public ResultRsp<T> queryById(Class<?> clazz, String uuid) throws ServiceException {
+        return new InventoryDaoUtil<T>().getInventoryDao().query(clazz, uuid, null);
     }
 
     /**
@@ -125,6 +123,18 @@ public class DbOper<T> {
      */
     public void delete(Class<?> clazz, String uuid) throws ServiceException {
         new InventoryDaoUtil<T>().getInventoryDao().delete(clazz, uuid);
+    }
+
+    /**
+     * It is used to delete data.<br>
+     * 
+     * @param clazz object type
+     * @param uuids The uuid list of which data want to be deleted
+     * @throws ServiceException When delete failed.
+     * @since SDNO 0.5
+     */
+    public void batchDelete(Class<?> clazz, List<String> uuids) throws ServiceException {
+        new InventoryDaoUtil<T>().getInventoryDao().batchDelete(clazz, uuids);
     }
 
     private ResultRsp<List<T>> queryByFilter(Class<?> clazz, String fieldName, String fieldValue,

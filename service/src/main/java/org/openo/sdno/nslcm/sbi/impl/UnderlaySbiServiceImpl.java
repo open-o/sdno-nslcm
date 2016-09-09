@@ -57,12 +57,12 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
 
         LOGGER.info("deleteUnderlay begin: " + url);
 
-        RestfulResponse response = RestfulProxy.delete(url, null);
+        RestfulResponse response = RestfulProxy.delete(url, RestfulParametesUtil.getRestfulParametes());
 
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
         Map<String, String> resultMap = new HashMap<String, String>();
-        resultMap.put("errorCode", restVpn.getUuid());
+        resultMap.put("errorCode", restVpn.getId());
         LOGGER.info("deleteUnderlay end, result = " + resultMap.toString());
 
         return resultMap;
@@ -86,7 +86,7 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
         Map<String, String> resultMap = new HashMap<String, String>();
-        resultMap.put("vpnId", restVpn.getUuid());
+        resultMap.put("vpnId", restVpn.getId());
         LOGGER.info("createUnderlay end, result = " + resultMap.toString());
 
         return resultMap;

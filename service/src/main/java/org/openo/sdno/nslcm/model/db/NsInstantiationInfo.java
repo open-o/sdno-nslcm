@@ -40,13 +40,17 @@ public class NsInstantiationInfo extends AbstUuidModel {
 
     private String actionState = ActionStatus.NORMAL.getName();
 
+    /**
+     * Constructor<br>
+     * 
+     * @since SDNO 0.5
+     */
     public NsInstantiationInfo() {
-        // construct a empty object
+        super();
     }
 
     /**
      * Constructor<br>
-     * >
      * 
      * @param instanceId The instance ID
      * @param name the name
@@ -55,6 +59,7 @@ public class NsInstantiationInfo extends AbstUuidModel {
      * @since SDNO 0.5
      */
     public NsInstantiationInfo(String instanceId, String name, String value, String actionState) {
+        super();
         this.instanceId = instanceId;
         this.name = name;
         this.value = value;

@@ -16,30 +16,22 @@
 
 package org.openo.sdno.nslcm.model.nbi;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(description = "SDN-O Service Instance Creation Response")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")
-
 /**
- * SDN-O Service Instance Creation Response. <br>
+ * SDN-O Service Instance Creation Response.<br>
  * 
  * @author
- * @version SDNO 0.5 Aug 31, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
+@ApiModel(description = "SDN-O Service Instance Creation Response")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")
 public class NsCreationResponse {
 
     private String nsInstanceId = null;
-
-    public NsCreationResponse nsInstanceId(String nsInstanceId) {
-        this.nsInstanceId = nsInstanceId;
-        return this;
-    }
 
     @ApiModelProperty(required = true, value = "ID of the SDN-O service instance that is created.")
     @JsonProperty("nsInstanceId")
@@ -49,43 +41,5 @@ public class NsCreationResponse {
 
     public void setNsInstanceId(String nsInstanceId) {
         this.nsInstanceId = nsInstanceId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(this == o) {
-            return true;
-        }
-        if(o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        NsCreationResponse nsCreationResponse = (NsCreationResponse)o;
-        return Objects.equals(nsInstanceId, nsCreationResponse.nsInstanceId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nsInstanceId);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class NsCreationResponse {\n");
-
-        sb.append("    nsInstanceId: ").append(toIndentedString(nsInstanceId)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if(o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 }

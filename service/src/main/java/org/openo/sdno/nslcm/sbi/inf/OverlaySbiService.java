@@ -23,14 +23,30 @@ import org.openo.sdno.framework.container.service.IService;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 
 /**
- * DC gateway controller south branch interface. <br>
+ * DC gateway controller south branch interface.<br>
  * 
  * @author
- * @version SDNO 0.5 Jun 22, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
 public interface OverlaySbiService extends IService {
 
+    /**
+     * Delete overlay.<br>
+     * 
+     * @param site2DcUuid The site2Dc uuid
+     * @return The delete result
+     * @throws ServiceException When delete failed
+     * @since SDNO 0.5
+     */
     Map<String, String> deleteOverlay(String site2DcUuid) throws ServiceException;
 
+    /**
+     * Create overlay.<br>
+     * 
+     * @param siteToDcNbiMo The site2Dc object
+     * @return The create result
+     * @throws ServiceException When create failed
+     * @since SDNO 0.5
+     */
     Map<String, String> createOverlay(SiteToDcNbi siteToDcNbiMo) throws ServiceException;
 }

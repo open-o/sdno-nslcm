@@ -144,19 +144,16 @@ public class NslcmServiceImpl implements NslcmService {
 
     @Override
     public NsInstanceQueryResponse queryVpn(String instanceId) throws ServiceException {
-        if(dbOper.checkRecordIsExisted(NsCreationInfo.class, Const.UUID, instanceId)) {
-            ThrowException.throwDataIsExisted(instanceId);
-        }
-        ResultRsp<List<NsCreationInfo>> NsCreationInfoRsp = dbOper.query(NsCreationInfo.class, Const.UUID, instanceId);
+        ResultRsp<NsCreationInfo> nsCreationInfoRsp = dbOper.queryById(NsCreationInfo.class, instanceId);
 
-        if(dbOper.checkRecordIsExisted(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId)) {
+        if(!dbOper.checkRecordIsExisted(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId)) {
             ThrowException.throwDataIsExisted(instanceId);
         }
-        ResultRsp<List<NsInstantiationInfo>> NsInstantiationInfoRsp =
+        ResultRsp<List<NsInstantiationInfo>> nsInstantiationInfoRsp =
                 dbOper.query(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId);
 
-        NsCreationInfo nsCreationInfo = NsCreationInfoRsp.getData().get(0);
-        List<NsInstantiationInfo> nsInstantiationInfoList = NsInstantiationInfoRsp.getData();
+        NsCreationInfo nsCreationInfo = nsCreationInfoRsp.getData();
+        List<NsInstantiationInfo> nsInstantiationInfoList = nsInstantiationInfoRsp.getData();
 
         NsInstanceQueryResponse nsInstanceQueryResponse = new NsInstanceQueryResponse();
         nsInstanceQueryResponse.setId(nsCreationInfo.getUuid());
@@ -181,11 +178,9 @@ public class NslcmServiceImpl implements NslcmService {
     }
 
     private ResultRsp<List<NsResponseInfo>> queryNsResponseInfo(String instanceId) throws ServiceException {
-        if(dbOper.checkRecordIsExisted(NsResponseInfo.class, Const.INSTANCE_ID, instanceId)) {
+        if(!dbOper.checkRecordIsExisted(NsResponseInfo.class, Const.INSTANCE_ID, instanceId)) {
             ThrowException.throwDataIsExisted(instanceId);
         }
-        ResultRsp<List<NsResponseInfo>> nsResponseInfoRsp =
-                dbOper.query(NsResponseInfo.class, Const.INSTANCE_ID, instanceId);
-        return nsResponseInfoRsp;
+        return dbOper.query(NsResponseInfo.class, Const.INSTANCE_ID, instanceId);
     }
 }

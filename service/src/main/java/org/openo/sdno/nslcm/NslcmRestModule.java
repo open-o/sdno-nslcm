@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * IPSecService Rest Module Class. <br>
+ * IPSecService Rest Module Class.<br>
  * 
  * @author
- * @version SDNO 0.5 Jun 23, 2016
+ * @version SDNO 0.5 Sep 8, 2016
  */
 public class NslcmRestModule {
 

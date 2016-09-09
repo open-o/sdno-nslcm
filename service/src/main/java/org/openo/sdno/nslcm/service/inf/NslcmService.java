@@ -35,10 +35,8 @@ import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 public interface NslcmService extends IService {
 
     /**
-     * Query template information from catalog. <br>
+     * Query template information from catalog.<br>
      * 
-     * @param req HttpServletRequest Object
-     * @param resp HttpServletResponse Object
      * @param nsdId ID of the template in catalog used to create the SDN-O service instance
      * @return The template information
      * @throws ServiceException When query failed
@@ -46,14 +44,57 @@ public interface NslcmService extends IService {
      */
     Map<String, String> queryServiceTemplate(String nsdId) throws ServiceException;
 
+    /**
+     * Delete overlay service instance.<br>
+     * 
+     * @param instanceId ID of the instance
+     * @return The delete result
+     * @throws ServiceException When delete failed
+     * @since SDNO 0.5
+     */
     Map<String, String> deleteOverlay(String instanceId) throws ServiceException;
 
+    /**
+     * Create overlay service instance.<br>
+     * 
+     * @param siteToDcNbiMo The site2DcNbi model
+     * @param instanceId ID of the instance
+     * @return The create result
+     * @throws ServiceException When create failed
+     * @since SDNO 0.5
+     */
     Map<String, String> createOverlay(SiteToDcNbi siteToDcNbiMo, String instanceId) throws ServiceException;
 
+    /**
+     * Query Vpn.<br>
+     * 
+     * @param instanceId ID of the instance
+     * @return The NsInstance Query Response
+     * @throws ServiceException When query failed
+     * @since SDNO 0.5
+     */
     NsInstanceQueryResponse queryVpn(String instanceId) throws ServiceException;
 
+    /**
+     * Create underlay service instance.<br>
+     * 
+     * @param vpnVo The vpnVo model
+     * @param instanceId ID of the instance
+     * @return The create result
+     * @throws ServiceException When create failed
+     * @since SDNO 0.5
+     */
     Map<String, String> createUnderlay(VpnVo vpnVo, String instanceId) throws ServiceException;
 
+    /**
+     * Delete underlay service instance.<br>
+     * 
+     * @param instanceId ID of the instance
+     * @param nsInstantiationInfo The nsInstantiation Info
+     * @return The delete result
+     * @throws ServiceException When delete failed
+     * @since SDNO 0.5
+     */
     Map<String, String> deleteUnderlay(String instanceId, List<NsInstantiationInfo> nsInstantiationInfo)
             throws ServiceException;
 }
