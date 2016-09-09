@@ -41,30 +41,39 @@
                             <source>
                                 System.out.println("******** Going to make release zip ********")
 
-                                deployFolder = "${project.build.directory}/deployoutput"
-                                deployUnzip = "${project.build.directory}/deployunzip"
-                                outfileName = "${package.name}-${project.version}.zip"
+                                deployFolder =
+                                "${project.build.directory}/deployoutput"
+                                deployUnzip =
+                                "${project.build.directory}/deployunzip"
+                                outfileName =
+                                "${package.name}-${project.version}.zip"
 
                                 ant.delete(dir: "${deployFolder}")
                                 ant.mkdir(dir: "${deployFolder}")
 
                                 ant.delete(dir: "${deployUnzip}")
-                                ant.mkdir(dir: "${deployUnzip}")
+                                ant.mkdir(dir:
+                                "${deployUnzip}")
 
                                 ant.mkdir(dir: "${deployUnzip}/webapps/ROOT")
-                                ant.mkdir(dir: "${deployUnzip}/logs")
+                                ant.mkdir(dir:
+                                "${deployUnzip}/logs")
 
                                 ant.copy(todir: "${deployUnzip}") {
-                                fileset(dir: "${basedir}/src/main/release"){
+                                fileset(dir:
+                                "${basedir}/src/main/release"){
                                 exclude(name: "**/.gitignore")
                                 }
                                 }
 
-                                ant.copy(todir: "${deployUnzip}/webapps/ROOT") {
-                                fileset(dir: "${project.build.directory}/../../service/target/${package.name}")
+                                ant.copy(todir:
+                                "${deployUnzip}/webapps/ROOT") {
+                                fileset(dir:
+                                "${project.build.directory}/../../service/target/${package.name}-${project.version}")
                                 }
 
-                                ant.zip(destfile: "${deployFolder}/${outfileName}") {
+                                ant.zip(destfile:
+                                "${deployFolder}/${outfileName}") {
                                 fileset(dir: "${deployUnzip}")
                                 }
                                 System.out.println("******** completed. ************")

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2016, Huawei Technologies Co., Ltd.
+ * Copyright 2016 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
 import net.sf.json.JSONObject;
 
 /**
- * It is used to operate table. <br/>
+ * It is used to operate table. <br>
  * 
  * @param <T> DB Model Class
  * @author
@@ -44,7 +44,7 @@ public class DbOper<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbOper.class);
 
     /**
-     * Constructor<br/>
+     * Constructor<br>
      * 
      * @since SDNO 0.5
      */
@@ -53,7 +53,7 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to check the special record is existed or not. <br/>
+     * It is used to check the special record is existed or not. <br>
      * 
      * @param clazz object type
      * @param fieldName The name of which field want to check
@@ -72,7 +72,7 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to insert data. <br/>
+     * It is used to insert data. <br>
      * 
      * @param data The list of data that want to be inserted
      * @throws ServiceException When insert failed.
@@ -83,7 +83,7 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to update data. <br/>
+     * It is used to update data. <br>
      * 
      * @param clazz object type
      * @param data The list of data that want to be updated
@@ -96,7 +96,7 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to query data. <br/>
+     * It is used to query data. <br>
      * 
      * @param clazz object type
      * @param fieldName The name of which field want to query
@@ -116,7 +116,7 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to delete data. <br/>
+     * It is used to delete data. <br>
      * 
      * @param clazz object type
      * @param uuid The uuid of which data want to be deleted
