@@ -1,0 +1,81 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns/{instanceid}/instantiate",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"additionalParamForNS": [
+				{
+					"name": "name",
+					"value": "testOverlay"
+				},
+				{
+					"name": "description",
+					"value": "testDescription"
+				},
+				{
+					"name": "siteCidr",
+					"value": "10.12.13.14/16"
+				},
+				{
+					"name": "siteThinCpeIP",
+					"value": "0.0.0.0"
+				},
+				{
+					"name": "siteAccessPortVlan",
+					"value": "1"
+				},
+				{
+					"name": "vCPE_MgrIp",
+					"value": "0.0.0.1"
+				},
+				{
+					"name": "vpcName",
+					"value": "vpc-huawei"
+				},
+				{
+					"name": "vpcSubnetName",
+					"value": "subnet1"
+				},
+				{
+					"name": "vpcSubnetCidr",
+					"value": "10.0.0.16/32"
+				},
+				{
+					"name": "vpcVNI",
+					"value": "25"
+				},
+				{
+					"name": "dcGWIP",
+					"value": "0.0.0.1"
+				},
+				{
+					"name": "dcFWIP",
+					"value": "0.0.0.1"
+				},
+				{
+					"name": "dcLBIP",
+					"value": "0.0.0.1"
+				}
+			]
+		}
+	},
+	"response": {
+		"status": 201,
+		"json": {
+			"errorCode": "overlayvpn.operation.success",
+			"descArg": "",
+			"reasonArg": "",
+			"detailArg": "",
+			"adviceArg": "",
+			"httpCode": 201,
+			"message": "",
+			"smallErrorCodeList": null,
+			"successed": null,
+			"fail": null,
+			"data": null
+		}
+	}
+}

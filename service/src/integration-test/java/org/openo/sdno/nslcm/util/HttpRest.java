@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package java.org.openo.sdno.nslcm.util;
+package org.openo.sdno.nslcm.util;
 
 import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
-import org.openo.sdno.exception.HttpCode;
-import org.openo.sdno.overlayvpn.errorcode.ErrorCode;
-import org.openo.sdno.testframework.checker.IChecker;
 import org.openo.sdno.testframework.http.model.HttpRequest;
-import org.openo.sdno.testframework.http.model.HttpResponse;
 import org.openo.sdno.testframework.restclient.HttpRestClient;
 
 public class HttpRest {
+
+    private HttpRest() {
+
+    }
 
     public static RestfulResponse doSend(HttpRequest request) throws ServiceException {
         String url = request.getUri();
@@ -77,21 +77,6 @@ public class HttpRest {
         }
 
         return null;
-    }
-
-    private class SuccessChecker implements IChecker {
-
-        @Override
-        public boolean check(HttpResponse response) {
-            if(HttpCode.isSucess(response.getStatus())) {
-                if(response.getData().contains(ErrorCode.OVERLAYVPN_SUCCESS)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
     }
 
 }

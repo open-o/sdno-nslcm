@@ -1,0 +1,81 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns/{instanceid}/instantiate",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"additionalParamForNS": [
+				{
+					"name": "name",
+					"value": "testL2vpn"
+				},
+				{
+					"name": "description",
+					"value": "testDescription"
+				},
+				{
+					"name": "serviceType",
+					"value": "l2vpn"
+				},
+				{
+					"name": "topology",
+					"value": "point_to_point"
+				},
+				{
+					"name": "technology",
+					"value": "mpls"
+				},
+				{
+					"name": "pe1_ip",
+					"value": "0.0.0.0"
+				},
+				{
+					"name": "ac1_port",
+					"value": "NEPort1"
+				},
+				{
+					"name": "ac1_svlan",
+					"value": null
+				},
+				{
+					"name": "ac1_ip",
+					"value": null
+				},
+				{
+					"name": "pe2_ip",
+					"value": "0.0.0.1"
+				},
+				{
+					"name": "ac2_port",
+					"value": "NEPort2"
+				},
+				{
+					"name": "ac2_svlan",
+					"value": null
+				},
+				{
+					"name": "ac2_ip",
+					"value": null
+				}
+			]
+		}
+	},
+	"response": {
+		"status": 201,
+		"json": {
+			"errorCode": "overlayvpn.operation.success",
+			"descArg": "",
+			"reasonArg": "",
+			"detailArg": "",
+			"adviceArg": "",
+			"httpCode": 201,
+			"message": "",
+			"smallErrorCodeList": null,
+			"successed": null,
+			"fail": null,
+			"data": null
+		}
+	}
+}

@@ -1,18 +1,14 @@
 [
     {
         "url": "/openoapi/sdnomss/v1",
-        "prefix": "/org.openo.sdno.mss.service"
+        "prefix": "/mss-service"
     },
     {
         "url": "/sdnobrs/v1",
         "prefix": "/org.openo.sdno.brs"
     },
     {
-        "url": "/openoapi/sdnovxlan/v1",
-        "prefix": "/org.openo.sdno.vxlanservice"
-    },
-    {
-        "url": "/openoapi/sdnoipsec/v1",
-        "prefix": "/org.openo.sdno.ipsecservice"
+        "url": "/openoapi/sdnonslcm/v1",
+        "prefix": "/org.openo.sdno.nslcm"
     }
 ]
