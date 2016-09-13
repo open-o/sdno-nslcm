@@ -1,0 +1,32 @@
+[
+	{
+		"name": "ThinCPE",
+		"description": "TestNetworkElement",
+		"productName": "AC",
+		"version": "V1R3",
+		"source": "os",
+		"logicID": "849494949",
+		"phyNeID": "8965969966906",
+		"nativeID": "ThinCPEId",
+		"ipAddress": "0.0.0.0",
+		"adminState": "active",
+		"operState": "up",
+		"controllerName": "ACBranchController",
+		"siteName": "Site"
+	},
+	{
+		"name": "vCPE",
+		"description": "TestNetworkElement",
+		"productName": "AC",
+		"version": "V1R3",
+		"source": "os",
+		"logicID": "849494949",
+		"phyNeID": "8965969966906",
+		"nativeID": "vCPEId",
+		"ipAddress": "0.0.0.1",
+		"adminState": "active",
+		"operState": "up",
+		"controllerName": "ACBranchController",
+		"siteName": "Site"
+	}
+]

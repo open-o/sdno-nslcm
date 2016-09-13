@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.baseservice.roa.util.restclient.RestfulOptions;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.sdno.framework.container.resthelper.RestfulProxy;
 import org.openo.sdno.framework.container.util.JsonUtil;
@@ -56,8 +57,10 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
         }
 
         LOGGER.info("deleteUnderlay begin: " + url);
+        RestfulOptions restOptions = new RestfulOptions();
+        restOptions.setRestTimeout(500000);
 
-        RestfulResponse response = RestfulProxy.delete(url, RestfulParametesUtil.getRestfulParametes());
+        RestfulResponse response = RestfulProxy.delete(url, RestfulParametesUtil.getRestfulParametes(), restOptions);
 
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
@@ -80,9 +83,10 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
         }
 
         LOGGER.info("createUnderlay begin: " + url);
-
-        RestfulResponse response =
-                RestfulProxy.post(url, RestfulParametesUtil.getRestfulParametesWithBody(JsonUtil.toJson(vpnVo)));
+        RestfulOptions restOptions = new RestfulOptions();
+        restOptions.setRestTimeout(500000);
+        RestfulResponse response = RestfulProxy.post(url,
+                RestfulParametesUtil.getRestfulParametesWithBody(JsonUtil.toJson(vpnVo)), restOptions);
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
         Map<String, String> resultMap = new HashMap<String, String>();

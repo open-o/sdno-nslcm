@@ -1,0 +1,20 @@
+{
+	"request": {
+		"uri": "/openoapi/sbi-l3vpn/v1/l3vpns",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8",
+			"X-Driver-Parameter":"extSysID=[a-zA-Z0-9\\-\\_]{1,36}"	
+		},
+		"json": null
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"ret": 200,
+			"format": "json",
+			"msg": null,
+			"respHeaders": null
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"request": {
+		"uri": "/openoapi/sbi-l3vpn/v1/l3vpns/[a-zA-Z0-9\\-\\_]{1,36}",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8",
+			"X-Driver-Parameter": "extSysID=[a-zA-Z0-9\\-\\_]{1,36}"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"ret": 200,
+			"format": "json",
+			"resultObj": "{\"name\": \"L3VPNServiceA\",\"description\": \"ASDDS\",\"tenantId\": \"TestTenant\",\"operStatus\": \"operateUp\",\"adminStatus\": \"adminUp\"}",
+			"respHeaders": null
+		}
+	}
+}

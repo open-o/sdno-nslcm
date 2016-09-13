@@ -1,0 +1,34 @@
+{
+	"request": {
+		"uri": "[a-z0-9:\\/\\.]{1,46}vpn/vpnservices",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"vpnservice": {
+				"subnet_id": "f4fb4528-ed93-467c-a57b-11c7ea9f963e",
+				"router_id": "ec8619be-0ba8-4955-8835-3b49ddb76f89",
+				"name": "myservice",
+				"admin_state_up": true
+			}
+		}
+	},
+	"response": {
+		"status": 200,
+		"headers": {
+			"Content-Type": "application/json",
+			"X-Subject-Token": "TestToken"
+		},
+		"json": {
+			"id": "VpnServiceId",
+			"name": "Vpn Service",
+			"description": "Vpn Service",
+			"status": "PENDING_CREATE",
+			"tenant_id": "tenantId1",
+			"subnet_id": "subnetId1",
+			"router_id": "routeId1",
+			"admin_state_up": true
+		}
+	}
+}

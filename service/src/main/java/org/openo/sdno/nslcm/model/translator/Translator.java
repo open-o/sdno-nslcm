@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.framework.container.util.UuidUtils;
+import org.openo.sdno.model.servicemodel.tp.CeTp;
 import org.openo.sdno.model.servicemodel.tp.EthernetTpSpec;
 import org.openo.sdno.model.servicemodel.tp.IpTpSpec;
 import org.openo.sdno.model.servicemodel.tp.Tp;
@@ -33,7 +34,11 @@ import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.model.db.NsInstantiationInfo;
 import org.openo.sdno.overlayvpn.brs.invdao.NetworkElementInvDao;
 import org.openo.sdno.overlayvpn.model.servicechain.ServicePathHop;
+import org.openo.sdno.overlayvpn.model.servicemodel.SfpNbi;
+import org.openo.sdno.overlayvpn.model.servicemodel.SiteNbi;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
+import org.openo.sdno.overlayvpn.model.servicemodel.SubnetNbi;
+import org.openo.sdno.overlayvpn.model.servicemodel.VpcNbi;
 
 /**
  * Class of NsCreationInfo Model Data. <br>
@@ -115,7 +120,7 @@ public class Translator {
         vpnBasicInfo.setTopology(inputMap.get("topology"));
         vpnBasicInfo.setServiceType(inputMap.get("serviceType"));
         vpnBasicInfo.setTechnology(inputMap.get("technology"));
-        vpnBasicInfo.setAdminStatus("up");
+        vpnBasicInfo.setAdminStatus("inactive");
     }
 
     private static void setSrcTpMo(Tp srcTpMo, TpTypeSpec srcTpTypeSpec, Map<String, String> inputMap)
@@ -138,6 +143,12 @@ public class Translator {
         List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
         tpTypeSpecList.add(srcTpTypeSpec);
         srcTpMo.setTypeSpecList(tpTypeSpecList);
+
+        CeTp srcPeerCeTp = new CeTp();
+        srcPeerCeTp.setUuid(UuidUtils.createUuid());
+        srcPeerCeTp.setCeIfmasterIp(inputMap.get("ac1_peer_ip"));
+
+        srcTpMo.setPeerCeTp(srcPeerCeTp);
     }
 
     private static void setDstTpMo(Tp dstTpMo, TpTypeSpec dstTpTypeSpec, Map<String, String> inputMap)
@@ -161,16 +172,20 @@ public class Translator {
         List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
         tpTypeSpecList.add(dstTpTypeSpec);
         dstTpMo.setTypeSpecList(tpTypeSpecList);
+
+        CeTp dstPeerCeTp = new CeTp();
+        dstPeerCeTp.setUuid(UuidUtils.createUuid());
+        dstPeerCeTp.setCeIfmasterIp(inputMap.get("ac2_peer_ip"));
+
+        dstTpMo.setPeerCeTp(dstPeerCeTp);
     }
 
     private static void setCommonTpModel(Tp tpMo) {
         tpMo.setId(UuidUtils.createUuid());
-        tpMo.setAdminStatus("up");
+        tpMo.setAdminStatus("inactive");
         tpMo.setOperStatus("up");
-        tpMo.setEdgePointRole("PE");
-        tpMo.setHubSpoke("other");
         tpMo.setType("CTP");
-        tpMo.setWorkingLayer("LR_Ethernet");
+        tpMo.setWorkingLayer("LR_IP");
     }
 
     private static void setVpnMo(Vpn vpnMo, VpnBasicInfo vpnBasicInfo, Tp srcTpMo, Tp dstTpMo,
@@ -190,31 +205,39 @@ public class Translator {
     }
 
     private static void setSiteNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) throws ServiceException {
-        siteToDcNbiMo.getSite().setCidr(inputMap.get("siteCidr"));
-        siteToDcNbiMo.getSite().setThinCpeId(getMeUuid(inputMap.get("siteThinCpeIP")));
-        siteToDcNbiMo.getSite().setPortAndVlan(inputMap.get("siteAccessPortVlan"));
-        siteToDcNbiMo.getSite().setVCPEId(getMeUuid(inputMap.get("vCPE_MgrIp")));
+        SiteNbi siteNbi = new SiteNbi();
+        siteNbi.setCidr(inputMap.get("siteCidr"));
+        siteNbi.setThinCpeId(getMeUuid(inputMap.get("siteThinCpeIP")));
+        siteNbi.setPortAndVlan(inputMap.get("siteAccessPortVlan"));
+        siteNbi.setVCPEId(getMeUuid(inputMap.get("vCPE_MgrIp")));
+        siteToDcNbiMo.setSite(siteNbi);
     }
 
     private static void setVpcNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) {
-        siteToDcNbiMo.getVpc().setName(inputMap.get("vpcName"));
-        siteToDcNbiMo.getVpc().getSite().setName(inputMap.get("vpcSubnetName"));
-        siteToDcNbiMo.getVpc().getSite().setCidr(inputMap.get("vpcSubnetCidr"));
-        siteToDcNbiMo.getVpc().getSite().setVni(Integer.valueOf(inputMap.get("vpcVNI")));
+        VpcNbi vpcNbi = new VpcNbi();
+        SubnetNbi subnetNbi = new SubnetNbi();
+        subnetNbi.setName(inputMap.get("vpcSubnetName"));
+        subnetNbi.setCidr(inputMap.get("vpcSubnetCidr"));
+        subnetNbi.setVni(Integer.valueOf(inputMap.get("vpcVNI")));
+        vpcNbi.setName(inputMap.get("vpcName"));
+        vpcNbi.setSite(subnetNbi);
+        siteToDcNbiMo.setVpc(vpcNbi);
     }
 
     private static void setSfpNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) throws ServiceException {
-        siteToDcNbiMo.getSfp().setScfNeId(getMeUuid(inputMap.get("dcGWIP")));
-        setSfpPathHop(inputMap.get("dcFWIP"), siteToDcNbiMo, 1);
-        setSfpPathHop(inputMap.get("dcLBIP"), siteToDcNbiMo, 2);
+        SfpNbi sfpNbi = new SfpNbi();
+        sfpNbi.setScfNeId(getMeUuid(inputMap.get("dcGWIP")));
+        setSfpPathHop(inputMap.get("dcFWIP"), sfpNbi, 1);
+        setSfpPathHop(inputMap.get("dcLBIP"), sfpNbi, 2);
+        siteToDcNbiMo.setSfp(sfpNbi);
     }
 
-    private static void setSfpPathHop(String ipAddress, SiteToDcNbi siteToDcNbiMo, Integer hopNumber)
-            throws ServiceException {
+    private static void setSfpPathHop(String ipAddress, SfpNbi sfpNbi, Integer hopNumber) throws ServiceException {
         ServicePathHop servicePathHop = new ServicePathHop();
         servicePathHop.setHopNumber(hopNumber);
         servicePathHop.setSfiId(getMeUuid(ipAddress));
-        siteToDcNbiMo.getSfp().getServicePathHop().add(servicePathHop);
+        servicePathHop.setSfgId("");
+        sfpNbi.getServicePathHop().add(servicePathHop);
     }
 
     private static String getMeUuid(String ipAddress) throws ServiceException {

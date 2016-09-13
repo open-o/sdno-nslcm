@@ -1,0 +1,46 @@
+[
+	{
+		"name": "ThCPELtp1",
+		"description": "Test for ThinCPE Ltp1",
+		"logicalType": "ETH",
+		"source": "os",
+		"nativeID": "ThinCPELtp1Id",
+		"ipAddress": "192.168.1.1",
+		"adminState": "active",
+		"operState": "up",
+		"neName": "ThinCPE"
+	},
+	{
+		"name": "ThCPELtp2",
+		"description": "Test for ThinCPE Ltp2",
+		"source": "os",
+		"logicalType": "ETH",
+		"nativeID": "ThinCPELtp2Id",
+		"ipAddress": "192.168.1.2",
+		"adminState": "active",
+		"operState": "up",
+		"neName": "ThinCPE"
+	},
+	{
+		"name": "vCPELtp1",
+		"description": "Test for vCPE Ltp1",
+		"logicalType": "ETH",
+		"source": "os",
+		"nativeID": "vCPELtp1Id",
+		"ipAddress": "192.168.2.1",
+		"adminState": "active",
+		"operState": "up",
+		"neName": "vCPE"
+	},
+	{
+		"name": "vCPELtp2",
+		"description": "Test for vCPE Ltp2",
+		"source": "os",
+		"logicalType": "ETH",
+		"nativeID": "vCPELtp2Id",
+		"ipAddress": "192.168.2.2",
+		"adminState": "active",
+		"operState": "up",
+		"neName": "vCPE"
+	}
+]

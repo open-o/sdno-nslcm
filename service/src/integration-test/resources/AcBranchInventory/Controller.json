@@ -1,0 +1,17 @@
+[
+	{
+		"name": "ACBranchController",
+		"category": "NE",
+		"vendor": "openo",
+		"productName": "AC",
+		"version": "V1R2C10",
+		"hostName": "127.0.0.1",
+		"slaveHostName": "10.10.10.10",
+		"regionId": "1",
+		"adminStatus": "enable",
+		"adapterType": "inner",
+		"location": "China",
+		"description": "abc",
+		"reserved": "dddd"
+	}
+]

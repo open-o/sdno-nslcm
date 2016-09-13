@@ -1,0 +1,21 @@
+{
+	"request": {
+		"uri": "/sso/login",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"errCode": null,
+			"data": {
+				"execution": "e5s1",
+				"verifyCode": false,
+				"_eventId": "submit",
+				"lt": "LT-83-MO-UTUDIDIDI-89"
+			}
+		}
+	}
+}

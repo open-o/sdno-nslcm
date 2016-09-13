@@ -1,0 +1,23 @@
+{
+	"request": {
+		"uri": "/controller/cloud/v2/northbound/config/ThinCPEId/device/arvpnsvxlan",
+		"method": "put",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"errcode": "0",
+			"errmsg": null,
+			"data": [
+				{
+					"id": "ThinCPEVxLanId",
+					"vneId": 1,
+					"name": "ThinCPEVxLan"
+				}
+			]
+		}
+	}
+}

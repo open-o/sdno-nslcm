@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>nslcm-deployment</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <build>
         <pluginManagement>

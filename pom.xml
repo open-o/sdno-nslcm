@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <commonbiz.version>1.0.1</commonbiz.version>
         <cxf.version>3.1.6</cxf.version>
-        <package.name>nslcm</package.name>
+        <package.name>nslcmservice</package.name>
     </properties>
 
     <modules>

@@ -1,0 +1,20 @@
+{
+	"request": {
+		"uri": "/controller/cloud/v2/northbound/config/vCPEId/device/arvpnsipsec",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"queries": {
+			"interfaceName": "GibagitEthernet1/2"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"errcode": "0",
+			"errmsg": "",
+			"data": []
+		}
+	}
+}

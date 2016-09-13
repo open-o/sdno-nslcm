@@ -1,0 +1,27 @@
+{
+	"request": {
+		"uri": "/controller/cloud/v2/northbound/devices/ThinCPEId/arwansubinterface",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"errcode": "0",
+			"errmsg": "",
+			"data": [
+				{
+					"terminationMode": "dot1q",
+					"ceLowVlan": 857,
+					"ceHighVlan": 857,
+					"name": "GibagitEthernet0/1",
+					"ipAddress": "192.168.1.110",
+					"mask": "255.255.255.0",
+					"mac": "10:23:4f:43:5e:62"
+				}
+			]
+		}
+	}
+}

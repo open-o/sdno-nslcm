@@ -58,6 +58,14 @@
 				{
 					"name": "ac2_ip",
 					"value": null
+				},
+				{
+					"name": "ac1_peer_ip",
+					"value": "0.1.2.3"
+				},
+				{
+					"name": "ac2_peer_ip",
+					"value": "1.2.3.4"
 				}
 			]
 		}

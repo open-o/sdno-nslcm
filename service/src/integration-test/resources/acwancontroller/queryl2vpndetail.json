@@ -1,0 +1,18 @@
+{
+	"request": {
+		"uri": "/openoapi/sbi-l2vpn-vpws/v1/l2vpn_vpwss/[a-zA-Z0-9\\-\\_]{1,36}",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8",
+			"X-Driver-Parameter": "extSysID=[a-zA-Z0-9\\-\\_]{1,36}"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"ret": 200,
+			"format": "json",
+			"resultObj": "{\"name\": \"L2VPNServiceA\",\"description\": \"ASDDS\",\"tenantId\": \"TestTenant\",\"operStatus\": \"operateUp\",\"adminStatus\": \"adminUp\"}"
+		}
+	}
+}

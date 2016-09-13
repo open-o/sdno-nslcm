@@ -1,0 +1,17 @@
+{
+	"request": {
+		"uri": "/vpn/ikepolicies/[a-zA-Z0-9\\-\\_]{1,36}",
+		"method": "delete",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"headers": {
+			"Content-Type": "application/json",
+			"X-Subject-Token": "abcdefghigklmnopqrstuvwxyz"
+		},
+		"json": null
+	}
+}

@@ -1,0 +1,77 @@
+{
+	"request": {
+		"uri": "/identity/v3/auth/tokens",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": [
+			{
+				"auth": {
+					"identity": {
+						"methods": [
+							"password"
+						],
+						"password": {
+							"user": {
+								"name": "om_team",
+								"password": "Test_12345",
+								"domain": {
+									"name": "om_team"
+								}
+							}
+						}
+					},
+					"scope": {
+						"project": {
+							"name": "cn-north-1"
+						}
+					}
+				}
+			}
+		]
+	},
+	"response": {
+		"status": 200,
+		"headers": {
+			"Content-Type": "application/json",
+			"X-Subject-Token": "junk"
+		},
+		"json": {
+			"token": {
+				"expires_at": "2016-07-01T11:27:19.376000Z",
+				"issued_at": "2016-06-30T11:27:19.376000Z",
+				"methods": [
+					"password"
+				],
+				"project": {
+					"name": "cn-north-1",
+					"id": "c02a588bf96349caa4e59a770a486a39",
+					"domain": {
+						"name": "om_team",
+						"id": "205c2c1bceba4b4180d391d450fa208f"
+					}
+				},
+				"user": {
+					"domain": {
+						"name": "om_team",
+						"id": "205c2c1bceba4b4180d391d450fa208f"
+					},
+					"id": "5e15db4504b045a6ba2314f7a5b733bc",
+					"name": "om_team"
+				},
+				"catalog": [],
+				"roles": [
+					{
+						"name": "te_admin",
+						"id": "9c8558f2bf12426baaf92b6e4799d72c"
+					},
+					{
+						"id": "0",
+						"name": "op_restricted"
+					}
+				]
+			}
+		}
+	}
+}
