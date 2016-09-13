@@ -12,7 +12,6 @@
     <packaging>war</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bsp-framework-version>3.0.0-SNAPSHOT</bsp-framework-version>
         <springfwk.version>3.1.0.RELEASE</springfwk.version>
         <springfwk.ex.version>3.1.0.RELEASE.fixed.3500</springfwk.ex.version>
@@ -148,4 +147,9 @@
             <version>1.12</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${package.name}</finalName>
+    </build>
+
 </project>
