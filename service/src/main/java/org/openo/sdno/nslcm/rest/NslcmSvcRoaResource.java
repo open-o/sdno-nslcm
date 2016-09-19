@@ -38,6 +38,7 @@ import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.model.db.NsCreationInfo;
 import org.openo.sdno.nslcm.model.db.NsInstantiationInfo;
 import org.openo.sdno.nslcm.model.nbi.JobQueryResponse;
+import org.openo.sdno.nslcm.model.nbi.JobResponseDescriptor;
 import org.openo.sdno.nslcm.model.nbi.LongOperationResponse;
 import org.openo.sdno.nslcm.model.nbi.NsCreationRequest;
 import org.openo.sdno.nslcm.model.nbi.NsCreationResponse;
@@ -53,6 +54,7 @@ import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.db.DbOper;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
+import org.openo.sdno.overlayvpn.errorcode.ErrorCode;
 import org.openo.sdno.overlayvpn.model.common.enums.ActionStatus;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
@@ -70,6 +72,7 @@ import org.slf4j.LoggerFactory;
 public class NslcmSvcRoaResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NslcmSvcRoaResource.class);
+    private static final String JOB_ID = "ID_of_the_job";
 
     @Resource
     private DbOper dbOper;
@@ -309,8 +312,11 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public JobQueryResponse jobQueryGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("jobid") String jobId) throws ServiceException {
-
-        return null;
+        JobQueryResponse jobQueryResponse = new JobQueryResponse();
+        jobQueryResponse.setJobId(JOB_ID);
+        JobResponseDescriptor jobResponseDescriptor = new JobResponseDescriptor();
+        jobQueryResponse.setResponseDescriptor(jobResponseDescriptor);
+        return jobQueryResponse;
     }
 
     /**
@@ -328,8 +334,11 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PackageManagementResponse packageOnboardingPost(@Context HttpServletRequest req,
             @Context HttpServletResponse resp, PackageOnboardRequest ssRequest) {
-
-        return null;
+        PackageManagementResponse packageManagementResponse = new PackageManagementResponse();
+        packageManagementResponse.setErrorCode(ErrorCode.OVERLAYVPN_SUCCESS);
+        packageManagementResponse.setStatus(String.valueOf(HttpCode.RESPOND_OK));
+        packageManagementResponse.setStatusDescription("description of operation status");
+        return packageManagementResponse;
     }
 
     /**
@@ -347,8 +356,11 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PackageManagementResponse packageDeletionDelete(@Context HttpServletRequest req,
             @Context HttpServletResponse resp, @PathParam("csarid") String csarId) {
-
-        return null;
+        PackageManagementResponse packageManagementResponse = new PackageManagementResponse();
+        packageManagementResponse.setErrorCode(ErrorCode.OVERLAYVPN_SUCCESS);
+        packageManagementResponse.setStatus(String.valueOf(HttpCode.RESPOND_OK));
+        packageManagementResponse.setStatusDescription("description of operation status");
+        return packageManagementResponse;
     }
 
     private void updateNsInstantiationInfoStatus(List<NsInstantiationInfo> nsInstantiationInfoList, String actionStatus)
