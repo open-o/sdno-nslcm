@@ -72,7 +72,6 @@ import org.slf4j.LoggerFactory;
 public class NslcmSvcRoaResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NslcmSvcRoaResource.class);
-    private static final String JOB_ID = "ID_of_the_job";
 
     @Resource
     private DbOper dbOper;
@@ -313,8 +312,10 @@ public class NslcmSvcRoaResource {
     public JobQueryResponse jobQueryGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("jobid") String jobId) throws ServiceException {
         JobQueryResponse jobQueryResponse = new JobQueryResponse();
-        jobQueryResponse.setJobId(JOB_ID);
+        jobQueryResponse.setJobId(jobId);
         JobResponseDescriptor jobResponseDescriptor = new JobResponseDescriptor();
+        jobResponseDescriptor.setProgress("100");
+        jobResponseDescriptor.setStatus("done");
         jobQueryResponse.setResponseDescriptor(jobResponseDescriptor);
         return jobQueryResponse;
     }
