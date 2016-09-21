@@ -23,23 +23,15 @@ public class MocoUnderlayE2ESuccessServer extends MocoHttpServer {
     private static final String QUERY_TEMPLATE_UNDERLAY =
             "src/integration-test/resources/acwancontroller/querytemplateunderlay.json";
 
-    private static final String CREATE_SUCCESS_FILE = "src/integration-test/resources/acwancontroller/createl3vpn.json";
-
-    private static final String DELETE_SUCCESS_FILE = "src/integration-test/resources/acwancontroller/deletel3vpn.json";
+    private static final String QUERY_CONTROLLER = "src/integration-test/resources/acwancontroller/getcontroller.json";
 
     private static final String ADD_TP = "src/integration-test/resources/acwancontroller/addtps.json";
 
     private static final String DELETE_TP = "src/integration-test/resources/acwancontroller/deletetps.json";
 
-    private static final String QUERY_L3VPN = "src/integration-test/resources/acwancontroller/queryl3vpndetail.json";
+    private static final String CREATE_L2VPN = "src/integration-test/resources/acwancontroller/createl2vpn.json";
 
-    private static final String UPDATE_L3VPN = "src/integration-test/resources/acwancontroller/updatel3vpn.json";
-
-    private static final String CREATE_L2VPN_SUCCESS =
-            "src/integration-test/resources/acwancontroller/createl2vpn.json";
-
-    private static final String DELETE_L2VPN_SUCCESS =
-            "src/integration-test/resources/acwancontroller/deletel2vpn.json";
+    private static final String DELETE_L2VPN = "src/integration-test/resources/acwancontroller/deletel2vpn.json";
 
     private static final String QUERY_L2VPN = "src/integration-test/resources/acwancontroller/queryl2vpndetail.json";
 
@@ -54,21 +46,15 @@ public class MocoUnderlayE2ESuccessServer extends MocoHttpServer {
 
         this.addRequestResponsePair(QUERY_TEMPLATE_UNDERLAY);
 
-        this.addRequestResponsePair(CREATE_SUCCESS_FILE);
-
-        this.addRequestResponsePair(DELETE_SUCCESS_FILE);
+        this.addRequestResponsePair(QUERY_CONTROLLER);
 
         this.addRequestResponsePair(ADD_TP);
 
-        this.addRequestResponsePair(QUERY_L3VPN);
-
-        this.addRequestResponsePair(UPDATE_L3VPN);
-
         this.addRequestResponsePair(DELETE_TP);
 
-        this.addRequestResponsePair(CREATE_L2VPN_SUCCESS);
+        this.addRequestResponsePair(CREATE_L2VPN);
 
-        this.addRequestResponsePair(DELETE_L2VPN_SUCCESS);
+        this.addRequestResponsePair(DELETE_L2VPN);
 
         this.addRequestResponsePair(QUERY_L2VPN);
 

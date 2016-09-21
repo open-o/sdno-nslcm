@@ -1,0 +1,21 @@
+{
+	"request": {
+		"uri": "/restconf/config/huawei-ac-net-l3vpn:l3vpn-cfg/instances",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/xml"
+		},
+		"json": {
+			
+		}
+	},
+	"response": {
+		"status": 200,
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"msg": "success"
+		}
+	}
+}

@@ -1,0 +1,12 @@
+[
+	{
+		"name": "ACWanControllerCommParam",
+		"hostName": "127.0.0.1",
+		"profileId": "test",
+		"protocol": "https",
+		"port": 12307,
+		"metaModelId": "rest_csm-v1",
+		"commParams": "{\"userName\":\"admin\", \"password\":\"Test_12345\" ,\"port\":\"12307\",\"transProtocol\":\"https\" }",
+		"controllerName": "Controller1"
+	}
+]

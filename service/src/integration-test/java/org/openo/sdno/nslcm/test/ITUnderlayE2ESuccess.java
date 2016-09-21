@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.exception.HttpCode;
 import org.openo.sdno.framework.container.util.JsonUtil;
+import org.openo.sdno.nslcm.mocoserver.MocoUnderlayE2ESuccessHttpsServer;
 import org.openo.sdno.nslcm.mocoserver.MocoUnderlayE2ESuccessServer;
 import org.openo.sdno.nslcm.model.nbi.NsCreationResponse;
 import org.openo.sdno.nslcm.model.nbi.NsInstantiationRequest;
@@ -37,6 +38,8 @@ import org.openo.sdno.testframework.topology.Topology;
 public class ITUnderlayE2ESuccess extends TestManager {
 
     private static MocoUnderlayE2ESuccessServer sbiAdapterServer = new MocoUnderlayE2ESuccessServer();
+
+    private static MocoUnderlayE2ESuccessHttpsServer sbiHttpsServer = new MocoUnderlayE2ESuccessHttpsServer();
 
     private static final String CREATE_NSLCM_SUCCESS_TESTCASE =
             "src/integration-test/resources/testcase/createnslcmsuccess.json";
@@ -66,12 +69,14 @@ public class ITUnderlayE2ESuccess extends TestManager {
     @BeforeClass
     public static void setup() throws ServiceException {
         topo.createInvTopology();
+        sbiHttpsServer.start();
         sbiAdapterServer.start();
     }
 
     @AfterClass
     public static void tearDown() throws ServiceException {
         sbiAdapterServer.stop();
+        sbiHttpsServer.stop();
         topo.clearInvTopology();
     }
 
