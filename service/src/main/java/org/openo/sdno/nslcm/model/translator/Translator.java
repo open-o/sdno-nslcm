@@ -237,7 +237,7 @@ public class Translator {
         servicePathHop.setHopNumber(hopNumber);
         servicePathHop.setSfiId(getMeUuid(ipAddress));
         servicePathHop.setSfgId("");
-        sfpNbi.getServicePathHop().add(servicePathHop);
+        sfpNbi.getServicePathHops().add(servicePathHop);
     }
 
     private static String getMeUuid(String ipAddress) throws ServiceException {
