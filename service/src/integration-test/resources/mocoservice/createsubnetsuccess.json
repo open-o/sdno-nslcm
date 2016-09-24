@@ -1,0 +1,13 @@
+{
+	"request": {
+		"uri": "/openoapi/sbi-vpc/v1/subnets",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8",
+			"X-Driver-Parameter": "extSysID=123"
+		}
+	},
+	"response": {
+		"status": 201
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"request": {
+		"uri": "/openoapi/extsys/v1/vims",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": [
+			{
+				"vimId": "57674786-5b2e-4c92-bb68-578dbd79e2f5",
+				"name": "vim",
+				"url": "http://127.0.0.1:12308/v2.0",
+				"userName": "admin",
+				"password": "admin",
+				"tenant": "admin",
+				"vendor": "ZTE",
+				"version": "v1.0",
+				"description": "",
+				"domain": "",
+				"type": "openstack",
+				"createTime": "2016-07-18 12:22:53"
+			}
+		]
+	}
+}

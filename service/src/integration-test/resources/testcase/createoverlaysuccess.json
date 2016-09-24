@@ -33,7 +33,7 @@
 				},
 				{
 					"name": "vpcName",
-					"value": "vpc-huawei"
+					"value": "default/project4"
 				},
 				{
 					"name": "vpcSubnetName",
