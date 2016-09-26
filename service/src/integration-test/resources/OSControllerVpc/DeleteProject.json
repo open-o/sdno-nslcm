@@ -1,6 +1,6 @@
 {
   "request" : {
-    "uri" : "/v3/projects/00e55b6d14cd49709b71ffa83e5ee37f",
+    "uri" : "/v3/projects/[a-zA-Z0-9\\-\\_]{1,36}",
     "method" : "delete",
     "headers" : {
         "X-Auth-Token": "junk"

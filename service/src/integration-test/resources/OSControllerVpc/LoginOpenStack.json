@@ -56,21 +56,21 @@
 						"endpoints": [
 							{
 								"region_id": "domain",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "9f013b491b1b42ce993aae82ccfb2c97"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "d7a81b62d8ad4ce9a129238d7aa013ce"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "dbac8c3a9af84658b8ae3f1ec882fd30"
@@ -84,21 +84,21 @@
 						"endpoints": [
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "46322ececac44bd89be9d56ad16d9244"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "9b86f0f975bd446192f152e494368424"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "a7e2c79484744b3e9639d6150d3a3694"
@@ -117,22 +117,22 @@
 					{
 						"endpoints": [
 							{
-								"region_id": "domain",
-								"url": "https://127.0.0.1:12308",
+								"region_id": "RegionOne",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "6a2cbf89dafc4519a7f331dc2a9d00eb"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "82fca587786a414a810c777a0a6d08c2"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "c3e7f4c2963249968405d819ae6d29e2"
@@ -158,21 +158,21 @@
 						"endpoints": [
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "57c13fdde6634ed1bc12ad7c4ea24f40"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "876bb6b20df2452eab7b7986996c70db"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "e4972c3009d1433db4636bd57fadd249"
@@ -186,21 +186,21 @@
 						"endpoints": [
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "16f49243dbaf4c2198687d5c3ab8522c"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "cabc983ce0714902a1b22e38055cb870"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "fa67b85b9d224ecf9b1f86950de07e5a"
@@ -214,21 +214,21 @@
 						"endpoints": [
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "537f5316d5c946d090039d6dd0793497"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "a020ac54993b4c5b864d9438567f1fa0"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "b55441bfa2b141edb25224175e13712c"
@@ -242,21 +242,21 @@
 						"endpoints": [
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "0e44e0f3040c49c9b110661b83b8d1a8"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "723023c967df49be89a1cfdb9635e05e"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "b90466d96bf34e008c1dd443abf8b56f"
@@ -282,21 +282,21 @@
 						"endpoints": [
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "internal",
 								"id": "6b0c91154ce240ec9a06612c4386cf21"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "public",
 								"id": "9bce801f86814756af1af27f9de59e17"
 							},
 							{
 								"region_id": "RegionOne",
-								"url": "https://127.0.0.1:12308",
+								"url": "https://127.0.0.1:12307",
 								"region": "RegionOne",
 								"interface": "admin",
 								"id": "b2823b78882b46eba95f1991a619de01"

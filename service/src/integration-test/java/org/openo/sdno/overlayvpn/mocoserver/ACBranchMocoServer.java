@@ -31,18 +31,11 @@ import org.openo.sdno.testframework.moco.responsehandler.MocoResponseHandler;
 
 public class ACBranchMocoServer extends MocoHttpsServer {
 
-    private static final String QUERY_THINCPE_WAN_SUBINF =
-            "src/integration-test/resources/AcBranchController/QueryThinCPEWanSubInf.json";
-
-    private static final String QUERY_VCPE_SUBINF =
-            "src/integration-test/resources/AcBranchController/QueryVCPEWanSubInf.json";
-
-    private static final String SSO_LOGIN1 = "src/integration-test/resources/AcBranchController/SSOLogin1.json";
-
-    private static final String SSO_LOGIN2 = "src/integration-test/resources/AcBranchController/SSOLogin2.json";
-
     private static final String CREATE_THINCPE_VXLAN =
             "src/integration-test/resources/AcBranchController/CreateThinCPEVxLan.json";
+
+    private static final String CREATE_VCPE_IPSEC =
+            "src/integration-test/resources/AcBranchController/CreateVCPEIPSec.json";
 
     private static final String CREATE_VCPE_VXLAN =
             "src/integration-test/resources/AcBranchController/CreatevCPEVxLan.json";
@@ -53,14 +46,75 @@ public class ACBranchMocoServer extends MocoHttpsServer {
     private static final String DELETE_VCPE_VXLAN =
             "src/integration-test/resources/AcBranchController/DeletevCPEVxLan.json";
 
+    private static final String QUERY_THINCPE_WAN_SUBINF =
+            "src/integration-test/resources/AcBranchController/QueryThinCPEWanSubInf.json";
+
     private static final String QUERY_VCPE_IPSEC_BY_ID =
             "src/integration-test/resources/AcBranchController/QueryVCPEIPSecById.json";
 
     private static final String QUERY_VCPE_IPSEC_BY_INFNAME =
             "src/integration-test/resources/AcBranchController/QueryVCPEIPSecByInfName.json";
 
-    private static final String CREATE_VCPE_IPSEC =
-            "src/integration-test/resources/AcBranchController/CreateVCPEIPSec.json";
+    private static final String QUERY_VCPE_SUBINF =
+            "src/integration-test/resources/AcBranchController/QueryVCPEWanSubInf.json";
+
+    private static final String SSO_LOGIN1 = "src/integration-test/resources/AcBranchController/SSOLogin1.json";
+
+    private static final String SSO_LOGIN2 = "src/integration-test/resources/AcBranchController/SSOLogin2.json";
+
+    private static final String CREATE_IKEPOLICY =
+            "src/integration-test/resources/OSControllerIpSec/CreateIkePolicy.json";
+
+    private static final String CREATE_IPSEC_CONNECTION =
+            "src/integration-test/resources/OSControllerIpSec/CreateIpsecConnection.json";
+
+    private static final String CREATE_IPSECPOLICY =
+            "src/integration-test/resources/OSControllerIpSec/CreateIpsecPolicy.json";
+
+    private static final String CREATE_VPN_SERVICE =
+            "src/integration-test/resources/OSControllerIpSec/CreateVpnService.json";
+
+    private static final String DELETE_IKEPOLICY =
+            "src/integration-test/resources/OSControllerIpSec/DeleteIkePolicy.json";
+
+    private static final String DELETE_IPSEC_CONNECTION =
+            "src/integration-test/resources/OSControllerIpSec/DeleteIpsecConnection.json";
+
+    private static final String DELETE_IPSECPOLICY =
+            "src/integration-test/resources/OSControllerIpSec/DeleteIpsecPolicy.json";
+
+    private static final String DELETE_VPN_SERVICE =
+            "src/integration-test/resources/OSControllerIpSec/DeleteVpnService.json";
+
+    private static final String LOGIN_OPEN_STATCK_1 =
+            "src/integration-test/resources/OSControllerIpSec/LoginOpenStack.json";
+
+    private static final String ATTACH_SUBNET = "src/integration-test/resources/OSControllerVpc/AttachSubnet.json";
+
+    private static final String CREATE_PROJECT = "src/integration-test/resources/OSControllerVpc/CreateProject.json";
+
+    private static final String CREATE_ROUTER = "src/integration-test/resources/OSControllerVpc/CreateRouter.json";
+
+    private static final String CREATE_SUBNET = "src/integration-test/resources/OSControllerVpc/CreateSubnet.json";
+
+    private static final String DELETE_PROJECT = "src/integration-test/resources/OSControllerVpc/DeleteProject.json";
+
+    private static final String DELETE_ROUTER = "src/integration-test/resources/OSControllerVpc/DeleteRouter.json";
+
+    private static final String DELETE_SUBNET = "src/integration-test/resources/OSControllerVpc/DeleteSubnet.json";
+
+    private static final String DETACH_SUBNET = "src/integration-test/resources/OSControllerVpc/DetachSubnet.json";
+
+    private static final String LOGIN_OPEN_STATCK =
+            "src/integration-test/resources/OSControllerVpc/LoginOpenStack.json";
+
+    private static final String QUERY_NETWORK = "src/integration-test/resources/OSControllerVpc/QueryNetwork.json";
+
+    private static final String QUERY_PROJECT = "src/integration-test/resources/OSControllerVpc/QueryProject.json";
+
+    private static final String QUERY_ROUTER = "src/integration-test/resources/OSControllerVpc/QueryRouter.json";
+
+    private static final String QUERY_SUBNET = "src/integration-test/resources/OSControllerVpc/QuerySubnet.json";
 
     public ACBranchMocoServer(int port) {
         super(port);
@@ -79,6 +133,28 @@ public class ACBranchMocoServer extends MocoHttpsServer {
         this.addRequestResponsePair(QUERY_VCPE_IPSEC_BY_ID);
         this.addRequestResponsePair(QUERY_VCPE_IPSEC_BY_INFNAME);
         this.addRequestResponsePair(CREATE_VCPE_IPSEC);
+        this.addRequestResponsePair(LOGIN_OPEN_STATCK);
+        this.addRequestResponsePair(QUERY_PROJECT);
+        this.addRequestResponsePair(CREATE_PROJECT);
+        this.addRequestResponsePair(QUERY_NETWORK);
+        this.addRequestResponsePair(QUERY_ROUTER);
+        this.addRequestResponsePair(CREATE_ROUTER);
+        this.addRequestResponsePair(QUERY_SUBNET);
+        this.addRequestResponsePair(CREATE_SUBNET);
+        this.addRequestResponsePair(LOGIN_OPEN_STATCK_1);
+        this.addRequestResponsePair(CREATE_IKEPOLICY);
+        this.addRequestResponsePair(CREATE_IPSECPOLICY);
+        this.addRequestResponsePair(CREATE_IPSEC_CONNECTION);
+        this.addRequestResponsePair(CREATE_VPN_SERVICE);
+        this.addRequestResponsePair(DELETE_IKEPOLICY);
+        this.addRequestResponsePair(DELETE_IPSECPOLICY);
+        this.addRequestResponsePair(DELETE_IPSEC_CONNECTION);
+        this.addRequestResponsePair(DELETE_VPN_SERVICE);
+        this.addRequestResponsePair(ATTACH_SUBNET);
+        this.addRequestResponsePair(DELETE_PROJECT);
+        this.addRequestResponsePair(DELETE_ROUTER);
+        this.addRequestResponsePair(DELETE_SUBNET);
+        this.addRequestResponsePair(DETACH_SUBNET);
     }
 
     private class CreateVxLanResponseHandler extends MocoResponseHandler {

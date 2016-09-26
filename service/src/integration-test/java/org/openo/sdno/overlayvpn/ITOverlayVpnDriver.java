@@ -24,7 +24,8 @@ import org.openo.sdno.exception.HttpCode;
 import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.nslcm.model.nbi.NsCreationResponse;
 import org.openo.sdno.nslcm.model.nbi.NsInstantiationRequest;
-import org.openo.sdno.overlayvpn.mocoserver.MocoOverlayE2ESuccessServer;
+import org.openo.sdno.overlayvpn.mocoserver.ACBranchMocoServer;
+import org.openo.sdno.overlayvpn.mocoserver.MocoOverlayDriverE2ESuccessServer;
 import org.openo.sdno.testframework.checker.IChecker;
 import org.openo.sdno.testframework.http.model.HttpModelUtils;
 import org.openo.sdno.testframework.http.model.HttpRequest;
@@ -34,7 +35,7 @@ import org.openo.sdno.testframework.replace.PathReplace;
 import org.openo.sdno.testframework.testmanager.TestManager;
 import org.openo.sdno.testframework.topology.Topology;
 
-public class ITOverlayVpnCreate extends TestManager {
+public class ITOverlayVpnDriver extends TestManager {
 
     private static final String CREATE_NSLCM_SUCCESS_TESTCASE =
             "src/integration-test/resources/testcase/createnslcmsuccess.json";
@@ -53,7 +54,9 @@ public class ITOverlayVpnCreate extends TestManager {
 
     private static final String TOPODATA_PATH = "src/integration-test/resources/AcBranchInventory";
 
-    private MocoOverlayE2ESuccessServer sbiAdapterServer = new MocoOverlayE2ESuccessServer();
+    private MocoOverlayDriverE2ESuccessServer sbiAdapterServer = new MocoOverlayDriverE2ESuccessServer();
+
+    private ACBranchMocoServer acBranchServer = new ACBranchMocoServer(12307);
 
     private Topology topo = new Topology(TOPODATA_PATH);
 
@@ -61,16 +64,18 @@ public class ITOverlayVpnCreate extends TestManager {
     public void setup() throws ServiceException {
         topo.createInvTopology();
         sbiAdapterServer.start();
+        acBranchServer.start();
     }
 
     @After
     public void tearDown() throws ServiceException {
         sbiAdapterServer.stop();
+        acBranchServer.stop();
         topo.clearInvTopology();
     }
 
     @Test
-    public void testOverlaySuccess() throws ServiceException {
+    public void testOverlaySuccess() throws ServiceException, InterruptedException {
         String instanceId = testCreateNslcm(CREATE_NSLCM_SUCCESS_TESTCASE);
 
         testCreateOverlay(CREATE_OVERLAY_SUCCESS_TESTCASE, instanceId);
