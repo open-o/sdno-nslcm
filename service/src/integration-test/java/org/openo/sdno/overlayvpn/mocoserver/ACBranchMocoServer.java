@@ -91,11 +91,15 @@ public class ACBranchMocoServer extends MocoHttpsServer {
 
     private static final String ATTACH_SUBNET = "src/integration-test/resources/OSControllerVpc/AttachSubnet.json";
 
+    private static final String CREATE_NETWORK = "src/integration-test/resources/OSControllerVpc/CreateNetwork.json";
+
     private static final String CREATE_PROJECT = "src/integration-test/resources/OSControllerVpc/CreateProject.json";
 
     private static final String CREATE_ROUTER = "src/integration-test/resources/OSControllerVpc/CreateRouter.json";
 
     private static final String CREATE_SUBNET = "src/integration-test/resources/OSControllerVpc/CreateSubnet.json";
+
+    private static final String DELETE_NETWORK = "src/integration-test/resources/OSControllerVpc/DeleteNetwork.json";
 
     private static final String DELETE_PROJECT = "src/integration-test/resources/OSControllerVpc/DeleteProject.json";
 
@@ -155,6 +159,8 @@ public class ACBranchMocoServer extends MocoHttpsServer {
         this.addRequestResponsePair(DELETE_ROUTER);
         this.addRequestResponsePair(DELETE_SUBNET);
         this.addRequestResponsePair(DETACH_SUBNET);
+        this.addRequestResponsePair(CREATE_NETWORK);
+        this.addRequestResponsePair(DELETE_NETWORK);
     }
 
     private class CreateVxLanResponseHandler extends MocoResponseHandler {

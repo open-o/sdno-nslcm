@@ -21,14 +21,16 @@
 			"X-Subject-Token": "TestToken"
 		},
 		"json": {
-			"id": "VpnServiceId",
-			"name": "Vpn Service",
-			"description": "Vpn Service",
-			"status": "PENDING_CREATE",
-			"tenant_id": "tenantId1",
-			"subnet_id": "subnetId1",
-			"router_id": "routeId1",
-			"admin_state_up": true
+			"vpnservice": {
+				"id": "VpnServiceId",
+				"name": "Vpn Service",
+				"description": "Vpn Service",
+				"status": "PENDING_CREATE",
+				"tenant_id": "tenantId1",
+				"subnet_id": "subnetId1",
+				"router_id": "routeId1",
+				"admin_state_up": true
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"request": {
-		"uri": "/v3/projects",
+		"uri": "[a-z0-9:\\/\\.]{1,46}projects",
 		"method": "post",
 		"headers": {
 			"X-Auth-Token": "junk"

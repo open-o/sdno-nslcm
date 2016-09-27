@@ -27,19 +27,21 @@
 			"X-Subject-Token": "TestToken"
 		},
 		"json": {
-			"id": "IkePolicyId",
-			"name": "IkePolicy",
-			"description": "Ike Policy",
-			"pfs": "group5",
-			"lifetime": {
-				"units": "seconds",
-				"value": 7200
-			},
-			"tenant_id": "tenantId1",
-			"auth_algorithm": "sha1",
-			"encryption_algorithm": "aes-128",
-			"phase1_negotiation_mode": "main",
-			"ike_version": "v1"
+			"ikepolicy": {
+				"id": "IkePolicyId",
+				"name": "IkePolicy",
+				"description": "Ike Policy",
+				"pfs": "group5",
+				"lifetime": {
+					"units": "seconds",
+					"value": 7200
+				},
+				"tenant_id": "tenantId1",
+				"auth_algorithm": "sha1",
+				"encryption_algorithm": "aes-128",
+				"phase1_negotiation_mode": "main",
+				"ike_version": "v1"
+			}
 		}
 	}
 }

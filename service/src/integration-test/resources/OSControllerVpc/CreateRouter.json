@@ -1,6 +1,6 @@
 {
 	"request": {
-		"uri": "/v2.0/routers",
+		"uri": "[a-z0-9:\\/\\.]{1,46}routers",
 		"method": "post",
 		"headers": {
 			"X-Auth-Token": "junk"

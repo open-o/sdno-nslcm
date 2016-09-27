@@ -1,6 +1,6 @@
 {
 	"request": {
-		"uri": "/v3/auth/tokens",
+		"uri": "[a-z0-9:\\/\\.]{1,46}auth/tokens",
 		"method": "post",
 		"headers": {
 			

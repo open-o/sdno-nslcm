@@ -1,6 +1,6 @@
 {
   "request" : {
-    "uri" : "/v2.0/routers/[a-zA-Z0-9\\-\\_]{1,36}/remove_router_interface",
+    "uri" : "[a-z0-9:\\/\\.]{1,46}routers/[a-zA-Z0-9\\-\\_]{1,36}/remove_router_interface",
     "method" : "put",
     "headers" : {
         "X-Auth-Token": "junk"

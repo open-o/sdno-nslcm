@@ -1,6 +1,6 @@
 {
 	"request": {
-		"uri": "/v2.0/networks",
+		"uri": "[a-z0-9:\\/\\.]{1,46}networks",
 		"method": "get",
 		"headers": {
 			"X-Auth-Token": "junk"

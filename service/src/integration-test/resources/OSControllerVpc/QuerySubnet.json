@@ -1,6 +1,6 @@
 {
   "request" : {
-    "uri" : "/v2.0/subnets",
+    "uri" : "[a-z0-9:\\/\\.]{1,46}subnets",
     "method" : "get",
     "headers" : {
         "X-Auth-Token": "junk"

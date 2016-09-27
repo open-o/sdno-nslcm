@@ -21,7 +21,7 @@
 				},
 				{
 					"name": "siteThinCpeIP",
-					"value": "0.0.0.0"
+					"value": "10.229.41.100"
 				},
 				{
 					"name": "siteAccessPortVlan",
@@ -29,7 +29,7 @@
 				},
 				{
 					"name": "vCPE_MgrIp",
-					"value": "0.0.0.1"
+					"value": "10.229.51.27"
 				},
 				{
 					"name": "vpcName",
@@ -49,15 +49,15 @@
 				},
 				{
 					"name": "dcGWIP",
-					"value": "0.0.0.1"
+					"value": "10.229.41.100"
 				},
 				{
 					"name": "dcFWIP",
-					"value": "0.0.0.1"
+					"value": "10.229.51.27"
 				},
 				{
 					"name": "dcLBIP",
-					"value": "0.0.0.1"
+					"value": "10.229.51.27"
 				}
 			]
 		}

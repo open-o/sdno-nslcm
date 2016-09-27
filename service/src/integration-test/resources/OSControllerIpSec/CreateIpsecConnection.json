@@ -35,34 +35,34 @@
 			"X-Subject-Token": "TestToken"
 		},
 		"json": {
-			"id": "IpSecSiteConnectionId",
-			"name": null,
-			"description": null,
-			"mtu": 1500,
-			"psk": "psk",
-			"initiator": "bi-directional",
-			"status": "PENDING_CREATE",
-			"dpd": {
-				"action": "hold",
-				"interval": 30,
-				"timeout": 120
-			},
-			"subnets": null,
-			"tenant_id": "tenantId1",
-			"peer_address": "2.2.2.2",
-			"peer_id": "2.2.2.2",
-			"peer_cidrs": {
+			"ipsec_site_connection": {
+				"id": "IpSecSiteConnectionId",
+				"name": null,
+				"description": null,
+				"mtu": 1500,
+				"psk": "psk",
+				"initiator": "bi-directional",
+				"status": "PENDING_CREATE",
+				"dpd": {
+					"action": "hold",
+					"interval": 30,
+					"timeout": 120
+				},
+				"subnets": null,
+				"tenant_id": "tenantId1",
+				"peer_address": "2.2.2.2",
+				"peer_id": "2.2.2.2",
 				"peer_cidrs": [
 					"3.3.3.3",
 					"4.4.4.4"
-				]
-			},
-			"route_mode": "static",
-			"auth_mode": "psk",
-			"admin_state_up": true,
-			"ikepolicy_id": null,
-			"ipsecpolicy_id": null,
-			"vpnservice_id": null
+				],
+				"route_mode": "static",
+				"auth_mode": "psk",
+				"admin_state_up": true,
+				"ikepolicy_id": null,
+				"ipsecpolicy_id": null,
+				"vpnservice_id": null
+			}
 		}
 	}
 }
