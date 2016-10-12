@@ -35,7 +35,7 @@ import net.sf.json.JSONObject;
  * 
  * @param <T> DB Model Class
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 public class DbOper<T> {
 

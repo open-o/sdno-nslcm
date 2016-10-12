@@ -24,10 +24,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * SDN-O NS Package Onboarding Request.<br>
+ * SDN-O NS Package On-boarding Request.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @ApiModel(description = "SDN-O NS Package Onboarding Request")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")

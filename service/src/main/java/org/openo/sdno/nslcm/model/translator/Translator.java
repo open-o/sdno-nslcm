@@ -47,7 +47,7 @@ import org.openo.sdno.overlayvpn.model.servicemodel.VpcNbi;
  * </p>
  * 
  * @author
- * @version SDNO 0.5 Aug 30, 2016
+ * @version SDNO 0.5 August 30, 2016
  */
 public class Translator {
 

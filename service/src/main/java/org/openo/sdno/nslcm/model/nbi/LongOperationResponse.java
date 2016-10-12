@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Response for operation that takes a long time, i.e., a job id.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @ApiModel(description = "Response for operation that takes a long time, i.e., a job id.")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")

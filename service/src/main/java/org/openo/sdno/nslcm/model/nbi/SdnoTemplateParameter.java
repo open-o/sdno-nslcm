@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiModelProperty;
  * pair.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @ApiModel(description = "parameter used by SDN-O to instantiate its service instance. it's fundamentally a name-value pair.")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")

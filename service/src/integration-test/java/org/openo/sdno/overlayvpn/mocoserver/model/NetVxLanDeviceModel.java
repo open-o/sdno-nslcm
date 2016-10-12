@@ -26,7 +26,7 @@ import org.openo.sdno.overlayvpn.verify.annotation.AString;
  * Model converting class, converting SDNO model to adapter model. <br>
  * 
  * @author
- * @version SDNO 0.5 Jul 20, 2016
+ * @version SDNO 0.5 July 20, 2016
  */
 public class NetVxLanDeviceModel extends AbstUuidModel {
 

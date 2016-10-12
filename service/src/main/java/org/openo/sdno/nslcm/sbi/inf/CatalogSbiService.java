@@ -25,7 +25,7 @@ import org.openo.sdno.framework.container.service.IService;
  * DC gateway controller south branch interface. <br>
  * 
  * @author
- * @version SDNO 0.5 Jun 22, 2016
+ * @version SDNO 0.5 June 22, 2016
  */
 public interface CatalogSbiService extends IService {
 

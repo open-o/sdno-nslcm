@@ -41,10 +41,10 @@ import org.openo.sdno.overlayvpn.result.ResultRsp;
 import org.springframework.stereotype.Service;
 
 /**
- * Nslcm service implementation. <br>
+ * NSLCM service implementation. <br>
  * 
  * @author
- * @version SDNO 0.5 Jun 16, 2016
+ * @version SDNO 0.5 June 16, 2016
  */
 @Service
 public class NslcmServiceImpl implements NslcmService {

@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiModelProperty;
  * Job query response, i.e., status of a job.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @ApiModel(description = "Job Query Response, i.e., status of a job")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")

@@ -17,10 +17,10 @@
 package org.openo.sdno.overlayvpn.mocoserver.model;
 
 /**
- * Model class for port vlan in adapter layer. <br>
+ * Model class for port VLAN in adapter layer. <br>
  * 
  * @author
- * @version SDNO 0.5 Jul 20, 2016
+ * @version SDNO 0.5 July 20, 2016
  */
 public class NetPortVlan {
 
@@ -32,7 +32,7 @@ public class NetPortVlan {
      * Constructor<br>
      * 
      * @param port The port
-     * @param vlan The vlan id
+     * @param vlan The VLAN id
      * @since SDNO 0.5
      */
     public NetPortVlan(String port, int vlan) {

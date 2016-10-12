@@ -27,10 +27,10 @@ import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 
 /**
- * Nslcm service interface. <br>
+ * NSLCM service interface. <br>
  * 
  * @author
- * @version SDNO 0.5 Jun 16, 2016
+ * @version SDNO 0.5 June 16, 2016
  */
 public interface NslcmService extends IService {
 

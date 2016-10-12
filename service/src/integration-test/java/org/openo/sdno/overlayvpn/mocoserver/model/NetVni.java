@@ -23,10 +23,10 @@ import org.openo.sdno.overlayvpn.verify.annotation.AInt;
 import org.openo.sdno.overlayvpn.verify.annotation.AString;
 
 /**
- * Model class for vni in adapter layer. <br>
+ * Model class for VNI in adapter layer. <br>
  * 
  * @author
- * @version SDNO 0.5 Jul 20, 2016
+ * @version SDNO 0.5 July 20, 2016
  */
 public class NetVni extends AbstUuidModel {
 

@@ -62,10 +62,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The rest interface of nslcm.<br>
+ * The rest interface of NSLCM.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @Path("/sdnonslcm/v1")
 @SuppressWarnings({"unchecked", "rawtypes"})
@@ -321,7 +321,7 @@ public class NslcmSvcRoaResource {
     }
 
     /**
-     * Onboarding a NS package.<br>
+     * On-boarding a NS package.<br>
      * 
      * @param req HttpServletRequest Object
      * @param resp HttpServletResponse Object

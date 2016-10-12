@@ -27,7 +27,7 @@ import org.openo.sdno.overlayvpn.model.uuid.AbstUuidModel;
  * </p>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @MOResType(infoModelName = "nscreationinfo")
 public class NsCreationInfo extends AbstUuidModel {

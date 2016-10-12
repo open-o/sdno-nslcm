@@ -26,7 +26,7 @@ import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
  * DC gateway controller south branch interface.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 public interface OverlaySbiService extends IService {
 
