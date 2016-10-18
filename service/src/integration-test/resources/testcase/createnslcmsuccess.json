@@ -8,7 +8,8 @@
 		"json": {
 			"nsdId": "nsdIdtest",
 			"nsName": "nsNametest",
-			"description": "descriptiontest"
+			"description": "descriptiontest",
+			"serviceType":"SDNO"
 		}
 	},
 	"response": {

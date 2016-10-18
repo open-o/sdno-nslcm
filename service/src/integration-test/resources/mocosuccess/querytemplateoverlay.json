@@ -10,7 +10,8 @@
 	"response": {
 		"status": 200,
 		"json": {
-			"templateName": "enterprise2DC"
+			"templateName": "enterprise2DC",
+			"csarId":"test"
 		}
 	}
 }

@@ -24,11 +24,15 @@ import javax.annotation.Resource;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
-import org.openo.sdno.nslcm.model.db.NsCreationInfo;
-import org.openo.sdno.nslcm.model.db.NsInstantiationInfo;
+import org.openo.sdno.nslcm.dao.inf.IServiceModelDao;
+import org.openo.sdno.nslcm.dao.inf.IServicePackageDao;
+import org.openo.sdno.nslcm.dao.inf.IServiceParameterDao;
 import org.openo.sdno.nslcm.model.db.NsResponseInfo;
 import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
 import org.openo.sdno.nslcm.model.nbi.SdnoTemplateParameter;
+import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
+import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
+import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
 import org.openo.sdno.nslcm.sbi.inf.CatalogSbiService;
 import org.openo.sdno.nslcm.sbi.inf.OverlaySbiService;
 import org.openo.sdno.nslcm.sbi.inf.UnderlaySbiService;
@@ -52,6 +56,12 @@ public class NslcmServiceImpl implements NslcmService {
     @Resource
     private DbOper dbOper;
 
+    private IServiceModelDao iServiceModelDao;
+
+    private IServicePackageDao iServicePackageDao;
+
+    private IServiceParameterDao iServiceParameterDao;
+
     @Resource
     private CatalogSbiService catalogSbiService;
 
@@ -60,6 +70,18 @@ public class NslcmServiceImpl implements NslcmService {
 
     @Resource
     private UnderlaySbiService underlaySbiService;
+
+    public void setiServiceModelDao(IServiceModelDao iServiceModelDao) {
+        this.iServiceModelDao = iServiceModelDao;
+    }
+
+    public void setiServicePackageDao(IServicePackageDao iServicePackageDao) {
+        this.iServicePackageDao = iServicePackageDao;
+    }
+
+    public void setiServiceParameterDao(IServiceParameterDao iServiceParameterDao) {
+        this.iServiceParameterDao = iServiceParameterDao;
+    }
 
     public void setDbOper(DbOper dbOper) {
         this.dbOper = dbOper;
@@ -86,13 +108,7 @@ public class NslcmServiceImpl implements NslcmService {
     public Map<String, String> createOverlay(SiteToDcNbi siteToDcNbiMo, String instanceId) throws ServiceException {
         Map<String, String> response = overlaySbiService.createOverlay(siteToDcNbiMo);
 
-        List<NsResponseInfo> nsResponseInfoList = new ArrayList<NsResponseInfo>();
-        NsResponseInfo nsResponseInfo = new NsResponseInfo();
-        nsResponseInfo.setInstanceId(instanceId);
-        nsResponseInfo.setExternalId(response.get("vpnId"));
-        nsResponseInfo.allocateUuid();
-        nsResponseInfoList.add(nsResponseInfo);
-        dbOper.insert(nsResponseInfoList);
+        insertNsResponseInfo(instanceId, response);
         return response;
     }
 
@@ -111,18 +127,12 @@ public class NslcmServiceImpl implements NslcmService {
     public Map<String, String> createUnderlay(VpnVo vpnVo, String instanceId) throws ServiceException {
         Map<String, String> response = underlaySbiService.createUnderlay(vpnVo);
 
-        List<NsResponseInfo> nsResponseInfoList = new ArrayList<NsResponseInfo>();
-        NsResponseInfo nsResponseInfo = new NsResponseInfo();
-        nsResponseInfo.setInstanceId(instanceId);
-        nsResponseInfo.setExternalId(response.get("vpnId"));
-        nsResponseInfo.allocateUuid();
-        nsResponseInfoList.add(nsResponseInfo);
-        dbOper.insert(nsResponseInfoList);
+        insertNsResponseInfo(instanceId, response);
         return response;
     }
 
     @Override
-    public Map<String, String> deleteUnderlay(String instanceId, List<NsInstantiationInfo> nsInstantiationInfoList)
+    public Map<String, String> deleteUnderlay(String instanceId, List<ServiceParameter> serviceParameterList)
             throws ServiceException {
         ResultRsp<List<NsResponseInfo>> nsResponseInfoRsp = queryNsResponseInfo(instanceId);
 
@@ -130,9 +140,9 @@ public class NslcmServiceImpl implements NslcmService {
         String vpnUuid = nsResponseInfoRsp.getData().get(0).getExternalId();
 
         String serviceType = null;
-        for(NsInstantiationInfo nsInstantiationInfo : nsInstantiationInfoList) {
-            if("serviceType".equals(nsInstantiationInfo.getName())) {
-                serviceType = nsInstantiationInfo.getValue();
+        for(ServiceParameter serviceParameter : serviceParameterList) {
+            if("serviceType".equals(serviceParameter.getInputKey())) {
+                serviceType = serviceParameter.getInputValue();
                 break;
             }
         }
@@ -144,33 +154,27 @@ public class NslcmServiceImpl implements NslcmService {
 
     @Override
     public NsInstanceQueryResponse queryVpn(String instanceId) throws ServiceException {
-        ResultRsp<NsCreationInfo> nsCreationInfoRsp = dbOper.queryById(NsCreationInfo.class, instanceId);
+        InvServiceModel invServiceModel = iServiceModelDao.queryServiceById(instanceId);
 
-        if(!dbOper.checkRecordIsExisted(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId)) {
-            ThrowException.throwDataIsExisted(instanceId);
-        }
-        ResultRsp<List<NsInstantiationInfo>> nsInstantiationInfoRsp =
-                dbOper.query(NsInstantiationInfo.class, Const.INSTANCE_ID, instanceId);
-
-        NsCreationInfo nsCreationInfo = nsCreationInfoRsp.getData();
-        List<NsInstantiationInfo> nsInstantiationInfoList = nsInstantiationInfoRsp.getData();
+        ServicePackageModel servicePackageModel = iServicePackageDao.queryServiceById(instanceId);
+        List<ServiceParameter> ServiceParameterList = iServiceParameterDao.queryServiceById(instanceId);
 
         NsInstanceQueryResponse nsInstanceQueryResponse = new NsInstanceQueryResponse();
-        nsInstanceQueryResponse.setId(nsCreationInfo.getUuid());
-        nsInstanceQueryResponse.setName(nsCreationInfo.getNsName());
-        nsInstanceQueryResponse.setNsdId(nsCreationInfo.getNsdId());
-        nsInstanceQueryResponse.setDescription(nsCreationInfo.getDescription());
+        nsInstanceQueryResponse.setId(invServiceModel.getServiceId());
+        nsInstanceQueryResponse.setName(invServiceModel.getName());
+        nsInstanceQueryResponse.setDescription(invServiceModel.getDescription());
+        nsInstanceQueryResponse.setNsdId(servicePackageModel.getTemplateId());
 
-        return setSdnoTemplateParameterList(nsInstanceQueryResponse, nsInstantiationInfoList);
+        return setSdnoTemplateParameterList(nsInstanceQueryResponse, ServiceParameterList);
     }
 
     private NsInstanceQueryResponse setSdnoTemplateParameterList(NsInstanceQueryResponse nsInstanceQueryResponse,
-            List<NsInstantiationInfo> nsInstantiationInfoList) {
+            List<ServiceParameter> ServiceParameterList) {
         List<SdnoTemplateParameter> sdnoTemplateParameterList = new ArrayList<SdnoTemplateParameter>();
-        for(NsInstantiationInfo nsInstantiationInfo : nsInstantiationInfoList) {
+        for(ServiceParameter serviceParameter : ServiceParameterList) {
             SdnoTemplateParameter sdnoTemplateParameterMo = new SdnoTemplateParameter();
-            sdnoTemplateParameterMo.setName(nsInstantiationInfo.getName());
-            sdnoTemplateParameterMo.setValue(nsInstantiationInfo.getValue());
+            sdnoTemplateParameterMo.setName(serviceParameter.getInputKey());
+            sdnoTemplateParameterMo.setValue(serviceParameter.getInputValue());
             sdnoTemplateParameterList.add(sdnoTemplateParameterMo);
         }
         nsInstanceQueryResponse.setAdditionalParams(sdnoTemplateParameterList);
@@ -182,5 +186,15 @@ public class NslcmServiceImpl implements NslcmService {
             ThrowException.throwDataIsExisted(instanceId);
         }
         return dbOper.query(NsResponseInfo.class, Const.INSTANCE_ID, instanceId);
+    }
+
+    private void insertNsResponseInfo(String instanceId, Map<String, String> response) throws ServiceException {
+        List<NsResponseInfo> nsResponseInfoList = new ArrayList<NsResponseInfo>();
+        NsResponseInfo nsResponseInfo = new NsResponseInfo();
+        nsResponseInfo.setInstanceId(instanceId);
+        nsResponseInfo.setExternalId(response.get("vpnId"));
+        nsResponseInfo.allocateUuid();
+        nsResponseInfoList.add(nsResponseInfo);
+        dbOper.insert(nsResponseInfoList);
     }
 }

@@ -22,8 +22,8 @@ import java.util.Map;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.framework.container.service.IService;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
-import org.openo.sdno.nslcm.model.db.NsInstantiationInfo;
 import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
+import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 
 /**
@@ -95,6 +95,6 @@ public interface NslcmService extends IService {
      * @throws ServiceException When delete failed
      * @since SDNO 0.5
      */
-    Map<String, String> deleteUnderlay(String instanceId, List<NsInstantiationInfo> nsInstantiationInfo)
+    Map<String, String> deleteUnderlay(String instanceId, List<ServiceParameter> serviceParameterList)
             throws ServiceException;
 }

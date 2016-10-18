@@ -40,20 +40,74 @@
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
         </jaxrs:providers>
     </jaxrs:server>
-
-    <bean id="nslcmSvcRoaResource" class="org.openo.sdno.nslcm.rest.NslcmSvcRoaResource">
-        <property name="dbOper" ref="dbOper"></property>
-        <property name="nslcmService" ref="nslcmService"></property>
+    
+    <bean id="inventory" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/inventory" />
+        <property name="user" value="root" />
+        <property name="password" value="Test_12345" />
+        <property name="acquireIncrement" value="10" />
+        <property name="idleConnectionTestPeriod" value="120" />
+        <property name="maxPoolSize" value="50" />
+        <property name="maxStatements" value="30" />
+        <property name="minPoolSize" value="10" />
+        <property name="maxIdleTime" value="600" />
     </bean>
 
-    <bean id="dbOper" class="org.openo.sdno.nslcm.util.db.DbOper">
+    <bean id="nslcmSvcRoaResource" class="org.openo.sdno.nslcm.rest.NslcmSvcRoaResource">
+        <property name="iServiceModelDao" ref="iServiceModelDao"></property>
+        <property name="iServicePackageDao" ref="iServicePackageDao"></property>
+        <property name="iServiceParameterDao" ref="iServiceParameterDao"></property>
+        <property name="nslcmService" ref="nslcmService"></property>
     </bean>
 
     <bean id="nslcmService" class="org.openo.sdno.nslcm.service.impl.NslcmServiceImpl">
         <property name="dbOper" ref="dbOper"></property>
+        <property name="iServiceModelDao" ref="iServiceModelDao"></property>
+        <property name="iServicePackageDao" ref="iServicePackageDao"></property>
+        <property name="iServiceParameterDao" ref="iServiceParameterDao"></property>
         <property name="catalogSbiService" ref="catalogSbiService"></property>
         <property name="overlaySbiService" ref="overlaySbiService"></property>
         <property name="underlaySbiService" ref="underlaySbiService"></property>
+    </bean>
+    
+    <bean id="dbOper" class="org.openo.sdno.nslcm.util.db.DbOper">
+    </bean>
+    
+    <bean id="iServiceModelDao" class="org.openo.sdno.nslcm.dao.impl.ServiceModelDaoImpl">
+        <property name="dbSessionHandler" ref="dbSessionHandler"></property>
+    </bean>
+    
+    <bean id="iServicePackageDao" class="org.openo.sdno.nslcm.dao.impl.ServicePackageDaoImpl">
+        <property name="dbSessionHandler" ref="dbSessionHandler"></property>
+    </bean>
+    
+    <bean id="iServiceParameterDao" class="org.openo.sdno.nslcm.dao.impl.ServiceParametersDaoImpl">
+        <property name="dbSessionHandler" ref="dbSessionHandler"></property>
+    </bean>
+    
+    <bean id="dbSessionHandler" class="org.openo.sdno.nslcm.dao.multi.DatabaseSessionHandler">
+        <property name="dataBaseName" value="inventory" />
+        <property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+    </bean>
+    
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+        <constructor-arg index="1" value="SIMPLE" />
+    </bean>
+    
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="datasource" />
+        <property name="mapperLocations" value="classpath:mybatis/mysql/*.xml" />
+    </bean>
+    
+    <bean id="datasource" class="org.openo.sdno.nslcm.dao.multi.MultiDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry value-ref="inventory" key="inventory"></entry>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="inventory"></property>
     </bean>
 
     <bean id="catalogSbiService" class="org.openo.sdno.nslcm.sbi.impl.CatalogSbiServiceImpl">
