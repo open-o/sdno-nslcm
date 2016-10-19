@@ -24,18 +24,18 @@
     </resultMap>
 
     <insert id="batchInsert" parameterType="java.util.List">
-        insert t_lcm_service_inputparam_mapping(serviceId,inputKey,inputValue)
+        insert t_lcm_service_inputParam_mapping(serviceId,inputKey,inputValue)
         values
         <foreach collection="serviceParams" item="item" index="index" separator=",">(#{item.serviceId},#{item.inputKey},#{item.inputValue})
         </foreach>
     </insert>
 
     <delete id="delete">
-        delete from t_lcm_service_inputparam_mapping where serviceId = #{serviceId}
+        delete from t_lcm_service_inputParam_mapping where serviceId = #{serviceId}
     </delete>
 
     <select id="queryAllService" resultMap="serviceParamResultMap">
-        select serviceId,inputKey,inputValue from t_lcm_service_inputparam_mapping
+        select serviceId,inputKey,inputValue from t_lcm_service_inputParam_mapping
     </select>
 
 </mapper>

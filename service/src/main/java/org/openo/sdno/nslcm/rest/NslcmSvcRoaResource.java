@@ -367,12 +367,12 @@ public class NslcmSvcRoaResource {
     private InvServiceModel convert2ServiceModel(NsCreationRequest nsRequest, String serviceId) {
         InvServiceModel serviceModel = new InvServiceModel();
         serviceModel.setServiceId(serviceId);
-        serviceModel.setName(nsRequest.getNsName());
+        serviceModel.setServiceName(nsRequest.getNsName());
         serviceModel.setServiceType(nsRequest.getServiceType());
         serviceModel.setDescription(nsRequest.getDescription());
         serviceModel.setActiveStatus(Const.ACTIVE);
         serviceModel.setCreator(Const.DEFAULT_STRING);
-        serviceModel.setCreateAt(System.currentTimeMillis());
+        serviceModel.setCreateTime(System.currentTimeMillis());
         serviceModel.setStatus(Const.CREATE_SUCCESS);
         return serviceModel;
     }

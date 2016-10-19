@@ -20,20 +20,20 @@
 
     <resultMap type="org.openo.sdno.nslcm.model.servicemo.InvServiceModel" id="serviceModelResultMap">
         <result property="serviceId" column="serviceId" />
-        <result property="name" column="name" />
+        <result property="serviceName" column="serviceName" />
         <result property="serviceType" column="serviceType" />
         <result property="description" column="description" />
         <result property="activeStatus" column="activeStatus" />
         <result property="status" column="status" />
         <result property="creator" column="creator" />
-        <result property="createAt" column="createAt" />
+        <result property="createTime" column="createTime" />
     </resultMap>
 
     <insert id="insert" parameterType="org.openo.sdno.nslcm.model.servicemo.InvServiceModel">
         insert into
         t_lcm_servicebaseinfo
-        (serviceId,name,serviceType,description,activeStatus,status,creator,createAt)
-        values(#{serviceId},#{name},#{serviceType},#{description},#{activeStatus},#{status},#{creator},#{createAt})
+        (serviceId,serviceName,serviceType,description,activeStatus,status,creator,createTime)
+        values(#{serviceId},#{serviceName},#{serviceType},#{description},#{activeStatus},#{status},#{creator},#{createTime})
     </insert>
 
     <delete id="delete">
@@ -41,7 +41,7 @@
     </delete>
 
     <select id="queryServiceById" resultMap="serviceModelResultMap">
-        select serviceId,name,serviceType,description,activeStatus,status,creator,createAt from t_lcm_servicebaseinfo where serviceId = #{serviceId}
+        select serviceId,serviceName,serviceType,description,activeStatus,status,creator,createTime from t_lcm_servicebaseinfo where serviceId = #{serviceId}
     </select>
 
 </mapper>
