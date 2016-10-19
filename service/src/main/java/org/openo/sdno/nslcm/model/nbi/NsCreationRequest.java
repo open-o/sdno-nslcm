@@ -38,6 +38,8 @@ public class NsCreationRequest {
 
     private String description = null;
 
+    private String serviceType = null;
+
     @ApiModelProperty(required = true, value = "ID of the template in catalog used to create the SDN-O service instance")
     @JsonProperty("nsdId")
     public String getNsdId() {
@@ -66,5 +68,15 @@ public class NsCreationRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @ApiModelProperty(value = "serviceType of the SDN-O service instance to be created")
+    @JsonProperty("serviceType")
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

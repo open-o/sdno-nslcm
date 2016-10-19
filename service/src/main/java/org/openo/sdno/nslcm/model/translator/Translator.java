@@ -31,7 +31,7 @@ import org.openo.sdno.model.servicemodel.tp.TpTypeSpec;
 import org.openo.sdno.model.servicemodel.vpn.Vpn;
 import org.openo.sdno.model.servicemodel.vpn.VpnBasicInfo;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
-import org.openo.sdno.nslcm.model.db.NsInstantiationInfo;
+import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
 import org.openo.sdno.overlayvpn.brs.invdao.NetworkElementInvDao;
 import org.openo.sdno.overlayvpn.model.servicechain.ServicePathHop;
 import org.openo.sdno.overlayvpn.model.servicemodel.SfpNbi;
@@ -63,10 +63,10 @@ public class Translator {
      * @throws ServiceException When translate failed
      * @since SDNO 0.5
      */
-    public static SiteToDcNbi translateList2Overlay(List<NsInstantiationInfo> nsInstantiationInfoList)
+    public static SiteToDcNbi translateList2Overlay(List<ServiceParameter> serviceParameterList)
             throws ServiceException {
         SiteToDcNbi siteToDcNbiMo = new SiteToDcNbi();
-        Map<String, String> inputMap = translateList2Map(nsInstantiationInfoList);
+        Map<String, String> inputMap = translateList2Map(serviceParameterList);
 
         siteToDcNbiMo.setName(inputMap.get("name"));
         siteToDcNbiMo.setDescription(inputMap.get("description"));
@@ -85,8 +85,7 @@ public class Translator {
      * @throws ServiceException When translate failed
      * @since SDNO 0.5
      */
-    public static VpnVo translateList2Underlay(List<NsInstantiationInfo> nsInstantiationInfoList)
-            throws ServiceException {
+    public static VpnVo translateList2Underlay(List<ServiceParameter> serviceParameterList) throws ServiceException {
         Vpn vpnMo = new Vpn();
         VpnBasicInfo vpnBasicInfo = new VpnBasicInfo();
         Tp srcTpMo = new Tp();
@@ -94,7 +93,7 @@ public class Translator {
         TpTypeSpec srcTpTypeSpec = new TpTypeSpec();
         TpTypeSpec dstTpTypeSpec = new TpTypeSpec();
 
-        Map<String, String> inputMap = translateList2Map(nsInstantiationInfoList);
+        Map<String, String> inputMap = translateList2Map(serviceParameterList);
 
         setVpnBasicInfo(vpnBasicInfo, inputMap);
 
@@ -107,10 +106,10 @@ public class Translator {
         return new VpnVo(vpnMo);
     }
 
-    private static Map<String, String> translateList2Map(List<NsInstantiationInfo> nsInstantiationInfoList) {
+    private static Map<String, String> translateList2Map(List<ServiceParameter> serviceParameterList) {
         Map<String, String> inputMap = new HashMap<String, String>();
-        for(NsInstantiationInfo nsInstantiationInfo : nsInstantiationInfoList) {
-            inputMap.put(nsInstantiationInfo.getName(), nsInstantiationInfo.getValue());
+        for(ServiceParameter serviceParameter : serviceParameterList) {
+            inputMap.put(serviceParameter.getInputKey(), serviceParameter.getInputValue());
         }
         return inputMap;
     }

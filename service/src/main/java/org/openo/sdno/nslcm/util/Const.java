@@ -34,9 +34,30 @@ public class Const {
 
     public static final String TEMPLATE_NAME = "templateName";
 
+    public static final String CSAR_ID = "csarId";
+
     public static final String UNDERLAYVPN_TEMPLATE_NAME = "underlayvpn";
 
     public static final String OVERLAYVPN_TEMPLATE_NAME = "enterprise2DC";
+
+    /**
+     * Fail to operate database.
+     */
+    public static final String OPER_DB_FAIL = "Fail to operate database!";
+
+    /**
+     * Data is wrong.
+     */
+    public static final String DATA_IS_WRONG = "Data is wrong";
+
+    /**
+     * Default value.
+     */
+    public static final String DEFAULT_STRING = "--";
+
+    public static final String ACTIVE = "Active";
+
+    public static final String CREATE_SUCCESS = "creatSucceed";
 
     private Const() {
 

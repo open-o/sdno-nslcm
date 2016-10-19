@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.mocoserver;
+package org.openo.sdno.nslcm.dao.multi;
 
-import org.openo.sdno.testframework.moco.MocoHttpServer;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-public class MocoTemplateNameWrong extends MocoHttpServer {
+/**
+ * Class for routing data source.<br>
+ * <p>
+ * </p>
+ * 
+ * @author
+ * @version SDNO 0.5 Oct 18, 2016
+ */
+public class MultiDataSource extends AbstractRoutingDataSource {
 
-    private static final String QUERY_TEMPLATE_NAME_WRONG =
-            "src/integration-test/resources/mocosuccess/querytemplatewrong.json";
-
-    public MocoTemplateNameWrong() {
-        super();
-    }
-
+    /**
+     * Get current data source key.<br>
+     * 
+     * @return source key
+     * @since SDNO 0.5
+     */
     @Override
-    public void addRequestResponsePairs() {
-
-        this.addRequestResponsePair(QUERY_TEMPLATE_NAME_WRONG);
-
+    protected Object determineCurrentLookupKey() {
+        return DataSourceHolder.getDataSource();
     }
+
 }

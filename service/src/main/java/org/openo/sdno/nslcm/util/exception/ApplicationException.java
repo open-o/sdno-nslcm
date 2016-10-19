@@ -14,45 +14,37 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.overlayvpn.mocoserver.model;
+package org.openo.sdno.nslcm.util.exception;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
- * Model class for port vlan in adapter layer. <br>
+ * Application exception.<br>
+ * <p>
+ * </p>
  * 
  * @author
- * @version SDNO 0.5 Jul 20, 2016
+ * @version SDNO 0.5 Oct 18, 2016
  */
-public class NetPortVlan {
+public class ApplicationException extends WebApplicationException {
 
-    private String port;
-
-    private int vlan;
+    /**
+     * Serial number.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor<br>
+     * <p>
+     * </p>
      * 
-     * @param port The port
-     * @param vlan The vlan id
+     * @param errorCode error status
+     * @param errorDetail error detail
      * @since SDNO 0.5
      */
-    public NetPortVlan(String port, int vlan) {
-        this.port = port;
-        this.vlan = vlan;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public int getVlan() {
-        return vlan;
-    }
-
-    public void setVlan(int vlan) {
-        this.vlan = vlan;
+    public ApplicationException(int errorCode, Object errorDetail) {
+        super(Response.status(errorCode).entity(errorDetail).type(MediaType.APPLICATION_JSON).build());
     }
 }

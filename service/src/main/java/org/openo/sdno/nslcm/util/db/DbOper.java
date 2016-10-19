@@ -35,7 +35,7 @@ import net.sf.json.JSONObject;
  * 
  * @param <T> DB Model Class
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 public class DbOper<T> {
 
@@ -74,19 +74,6 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to update data. <br>
-     * 
-     * @param clazz object type
-     * @param data The list of data that want to be updated
-     * @param updateFieldList The field that want to be updated
-     * @throws ServiceException When update failed.
-     * @since SDNO 0.5
-     */
-    public void update(Class<?> clazz, List<T> data, String updateFieldList) throws ServiceException {
-        new InventoryDaoUtil<T>().getInventoryDao().update(clazz, data, updateFieldList);
-    }
-
-    /**
      * It is used to query data. <br>
      * 
      * @param clazz object type
@@ -101,19 +88,6 @@ public class DbOper<T> {
     }
 
     /**
-     * It is used to query data.<br>
-     * 
-     * @param clazz object type
-     * @param uuid The uuid used to query
-     * @return The object data
-     * @throws ServiceException When query failed
-     * @since SDNO 0.5
-     */
-    public ResultRsp<T> queryById(Class<?> clazz, String uuid) throws ServiceException {
-        return new InventoryDaoUtil<T>().getInventoryDao().query(clazz, uuid, null);
-    }
-
-    /**
      * It is used to delete data. <br>
      * 
      * @param clazz object type
@@ -123,18 +97,6 @@ public class DbOper<T> {
      */
     public void delete(Class<?> clazz, String uuid) throws ServiceException {
         new InventoryDaoUtil<T>().getInventoryDao().delete(clazz, uuid);
-    }
-
-    /**
-     * It is used to delete data.<br>
-     * 
-     * @param clazz object type
-     * @param uuids The uuid list of which data want to be deleted
-     * @throws ServiceException When delete failed.
-     * @since SDNO 0.5
-     */
-    public void batchDelete(Class<?> clazz, List<String> uuids) throws ServiceException {
-        new InventoryDaoUtil<T>().getInventoryDao().batchDelete(clazz, uuids);
     }
 
     private ResultRsp<List<T>> queryByFilter(Class<?> clazz, String fieldName, String fieldValue,
