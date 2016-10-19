@@ -34,7 +34,7 @@ public class InvServiceModel {
     /**
      * Service instance name.
      */
-    private String name;
+    private String serviceName;
 
     /**
      * Service type.
@@ -64,8 +64,7 @@ public class InvServiceModel {
     /**
      * Time that create service instance.
      */
-    private Long createAt;
-
+    private Long createTime;
 
     /**
      * @return Returns the serviceId.
@@ -84,15 +83,15 @@ public class InvServiceModel {
     /**
      * @return Returns the name.
      */
-    public String getName() {
-        return name;
+    public String getServiceName() {
+        return serviceName;
     }
 
     /**
      * @param name The name to set.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     /**
@@ -154,15 +153,15 @@ public class InvServiceModel {
     /**
      * @return Returns the createAt.
      */
-    public Long getCreateAt() {
-        return createAt;
+    public Long getCreateTime() {
+        return createTime;
     }
 
     /**
      * @param createAt The createAt to set.
      */
-    public void setCreateAt(Long createAt) {
-        this.createAt = createAt;
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
     /**

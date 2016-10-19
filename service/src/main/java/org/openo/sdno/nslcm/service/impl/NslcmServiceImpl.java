@@ -161,7 +161,7 @@ public class NslcmServiceImpl implements NslcmService {
 
         NsInstanceQueryResponse nsInstanceQueryResponse = new NsInstanceQueryResponse();
         nsInstanceQueryResponse.setId(invServiceModel.getServiceId());
-        nsInstanceQueryResponse.setName(invServiceModel.getName());
+        nsInstanceQueryResponse.setName(invServiceModel.getServiceName());
         nsInstanceQueryResponse.setDescription(invServiceModel.getDescription());
         nsInstanceQueryResponse.setNsdId(servicePackageModel.getTemplateId());
 

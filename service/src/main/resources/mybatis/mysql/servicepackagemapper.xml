@@ -27,17 +27,17 @@
 
     <insert id="insert" parameterType="org.openo.sdno.nslcm.model.servicemo.ServicePackageModel">
         insert into
-        t_lcm_defpackage_mapping
+        t_lcm_defPackage_mapping
         (serviceId,serviceDefId,templateId,templateName)
         values(#{serviceId},#{serviceDefId},#{templateId},#{templateName})
     </insert>
 
     <delete id="delete">
-        delete from t_lcm_defpackage_mapping where serviceId = #{serviceId}
+        delete from t_lcm_defPackage_mapping where serviceId = #{serviceId}
     </delete>
 
     <select id="queryServiceById" resultMap="servicePackageMappingResultMap">
-        select serviceId,serviceDefId,templateId,templateName from t_lcm_defpackage_mapping where serviceId = #{serviceId}
+        select serviceId,serviceDefId,templateId,templateName from t_lcm_defPackage_mapping where serviceId = #{serviceId}
     </select>
 
 </mapper>
