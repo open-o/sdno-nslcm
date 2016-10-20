@@ -169,9 +169,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.2.2</version>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jdbc</artifactId>
+            <version>7.0.72</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
