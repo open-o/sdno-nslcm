@@ -208,7 +208,7 @@ public class Translator {
         siteNbi.setCidr(inputMap.get("siteCidr"));
         siteNbi.setThinCpeId(getMeUuid(inputMap.get("siteThinCpeIP")));
         siteNbi.setPortAndVlan(inputMap.get("siteAccessPortVlan"));
-        siteNbi.setVCPEId(getMeUuid(inputMap.get("vCPE_MgrIp")));
+        siteNbi.setvCPEId(getMeUuid(inputMap.get("vCPE_MgrIp")));
         siteToDcNbiMo.setSite(siteNbi);
     }
 
