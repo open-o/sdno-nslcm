@@ -41,18 +41,17 @@
         </jaxrs:providers>
     </jaxrs:server>
     
-    <bean id="inventory" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <property name="driverClass" value="com.mysql.jdbc.Driver" />
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/inventory" />
-        <property name="user" value="root" />
+    <bean id="inventory" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/inventory" />
+        <property name="username" value="root" />
         <property name="password" value="Test_12345" />
-        <property name="acquireIncrement" value="10" />
-        <property name="idleConnectionTestPeriod" value="120" />
-        <property name="maxPoolSize" value="50" />
-        <property name="maxStatements" value="30" />
-        <property name="minPoolSize" value="10" />
-        <property name="maxIdleTime" value="600" />
-    </bean>
+        <property name="maxActive" value="50" />
+        <property name="maxIdle" value="50" />
+        <property name="minIdle" value="10" />
+        <property name="minEvictableIdleTimeMillis" value="600000" />
+        <property name="validationQuery" value="SELECT 1" />
+    </bean>  
 
     <bean id="nslcmSvcRoaResource" class="org.openo.sdno.nslcm.rest.NslcmSvcRoaResource">
         <property name="iServiceModelDao" ref="iServiceModelDao"></property>

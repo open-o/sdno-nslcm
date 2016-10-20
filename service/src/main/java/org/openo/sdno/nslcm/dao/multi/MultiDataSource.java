@@ -16,21 +16,19 @@
 
 package org.openo.sdno.nslcm.dao.multi;
 
-import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.exception.ApplicationException;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * Class for routing data source.<br>
@@ -66,25 +64,20 @@ public class MultiDataSource extends AbstractRoutingDataSource {
         String url = values.get("jdbcUrl");
         String userName = values.get("jdbcUsername");
         String password = values.get("jdbcPassword");
-        ComboPooledDataSource dataSource = this.createDataSource(driverClassName, url, userName, password);
+        DataSource dataSource = this.createDataSource(driverClassName, url, userName, password);
         this.addTargetDataSource(dataSourceName, dataSource);
     }
 
-    private ComboPooledDataSource createDataSource(String driverClassName, String url, String username,
-            String password) {
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        try {
-            dataSource.setDriverClass(driverClassName);
-            dataSource.setJdbcUrl(url);
-            dataSource.setUser(username);
-            dataSource.setPassword(password);
-        } catch(PropertyVetoException e) {
-            throw new ApplicationException(HttpCode.ERR_FAILED, Const.OPER_DB_FAIL);
-        }
+    private DataSource createDataSource(String driverClassName, String url, String username, String password) {
+        DataSource dataSource = new DataSource();
+        dataSource.setDriverClassName(driverClassName);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
         return dataSource;
     }
 
-    private void addTargetDataSource(String dataSourceName, ComboPooledDataSource dataSource) {
+    private void addTargetDataSource(String dataSourceName, DataSource dataSource) {
         this.targetDataSources.put(dataSourceName, dataSource);
         super.setTargetDataSources(this.targetDataSources);
         afterPropertiesSet();
