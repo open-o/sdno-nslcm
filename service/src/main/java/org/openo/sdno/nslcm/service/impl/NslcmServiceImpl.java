@@ -100,7 +100,7 @@ public class NslcmServiceImpl implements NslcmService {
     }
 
     @Override
-    public Map<String, String> queryServiceTemplate(String nsdId) throws ServiceException {
+    public Map<String, Object> queryServiceTemplate(String nsdId) throws ServiceException {
         return catalogSbiService.queryServiceTemplate(nsdId);
     }
 
