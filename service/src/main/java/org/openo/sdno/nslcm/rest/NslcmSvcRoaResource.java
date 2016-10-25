@@ -122,13 +122,13 @@ public class NslcmSvcRoaResource {
         String nsdId = nsRequest.getNsdId();
 
         // query service template information from Catalog
-        Map<String, String> templateInfo = nslcmService.queryServiceTemplate(nsdId);
+        Map<String, Object> templateInfo = nslcmService.queryServiceTemplate(nsdId);
         if(null == templateInfo) {
             throw new ServiceException("nsdId[" + nsdId + "] is invalid, query from catalog failure");
         }
 
-        String templateName = templateInfo.get(Const.TEMPLATE_NAME);
-        String serviceDefId = templateInfo.get(Const.CSAR_ID);
+        String templateName = (String)templateInfo.get(Const.TEMPLATE_NAME);
+        String serviceDefId = (String)templateInfo.get(Const.CSAR_ID);
         if(null == templateName || (!templateName.equals(Const.UNDERLAYVPN_TEMPLATE_NAME)
                 && !templateName.equals(Const.OVERLAYVPN_TEMPLATE_NAME))) {
             ThrowException.throwParameterInvalid("templateName[" + templateName + "] is invalid");

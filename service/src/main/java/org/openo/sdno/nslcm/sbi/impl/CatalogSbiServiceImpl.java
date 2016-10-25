@@ -42,7 +42,7 @@ public class CatalogSbiServiceImpl implements CatalogSbiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogSbiServiceImpl.class);
 
     @Override
-    public Map<String, String> queryServiceTemplate(String nsdId) throws ServiceException {
+    public Map<String, Object> queryServiceTemplate(String nsdId) throws ServiceException {
         String url = UrlAdapterConst.CATALOG_ADAPTER_BASE_URL
                 + MessageFormat.format(UrlAdapterConst.QUERY_TEMPLATE_INFORMATION, nsdId);
 
@@ -50,7 +50,7 @@ public class CatalogSbiServiceImpl implements CatalogSbiService {
 
         RestfulResponse response = RestfulProxy.get(url, RestfulParametesUtil.getRestfulParametes());
         String rspContent = ResponseUtils.transferResponse(response);
-        Map<String, String> restResult = JsonUtil.fromJson(rspContent, new TypeReference<Map<String, String>>() {});
+        Map<String, Object> restResult = JsonUtil.fromJson(rspContent, new TypeReference<Map<String, Object>>() {});
 
         LOGGER.info("queryServiceTemplate end, result = " + restResult.toString());
 

@@ -37,5 +37,5 @@ public interface CatalogSbiService extends IService {
      * @throws ServiceException When query failed
      * @since SDNO 0.5
      */
-    Map<String, String> queryServiceTemplate(String nsdId) throws ServiceException;
+    Map<String, Object> queryServiceTemplate(String nsdId) throws ServiceException;
 }
