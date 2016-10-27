@@ -368,7 +368,7 @@ public class NslcmSvcRoaResource {
         InvServiceModel serviceModel = new InvServiceModel();
         serviceModel.setServiceId(serviceId);
         serviceModel.setServiceName(nsRequest.getNsName());
-        serviceModel.setServiceType(nsRequest.getServiceType());
+        serviceModel.setServiceType("SSAR");
         serviceModel.setDescription(nsRequest.getDescription());
         serviceModel.setActiveStatus(Const.ACTIVE);
         serviceModel.setCreator(Const.DEFAULT_STRING);
