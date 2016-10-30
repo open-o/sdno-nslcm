@@ -199,7 +199,6 @@ public class Translator {
         accessPointList.add(srcTpMo);
         accessPointList.add(dstTpMo);
         vpnMo.setAccessPointList(accessPointList);
-
         vpnMo.setVpnBasicInfo(vpnBasicInfo);
     }
 

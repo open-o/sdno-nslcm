@@ -379,7 +379,6 @@ public class NslcmSvcRoaResource {
 
     private ServicePackageModel convert2ServicePackageModel(String nsdId, String templateName, String serviceDefId,
             String serviceId) {
-
         ServicePackageModel servicePackageMo = new ServicePackageModel();
         servicePackageMo.setTemplateName(templateName);
         servicePackageMo.setServiceId(serviceId);

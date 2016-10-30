@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * IPSecService Rest Module Class.<br>
+ * Nslcm Rest Module Class.<br>
  * 
  * @author
  * @version SDNO 0.5 September 8, 2016
@@ -36,7 +36,6 @@ public class NslcmRestModule {
 
     protected void init() {
         LOGGER.info("=====start nslcm svc roa module=====");
-
         DbOwerInfo.init("nslcmSvc", "nslcmdb");
     }
 }
