@@ -22,16 +22,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.sdno.framework.container.util.UuidUtils;
-import org.openo.sdno.model.servicemodel.tp.CeTp;
+import org.openo.sdno.model.common.NVString;
+import org.openo.sdno.model.servicemodel.businesstype.TunnelSchema;
+import org.openo.sdno.model.servicemodel.routeprotocol.BgpProtocolItem;
+import org.openo.sdno.model.servicemodel.routeprotocol.RouteProtocolSpec;
 import org.openo.sdno.model.servicemodel.tp.EthernetTpSpec;
 import org.openo.sdno.model.servicemodel.tp.IpTpSpec;
 import org.openo.sdno.model.servicemodel.tp.Tp;
 import org.openo.sdno.model.servicemodel.tp.TpTypeSpec;
+import org.openo.sdno.model.servicemodel.tunnel.MplsTESpec;
+import org.openo.sdno.model.servicemodel.tunnel.TunnelPathConstraint;
 import org.openo.sdno.model.servicemodel.vpn.Vpn;
 import org.openo.sdno.model.servicemodel.vpn.VpnBasicInfo;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
+import org.openo.sdno.overlayvpn.brs.invdao.LogicalTernminationPointInvDao;
 import org.openo.sdno.overlayvpn.brs.invdao.NetworkElementInvDao;
 import org.openo.sdno.overlayvpn.model.servicechain.ServicePathHop;
 import org.openo.sdno.overlayvpn.model.servicemodel.SfpNbi;
@@ -63,13 +68,14 @@ public class Translator {
      * @throws ServiceException When translate failed
      * @since SDNO 0.5
      */
-    public static SiteToDcNbi translateList2Overlay(List<ServiceParameter> serviceParameterList)
+    public static SiteToDcNbi translateList2Overlay(List<ServiceParameter> serviceParameterList, String instanceId)
             throws ServiceException {
         SiteToDcNbi siteToDcNbiMo = new SiteToDcNbi();
         Map<String, String> inputMap = translateList2Map(serviceParameterList);
 
         siteToDcNbiMo.setName(inputMap.get("name"));
         siteToDcNbiMo.setDescription(inputMap.get("description"));
+        siteToDcNbiMo.setUuid(instanceId);
         setSiteNbi(inputMap, siteToDcNbiMo);
         setVpcNbi(inputMap, siteToDcNbiMo);
         setSfpNbi(inputMap, siteToDcNbiMo);
@@ -85,25 +91,29 @@ public class Translator {
      * @throws ServiceException When translate failed
      * @since SDNO 0.5
      */
-    public static VpnVo translateList2Underlay(List<ServiceParameter> serviceParameterList) throws ServiceException {
-        Vpn vpnMo = new Vpn();
-        VpnBasicInfo vpnBasicInfo = new VpnBasicInfo();
-        Tp srcTpMo = new Tp();
-        Tp dstTpMo = new Tp();
-        TpTypeSpec srcTpTypeSpec = new TpTypeSpec();
-        TpTypeSpec dstTpTypeSpec = new TpTypeSpec();
-
+    public static VpnVo translateList2Underlay(List<ServiceParameter> serviceParameterList, String instanceId)
+            throws ServiceException {
         Map<String, String> inputMap = translateList2Map(serviceParameterList);
 
+        TunnelSchema tunnelSchema = new TunnelSchema();
+        setTunnelSchema(tunnelSchema);
+
+        VpnBasicInfo vpnBasicInfo = new VpnBasicInfo();
         setVpnBasicInfo(vpnBasicInfo, inputMap);
 
-        setSrcTpMo(srcTpMo, srcTpTypeSpec, inputMap);
+        Tp srcTpMo = new Tp();
+        setSrcTpMo(srcTpMo, inputMap);
 
-        setDstTpMo(dstTpMo, dstTpTypeSpec, inputMap);
+        Tp dstTpMo = new Tp();
+        setDstTpMo(dstTpMo, inputMap);
 
-        setVpnMo(vpnMo, vpnBasicInfo, srcTpMo, dstTpMo, inputMap);
+        Vpn vpnMo = new Vpn();
+        setVpnMo(vpnMo, vpnBasicInfo, srcTpMo, dstTpMo, inputMap, instanceId);
 
-        return new VpnVo(vpnMo);
+        VpnVo vpnVo = new VpnVo();
+        vpnVo.setVpn(vpnMo);
+        vpnVo.setTunnelSchema(tunnelSchema);
+        return vpnVo;
     }
 
     private static Map<String, String> translateList2Map(List<ServiceParameter> serviceParameterList) {
@@ -114,21 +124,38 @@ public class Translator {
         return inputMap;
     }
 
+    private static void setTunnelSchema(TunnelSchema tunnelSchema) {
+        TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
+        pathConstraint.setSetupPriority(4);
+        pathConstraint.setHoldupPriority(4);
+
+        MplsTESpec tunnelCreatePolicy = new MplsTESpec();
+        tunnelCreatePolicy.setBestEffort("false");
+        tunnelCreatePolicy.setBfdEnable("true");
+        tunnelCreatePolicy.setCoRoute("true");
+        tunnelCreatePolicy.setShareMode("delegate");
+        tunnelCreatePolicy.setPathConstraint(pathConstraint);
+
+        tunnelSchema.setTunnelTech("RSVP-TE");
+        tunnelSchema.setTunnelLatency(2000);
+        tunnelSchema.setTunnelCreatePolicy(tunnelCreatePolicy);
+    }
+
     private static void setVpnBasicInfo(VpnBasicInfo vpnBasicInfo, Map<String, String> inputMap) {
-        vpnBasicInfo.setUuid(UuidUtils.createUuid());
         vpnBasicInfo.setTopology(inputMap.get("topology"));
         vpnBasicInfo.setServiceType(inputMap.get("serviceType"));
         vpnBasicInfo.setTechnology(inputMap.get("technology"));
-        vpnBasicInfo.setAdminStatus("inactive");
+        vpnBasicInfo.setAdminStatus("active");
     }
 
-    private static void setSrcTpMo(Tp srcTpMo, TpTypeSpec srcTpTypeSpec, Map<String, String> inputMap)
-            throws ServiceException {
+    private static void setSrcTpMo(Tp srcTpMo, Map<String, String> inputMap) throws ServiceException {
         srcTpMo.setName(inputMap.get("ac1_port"));
         srcTpMo.setNeId(getMeUuid(inputMap.get("pe1_ip")));
 
+        TpTypeSpec srcTpTypeSpec = new TpTypeSpec();
+
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
-        ethernetTpSpec.setQinqSvlanList(inputMap.get("ac1_svlan"));
+        ethernetTpSpec.setDot1qVlanList(inputMap.get("ac1_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
         srcTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
@@ -136,28 +163,36 @@ public class Translator {
         ipTpSpec.setMasterIp(inputMap.get("ac1_ip"));
         srcTpTypeSpec.setIpTpSpec(ipTpSpec);
 
-        srcTpTypeSpec.setLayerRate("LR_Ethernet");
+        srcTpTypeSpec.setLayerRate("LR_IP");
         setCommonTpModel(srcTpMo);
 
         List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
         tpTypeSpecList.add(srcTpTypeSpec);
         srcTpMo.setTypeSpecList(tpTypeSpecList);
 
-        CeTp srcPeerCeTp = new CeTp();
-        srcPeerCeTp.setUuid(UuidUtils.createUuid());
-        srcPeerCeTp.setCeIfmasterIp(inputMap.get("ac1_peer_ip"));
+        BgpProtocolItem bgpRoute = new BgpProtocolItem();
+        setBgpRoute(bgpRoute);
+        bgpRoute.setPeerIp(inputMap.get("ac1_peer_ip"));
 
-        srcTpMo.setPeerCeTp(srcPeerCeTp);
+        RouteProtocolSpec srcRouteProtocolSpec = new RouteProtocolSpec();
+        srcRouteProtocolSpec.setType("bgp");
+        srcRouteProtocolSpec.setBgpRoute(bgpRoute);
+
+        List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
+        routeProtocolSpecs.add(srcRouteProtocolSpec);
+        srcTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
+        srcTpMo.setContainedMainTP(getPortNativeID(inputMap.get("ac1_port")));
     }
 
-    private static void setDstTpMo(Tp dstTpMo, TpTypeSpec dstTpTypeSpec, Map<String, String> inputMap)
-            throws ServiceException {
+    private static void setDstTpMo(Tp dstTpMo, Map<String, String> inputMap) throws ServiceException {
 
         dstTpMo.setName(inputMap.get("ac2_port"));
         dstTpMo.setNeId(getMeUuid(inputMap.get("pe2_ip")));
 
+        TpTypeSpec dstTpTypeSpec = new TpTypeSpec();
+
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
-        ethernetTpSpec.setQinqSvlanList(inputMap.get("ac2_svlan"));
+        ethernetTpSpec.setDot1qVlanList(inputMap.get("ac2_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
         dstTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
@@ -165,41 +200,63 @@ public class Translator {
         ipTpSpec.setMasterIp(inputMap.get("ac2_ip"));
         dstTpTypeSpec.setIpTpSpec(ipTpSpec);
 
-        dstTpTypeSpec.setLayerRate("LR_Ethernet");
+        dstTpTypeSpec.setLayerRate("LR_IP");
         setCommonTpModel(dstTpMo);
 
         List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
         tpTypeSpecList.add(dstTpTypeSpec);
         dstTpMo.setTypeSpecList(tpTypeSpecList);
 
-        CeTp dstPeerCeTp = new CeTp();
-        dstPeerCeTp.setUuid(UuidUtils.createUuid());
-        dstPeerCeTp.setCeIfmasterIp(inputMap.get("ac2_peer_ip"));
+        BgpProtocolItem bgpRoute = new BgpProtocolItem();
+        setBgpRoute(bgpRoute);
+        bgpRoute.setPeerIp(inputMap.get("ac2_peer_ip"));
 
-        dstTpMo.setPeerCeTp(dstPeerCeTp);
+        RouteProtocolSpec dstRouteProtocolSpec = new RouteProtocolSpec();
+        dstRouteProtocolSpec.setType("bgp");
+        dstRouteProtocolSpec.setBgpRoute(bgpRoute);
+
+        List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
+        routeProtocolSpecs.add(dstRouteProtocolSpec);
+        dstTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
+
+        dstTpMo.setContainedMainTP(getPortNativeID(inputMap.get("ac2_port")));
+    }
+
+    private static void setBgpRoute(BgpProtocolItem bgpRoute) {
+        bgpRoute.setIdx(0);
+        bgpRoute.setPeerAsNumber(100);
+        bgpRoute.setKeepAliveTime(0);
+        bgpRoute.setHoldTime(0);
+        bgpRoute.setPassword("Test_1234");
+        bgpRoute.setBgpMaxPrefix(1000);
+        bgpRoute.setBgpMaxPrefixAlarm(100);
     }
 
     private static void setCommonTpModel(Tp tpMo) {
-        tpMo.setId(UuidUtils.createUuid());
-        tpMo.setAdminStatus("inactive");
+        tpMo.setAdminStatus("active");
         tpMo.setOperStatus("up");
         tpMo.setType("CTP");
         tpMo.setWorkingLayer("LR_IP");
     }
 
     private static void setVpnMo(Vpn vpnMo, VpnBasicInfo vpnBasicInfo, Tp srcTpMo, Tp dstTpMo,
-            Map<String, String> inputMap) {
-        vpnMo.setId(UuidUtils.createUuid());
+            Map<String, String> inputMap, String instanceId) {
+        vpnMo.setId(instanceId);
         vpnMo.setName(inputMap.get("name"));
         vpnMo.setDescription(inputMap.get("description"));
         vpnMo.setOperStatus("up");
-        vpnMo.setSyncStatus("sync");
 
         List<Tp> accessPointList = new ArrayList<Tp>();
         accessPointList.add(srcTpMo);
         accessPointList.add(dstTpMo);
         vpnMo.setAccessPointList(accessPointList);
         vpnMo.setVpnBasicInfo(vpnBasicInfo);
+        List<NVString> addtionalInfoList = new ArrayList<NVString>();
+        NVString addtionalInfo = new NVString();
+        addtionalInfo.setName("encapsulation");
+        addtionalInfo.setValue("eth");
+        addtionalInfoList.add(addtionalInfo);
+        vpnMo.setAddtionalInfo(addtionalInfoList);
     }
 
     private static void setSiteNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) throws ServiceException {
@@ -243,5 +300,12 @@ public class Translator {
         Map<String, String> condition = new HashMap<String, String>();
         condition.put("ipAddress", ipAddress);
         return neInvDao.query(condition).get(0).getId();
+    }
+
+    private static String getPortNativeID(String portName) throws ServiceException {
+        LogicalTernminationPointInvDao poryInvDao = new LogicalTernminationPointInvDao();
+        Map<String, String> condition = new HashMap<String, String>();
+        condition.put("name", portName);
+        return poryInvDao.query(condition).get(0).getNativeID();
     }
 }
