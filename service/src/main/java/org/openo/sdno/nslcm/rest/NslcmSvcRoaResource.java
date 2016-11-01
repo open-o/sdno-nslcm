@@ -181,10 +181,10 @@ public class NslcmSvcRoaResource {
         try {
             String templateName = queryTemplateName(instanceId);
             if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
-                SiteToDcNbi siteToDcNbiMo = Translator.translateList2Overlay(serviceParameterList);
+                SiteToDcNbi siteToDcNbiMo = Translator.translateList2Overlay(serviceParameterList, instanceId);
                 response = nslcmService.createOverlay(siteToDcNbiMo, instanceId);
             } else {
-                VpnVo vpnVo = Translator.translateList2Underlay(serviceParameterList);
+                VpnVo vpnVo = Translator.translateList2Underlay(serviceParameterList, instanceId);
                 response = nslcmService.createUnderlay(vpnVo, instanceId);
             }
         } catch(ServiceException e) {
@@ -379,7 +379,6 @@ public class NslcmSvcRoaResource {
 
     private ServicePackageModel convert2ServicePackageModel(String nsdId, String templateName, String serviceDefId,
             String serviceId) {
-
         ServicePackageModel servicePackageMo = new ServicePackageModel();
         servicePackageMo.setTemplateName(templateName);
         servicePackageMo.setServiceId(serviceId);
