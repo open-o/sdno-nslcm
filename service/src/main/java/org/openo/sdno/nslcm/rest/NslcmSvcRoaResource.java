@@ -114,6 +114,7 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public NsCreationResponse nsCreationPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             NsCreationRequest nsRequest) throws ServiceException {
+        LOGGER.info("NsCreationPost enter");
 
         long infterEnterTime = System.currentTimeMillis();
 
@@ -168,6 +169,8 @@ public class NslcmSvcRoaResource {
     public LongOperationResponse nsInstantiationPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId, NsInstantiationRequest nsInstantiationRequest)
             throws ServiceException {
+        LOGGER.info("NsInstantiationPost enter");
+
         String nsInstanceId = nsInstantiationRequest.getNsInstanceId();
         if(!nsInstanceId.equals(instanceId)) {
             ThrowException.throwParameterInvalid("instanceId[" + instanceId + "] is invalid");
@@ -217,6 +220,8 @@ public class NslcmSvcRoaResource {
     public LongOperationResponse nsTerminationPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId, NsTerminationRequest nsTerminationRequest)
             throws ServiceException {
+        LOGGER.info("NsTerminationPost enter");
+
         List<ServiceParameter> serviceParameterList = queryServiceParameter(instanceId);
         Map<String, String> response = null;
 
@@ -235,6 +240,9 @@ public class NslcmSvcRoaResource {
 
         LongOperationResponse longOperationResponse = new LongOperationResponse();
         longOperationResponse.setJobId(response.get("errorCode"));
+
+        LOGGER.info("NsTerminationPost exit");
+
         return longOperationResponse;
     }
 
@@ -272,9 +280,13 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void nsDeletionDelete(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId) throws ServiceException {
+        LOGGER.info("NsDeletionDelete enter");
+
         iServiceParameterDao.delete(instanceId);
         iServicePackageDao.delete(instanceId);
         iServiceModelDao.delete(instanceId);
+
+        LOGGER.info("NsDeletionDelete exit");
     }
 
     /**
@@ -293,12 +305,17 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public JobQueryResponse jobQueryGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("jobid") String jobId) throws ServiceException {
+        LOGGER.info("JobQueryGet enter");
+
         JobQueryResponse jobQueryResponse = new JobQueryResponse();
         jobQueryResponse.setJobId(jobId);
         JobResponseDescriptor jobResponseDescriptor = new JobResponseDescriptor();
         jobResponseDescriptor.setProgress("100");
-        jobResponseDescriptor.setStatus("done");
+        jobResponseDescriptor.setStatus("finished");
         jobQueryResponse.setResponseDescriptor(jobResponseDescriptor);
+
+        LOGGER.info("JobQueryGet exit");
+
         return jobQueryResponse;
     }
 
@@ -317,10 +334,15 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PackageManagementResponse packageOnboardingPost(@Context HttpServletRequest req,
             @Context HttpServletResponse resp, PackageOnboardRequest ssRequest) {
+        LOGGER.info("PackageOnboardingPost enter");
+
         PackageManagementResponse packageManagementResponse = new PackageManagementResponse();
         packageManagementResponse.setErrorCode(ErrorCode.OVERLAYVPN_SUCCESS);
         packageManagementResponse.setStatus(String.valueOf(HttpCode.RESPOND_OK));
         packageManagementResponse.setStatusDescription("description of operation status");
+
+        LOGGER.info("PackageOnboardingPost exit");
+
         return packageManagementResponse;
     }
 
@@ -339,10 +361,15 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public PackageManagementResponse packageDeletionDelete(@Context HttpServletRequest req,
             @Context HttpServletResponse resp, @PathParam("csarid") String csarId) {
+        LOGGER.info("PackageDeletionDelete enter");
+
         PackageManagementResponse packageManagementResponse = new PackageManagementResponse();
         packageManagementResponse.setErrorCode(ErrorCode.OVERLAYVPN_SUCCESS);
         packageManagementResponse.setStatus(String.valueOf(HttpCode.RESPOND_OK));
         packageManagementResponse.setStatusDescription("description of operation status");
+
+        LOGGER.info("PackageDeletionDelete exit");
+
         return packageManagementResponse;
     }
 
