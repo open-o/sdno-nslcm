@@ -16,8 +16,8 @@
 
 package org.openo.sdno.nslcm.model.nbi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,7 +36,7 @@ public class NsInstantiationRequest {
 
     private String nsInstanceId = null;
 
-    private List<SdnoTemplateParameter> additionalParamForNS = new ArrayList<SdnoTemplateParameter>();
+    private Map<String, Object> additionalParamForNS = new HashMap<String, Object>();
 
     @ApiModelProperty(required = true, value = "ID of the SDN-O service instance to be instantiated")
     @JsonProperty("nsInstanceId")
@@ -50,11 +50,11 @@ public class NsInstantiationRequest {
 
     @ApiModelProperty(value = "parameters used to instantiate this SDN-O service instance")
     @JsonProperty("additionalParamForNS")
-    public List<SdnoTemplateParameter> getAdditionalParamForNS() {
+    public Map<String, Object> getAdditionalParamForNS() {
         return additionalParamForNS;
     }
 
-    public void setAdditionalParamForNS(List<SdnoTemplateParameter> additionalParamForNS) {
+    public void setAdditionalParamForNS(Map<String, Object> additionalParamForNS) {
         this.additionalParamForNS = additionalParamForNS;
     }
 }

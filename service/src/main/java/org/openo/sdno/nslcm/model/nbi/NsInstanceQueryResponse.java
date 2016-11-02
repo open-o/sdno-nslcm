@@ -16,8 +16,8 @@
 
 package org.openo.sdno.nslcm.model.nbi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -42,7 +42,7 @@ public class NsInstanceQueryResponse {
 
     private String description = null;
 
-    private List<SdnoTemplateParameter> additionalParams = new ArrayList<SdnoTemplateParameter>();
+    private Map<String, Object> additionalParams = new HashMap<String, Object>();
 
     @ApiModelProperty(required = true, value = "ID of the SDN-O service instance")
     @JsonProperty("id")
@@ -86,11 +86,11 @@ public class NsInstanceQueryResponse {
 
     @ApiModelProperty(value = "parameters used to instantiate this SDN-O service instance")
     @JsonProperty("additionalParams")
-    public List<SdnoTemplateParameter> getAdditionalParams() {
+    public Map<String, Object> getAdditionalParams() {
         return additionalParams;
     }
 
-    public void setAdditionalParams(List<SdnoTemplateParameter> additionalParams) {
+    public void setAdditionalParams(Map<String, Object> additionalParams) {
         this.additionalParams = additionalParams;
     }
 

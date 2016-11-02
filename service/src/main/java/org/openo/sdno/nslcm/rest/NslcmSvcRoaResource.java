@@ -49,7 +49,6 @@ import org.openo.sdno.nslcm.model.nbi.NsInstantiationRequest;
 import org.openo.sdno.nslcm.model.nbi.NsTerminationRequest;
 import org.openo.sdno.nslcm.model.nbi.PackageManagementResponse;
 import org.openo.sdno.nslcm.model.nbi.PackageOnboardRequest;
-import org.openo.sdno.nslcm.model.nbi.SdnoTemplateParameter;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
@@ -346,11 +345,12 @@ public class NslcmSvcRoaResource {
 
     private void insertServiceParameter(NsInstantiationRequest nsInstantiationRequest, String nsInstanceId,
             List<ServiceParameter> serviceParameterList) throws ServiceException {
-        for(SdnoTemplateParameter sdnoTemplateParameter : nsInstantiationRequest.getAdditionalParamForNS()) {
+        Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNS();
+        for(String inputKey : sdnoTemplateParameter.keySet()) {
             ServiceParameter serviceParameter = new ServiceParameter();
             serviceParameter.setServiceId(nsInstanceId);
-            serviceParameter.setInputKey(sdnoTemplateParameter.getName());
-            serviceParameter.setInputValue(sdnoTemplateParameter.getValue());
+            serviceParameter.setInputKey(inputKey);
+            serviceParameter.setInputValue((String)sdnoTemplateParameter.get(inputKey));
             serviceParameterList.add(serviceParameter);
         }
         iServiceParameterDao.batchInsert(serviceParameterList);
