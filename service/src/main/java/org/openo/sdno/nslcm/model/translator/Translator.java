@@ -227,7 +227,7 @@ public class Translator {
         bgpRoute.setPeerAsNumber(100);
         bgpRoute.setKeepAliveTime(0);
         bgpRoute.setHoldTime(0);
-        bgpRoute.setPassword("Test_1234");
+        bgpRoute.setPassword("200");
         bgpRoute.setBgpMaxPrefix(1000);
         bgpRoute.setBgpMaxPrefixAlarm(100);
     }
