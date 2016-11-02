@@ -36,7 +36,7 @@ public class NsInstantiationRequest {
 
     private String nsInstanceId = null;
 
-    private Map<String, Object> additionalParamForNS = new HashMap<String, Object>();
+    private Map<String, Object> additionalParamForNs = new HashMap<String, Object>();
 
     @ApiModelProperty(required = true, value = "ID of the SDN-O service instance to be instantiated")
     @JsonProperty("nsInstanceId")
@@ -49,12 +49,12 @@ public class NsInstantiationRequest {
     }
 
     @ApiModelProperty(value = "parameters used to instantiate this SDN-O service instance")
-    @JsonProperty("additionalParamForNS")
-    public Map<String, Object> getAdditionalParamForNS() {
-        return additionalParamForNS;
+    @JsonProperty("additionalParamForNs")
+    public Map<String, Object> getAdditionalParamForNs() {
+        return additionalParamForNs;
     }
 
-    public void setAdditionalParamForNS(Map<String, Object> additionalParamForNS) {
-        this.additionalParamForNS = additionalParamForNS;
+    public void setAdditionalParamForNs(Map<String, Object> additionalParamForNs) {
+        this.additionalParamForNs = additionalParamForNs;
     }
 }

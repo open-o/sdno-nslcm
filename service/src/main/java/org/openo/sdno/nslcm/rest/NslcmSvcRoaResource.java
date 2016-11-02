@@ -345,7 +345,7 @@ public class NslcmSvcRoaResource {
 
     private void insertServiceParameter(NsInstantiationRequest nsInstantiationRequest, String nsInstanceId,
             List<ServiceParameter> serviceParameterList) throws ServiceException {
-        Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNS();
+        Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNs();
         for(String inputKey : sdnoTemplateParameter.keySet()) {
             ServiceParameter serviceParameter = new ServiceParameter();
             serviceParameter.setServiceId(nsInstanceId);
