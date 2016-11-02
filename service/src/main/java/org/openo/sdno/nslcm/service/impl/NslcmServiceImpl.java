@@ -17,6 +17,7 @@
 package org.openo.sdno.nslcm.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,6 @@ import org.openo.sdno.nslcm.dao.inf.IServicePackageDao;
 import org.openo.sdno.nslcm.dao.inf.IServiceParameterDao;
 import org.openo.sdno.nslcm.model.db.NsResponseInfo;
 import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
-import org.openo.sdno.nslcm.model.nbi.SdnoTemplateParameter;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
@@ -165,19 +165,16 @@ public class NslcmServiceImpl implements NslcmService {
         nsInstanceQueryResponse.setDescription(invServiceModel.getDescription());
         nsInstanceQueryResponse.setNsdId(servicePackageModel.getTemplateId());
 
-        return setSdnoTemplateParameterList(nsInstanceQueryResponse, ServiceParameterList);
+        return setAdditionalParam(nsInstanceQueryResponse, ServiceParameterList);
     }
 
-    private NsInstanceQueryResponse setSdnoTemplateParameterList(NsInstanceQueryResponse nsInstanceQueryResponse,
+    private NsInstanceQueryResponse setAdditionalParam(NsInstanceQueryResponse nsInstanceQueryResponse,
             List<ServiceParameter> ServiceParameterList) {
-        List<SdnoTemplateParameter> sdnoTemplateParameterList = new ArrayList<SdnoTemplateParameter>();
+        Map<String, Object> additionalParamMap = new HashMap<String, Object>();
         for(ServiceParameter serviceParameter : ServiceParameterList) {
-            SdnoTemplateParameter sdnoTemplateParameterMo = new SdnoTemplateParameter();
-            sdnoTemplateParameterMo.setName(serviceParameter.getInputKey());
-            sdnoTemplateParameterMo.setValue(serviceParameter.getInputValue());
-            sdnoTemplateParameterList.add(sdnoTemplateParameterMo);
+            additionalParamMap.put(serviceParameter.getInputKey(), serviceParameter.getInputValue());
         }
-        nsInstanceQueryResponse.setAdditionalParams(sdnoTemplateParameterList);
+        nsInstanceQueryResponse.setAdditionalParams(additionalParamMap);
         return nsInstanceQueryResponse;
     }
 
