@@ -1,0 +1,631 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0",
+        "contact": {
+            "name": "Xiuchao Wu",
+            "email": "xiuchao.wu@huawei.com"
+        },
+        "title": "SDN-O LCM Northbound Interface",
+        "description": "Northbound Interface of SDN-O to be used by Common-LCM and GS-O. Not only service instantiation and termination, it also contains API to manage NS packages (onboarding, deletion) used by SDN-O.\nFor task (service instantiation) that takes long time, one job id will be returned immediately. The status of this job can be queried through corresponding API.\nCaching related headers are not included in this spec at present.\nFor each resource, if one operation is not supported, 405 will be returned.",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/openoapi/sdnonslcm/v1",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/ns": {
+            "post": {
+                "summary": "create SDN-O service instance based on a template",
+                "description": "it will create a SDN-O service instance based on a template specified in the request.",
+                "operationId": "nsCreationPost",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "nsRequest",
+                        "description": "the request used to create a SDN-O service instance",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsCreationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "create SDN-O service instance success.",
+                        "schema": {
+                            "$ref": "#/definitions/NsCreationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "create SDN-O service instance failure as parameters invalid."
+                    },
+                    "401": {
+                        "description": "unauthorized."
+                    },
+                    "404": {
+                        "description": "create SDN-O service instance failure as can't reach server."
+                    },
+                    "500": {
+                        "description": "create SDN-O service instance failure as internal error."
+                    }
+                }
+            }
+        },
+        "/ns/{instanceid}/instantiate": {
+            "post": {
+                "summary": "instantiate SDN-O service instance with parameters",
+                "description": "it will instantiate a SDN-O service instance based on parameters in the request.",
+                "operationId": "nsInstantiationPost",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "instanceid",
+                        "in": "path",
+                        "description": "ID of the SDN-O service instance to be instantiated",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "nsInstantiationRequest",
+                        "description": "the request used to instantiate a SDN-O service instance",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsInstantiationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "SDN-O service instance is under-instantiating. Job id is returned.",
+                        "schema": {
+                            "$ref": "#/definitions/LongOperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "instantiate SDN-O service instance failure as parameters invalid."
+                    },
+                    "401": {
+                        "description": "unauthorized."
+                    },
+                    "404": {
+                        "description": "instantiate SDN-O service instance failure as can't reach server."
+                    },
+                    "500": {
+                        "description": "instantiate SDN-O service instance failure as internal error."
+                    }
+                }
+            }
+        },
+        "/ns/{instanceid}/terminate": {
+            "post": {
+                "summary": "terminate a SDN-O service instance",
+                "description": "it will terminate a SDN-O service instance with some graceful termination timeout.",
+                "operationId": "nsTerminationPost",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "instanceid",
+                        "in": "path",
+                        "description": "ID of the SDN-O service instance to be terminated",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "nsTerminationRequest",
+                        "description": "the request used to terminate a SDN-O service instance",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NsTerminationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "SDN-O service instance is under-terminating. Job id is returned.",
+                        "schema": {
+                            "$ref": "#/definitions/LongOperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "terminate SDN-O service instance failure as parameters invalid."
+                    },
+                    "401": {
+                        "description": "unauthorized."
+                    },
+                    "404": {
+                        "description": "terminate SDN-O service instance failure as can't reach server."
+                    },
+                    "500": {
+                        "description": "terminate SDN-O service instance failure as internal error."
+                    }
+                }
+            }
+        },
+        "/ns/{instanceid}": {
+            "get": {
+                "summary": "query one SDN-O service instance",
+                "description": "it will return the details of a specific SDN-O service instance",
+                "operationId": "nsQueryGet",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "instanceid",
+                        "in": "path",
+                        "description": "ID of the SDN-O service instance to be queried",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query SDN-O service instance success.",
+                        "schema": {
+                            "$ref": "#/definitions/NsInstanceQueryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "query SDN-O service instance failure as parameters invalid."
+                    },
+                    "401": {
+                        "description": "unauthorized."
+                    },
+                    "404": {
+                        "description": "query SDN-O service instance failure as can't reach server."
+                    },
+                    "500": {
+                        "description": "query SDN-O service instance failure as inner error."
+                    }
+                }
+            },
+            "delete": {
+                "summary": "delete a SDN-O service instance",
+                "description": "it will delete a SDN-O service instance.",
+                "operationId": "nsDeletionDelete",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "instanceid",
+                        "in": "path",
+                        "description": "ID of the SDN-O service instance to be deleted",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete SDN-O service instance success."
+                    },
+                    "400": {
+                        "description": "delete SDN-O service instance failure as parameters invalid."
+                    },
+                    "401": {
+                        "description": "unauthorized."
+                    },
+                    "404": {
+                        "description": "delete SDN-O service instance failure as can't reach server."
+                    },
+                    "500": {
+                        "description": "delete SDN-O service instance failure as inner error."
+                    }
+                }
+            }
+        },
+        "/jobs/{jobid}": {
+            "get": {
+                "summary": "query one job that terminates or instantiates one SDN-O service",
+                "description": "it will return the status of the job",
+                "operationId": "jobQueryGet",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobid",
+                        "in": "path",
+                        "description": "ID of the job to be queried",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "query job success.",
+                        "schema": {
+                            "$ref": "#/definitions/JobQueryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "query job failure as parameters invalid."
+                    },
+                    "401": {
+                        "description": "unauthorized."
+                    },
+                    "404": {
+                        "description": "query job failure as can't reach server."
+                    },
+                    "500": {
+                        "description": "query job failure as inner error."
+                    }
+                }
+            }
+        },
+        "/nspackage": {
+            "post": {
+                "summary": "onboarding a NS package",
+                "description": "it will onboarding a NS package to SDN-O.",
+                "operationId": "packageOnboardingPost",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "nsRequest",
+                        "description": "the request used to onboard a NS package to SDN-O",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PackageOnboardRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "onboarding successfully.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "onboarding SDN-O NS package failure as parameters invalid.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "onboarding SDN-O NS package failure as can't reach server.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "onboarding SDN-O NS package failure as internal error.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/nspackage/{csarid}": {
+            "delete": {
+                "summary": "delete a NS package from SDN-O",
+                "description": "it will delete a (onboarded) NS package from SDN-O.",
+                "operationId": "packageDeletionDelete",
+                "consumes": [
+                    "application/json;charset=UTF-8"
+                ],
+                "produces": [
+                    "application/json;charset=UTF-8"
+                ],
+                "parameters": [
+                    {
+                        "name": "csarid",
+                        "in": "path",
+                        "description": "ID of the NS package to be deleted from SDN-O",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete SDN-O NS package success.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "delete SDN-O NS package failure as parameters invalid.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "delete SDN-O NS package failure as can't reach server.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "delete SDN-O NS package failure as inner error.",
+                        "schema": {
+                            "$ref": "#/definitions/PackageManagementResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "NsCreationRequest": {
+            "description": "SDN-O Service Instance Creation Request",
+            "type": "object",
+            "required": [
+                "nsdId",
+                "nsName"
+            ],
+            "properties": {
+                "nsdId": {
+                    "type": "string",
+                    "description": "ID of the template in catalog used to create the SDN-O service instance"
+                },
+                "nsName": {
+                    "type": "string",
+                    "description": "name of the SDN-O service instance to be created"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "description of the SDN-O service instance to be created"
+                }
+            }
+        },
+        "NsCreationResponse": {
+            "description": "SDN-O Service Instance Creation Response",
+            "type": "object",
+            "required": [
+                "nsInstanceId"
+            ],
+            "properties": {
+                "nsInstanceId": {
+                    "type": "string",
+                    "description": "ID of the SDN-O service instance that is created."
+                }
+            }
+        },
+        "SdnoTemplateParameter": {
+            "description": "parameter used by SDN-O to instantiate its service instance. it's fundamentally a name-value pair.",
+            "type": "object",
+            "required": [
+                "name",
+                "value"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "name of the parameter"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "value of the parameter"
+                }
+            }
+        },
+        "NsInstantiationRequest": {
+            "description": "SDN-O Service Instance Instantiation Request",
+            "type": "object",
+            "required": [
+                "nsInstanceId"
+            ],
+            "properties": {
+                "nsInstanceId": {
+                    "type": "string",
+                    "description": "ID of the SDN-O service instance to be instantiated"
+                },
+                "additionalParamForNS": {
+                    "description": "parameters used to instantiate this SDN-O service instance",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SdnoTemplateParameter"
+                    }
+                }
+            }
+        },
+        "LongOperationResponse": {
+            "description": "Response for operation that takes a long time, i.e., a job id.",
+            "type": "object",
+            "required": [
+                "jobId"
+            ],
+            "properties": {
+                "jobId": {
+                    "type": "string",
+                    "description": "ID of the job that is executing some long operation"
+                }
+            }
+        },
+        "NsTerminationRequest": {
+            "description": "SDN-O Service Instance Termination Request.",
+            "type": "object",
+            "required": [
+                "nsInstanceId",
+                "terminationType"
+            ],
+            "properties": {
+                "nsInstanceId": {
+                    "type": "string",
+                    "description": "id of the SDN-O service instance to be terminated"
+                },
+                "terminationType": {
+                    "type": "string",
+                    "description": "type of termination. graceful or not, etc."
+                },
+                "gracefulTerminationTimeout": {
+                    "type": "string",
+                    "description": "timeout value for a graceful timeout"
+                }
+            }
+        },
+        "NsInstanceQueryResponse": {
+            "description": "SDN-O Service Instance Query Response, i.e., details of a service instance",
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "nsdId"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "ID of the SDN-O service instance"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "name of the SDN-O service instance"
+                },
+                "nsdId": {
+                    "type": "string",
+                    "description": "ID of the template used to create this SDN-O service instance"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "description of the SDN-O service instance"
+                },
+                "additionalParams": {
+                    "description": "parameters used to instantiate this SDN-O service instance",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SdnoTemplateParameter"
+                    }
+                }
+            }
+        },
+        "JobQueryResponse": {
+            "description": "Job Query Response, i.e., status of a job",
+            "type": "object",
+            "required": [
+                "jobId",
+                "responseDescriptor"
+            ],
+            "properties": {
+                "jobId": {
+                    "type": "string",
+                    "description": "ID of the job"
+                },
+                "responseDescriptor": {
+                    "$ref": "#/definitions/JobResponseDescriptor"
+                }
+            }
+        },
+        "JobResponseDescriptor": {
+            "description": "Details of a job status",
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "status of the job"
+                },
+                "statusDescription": {
+                    "type": "string",
+                    "description": "description of the job status"
+                },
+                "progress": {
+                    "type": "string",
+                    "description": "progress of the job"
+                },
+                "errorCode": {
+                    "type": "string",
+                    "description": "status of the job"
+                },
+                "responseId": {
+                    "type": "string",
+                    "description": "Id of the response."
+                }
+            }
+        },
+        "PackageOnboardRequest": {
+            "description": "SDN-O NS Package Onboarding Request",
+            "type": "object",
+            "required": [
+                "csarId"
+            ],
+            "properties": {
+                "csarId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "UUID of the SDN-O NS package to be onboarded."
+                }
+            }
+        },
+        "PackageManagementResponse": {
+            "description": "SDN-O NS Package MAnagement Operation (Onboard/Delete) Response",
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "the status of SDN-O NS package management request"
+                },
+                "statusDescription": {
+                    "type": "string",
+                    "description": "description of operation status"
+                },
+                "errorCode": {
+                    "type": "string",
+                    "description": "the code of error (if happened)"
+                }
+            }
+        }
+    }
+}

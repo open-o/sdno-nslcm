@@ -34,6 +34,7 @@
         <!-- registering beans -->
         <jaxrs:serviceBeans>
             <ref bean="nslcmSvcRoaResource"></ref>
+            <ref bean="swaggerRoa"></ref>
         </jaxrs:serviceBeans>
         <!-- registering providers -->
         <jaxrs:providers>
@@ -66,6 +67,9 @@
         <property name="nslcmService" ref="nslcmService"></property>
     </bean>
 
+    <bean id="swaggerRoa" class="org.openo.sdno.nslcm.rest.SwaggerRoa">
+    </bean>
+    
     <bean id="nslcmService" class="org.openo.sdno.nslcm.service.impl.NslcmServiceImpl">
         <property name="dbOper" ref="dbOper"></property>
         <property name="iServiceModelDao" ref="iServiceModelDao"></property>
