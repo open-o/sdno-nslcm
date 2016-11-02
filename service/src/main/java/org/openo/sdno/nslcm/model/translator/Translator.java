@@ -31,6 +31,7 @@ import org.openo.sdno.model.servicemodel.tp.IpTpSpec;
 import org.openo.sdno.model.servicemodel.tp.Tp;
 import org.openo.sdno.model.servicemodel.tp.TpTypeSpec;
 import org.openo.sdno.model.servicemodel.tunnel.MplsTESpec;
+import org.openo.sdno.model.servicemodel.tunnel.PWSpec;
 import org.openo.sdno.model.servicemodel.tunnel.TunnelPathConstraint;
 import org.openo.sdno.model.servicemodel.vpn.Vpn;
 import org.openo.sdno.model.servicemodel.vpn.VpnBasicInfo;
@@ -95,17 +96,19 @@ public class Translator {
             throws ServiceException {
         Map<String, String> inputMap = translateList2Map(serviceParameterList);
 
+        String serviceType = inputMap.get("serviceType");
+
         TunnelSchema tunnelSchema = new TunnelSchema();
-        setTunnelSchema(tunnelSchema);
+        setTunnelSchema(tunnelSchema, serviceType);
 
         VpnBasicInfo vpnBasicInfo = new VpnBasicInfo();
         setVpnBasicInfo(vpnBasicInfo, inputMap);
 
         Tp srcTpMo = new Tp();
-        setSrcTpMo(srcTpMo, inputMap);
+        setSrcTpMo(srcTpMo, inputMap, serviceType);
 
         Tp dstTpMo = new Tp();
-        setDstTpMo(dstTpMo, inputMap);
+        setDstTpMo(dstTpMo, inputMap, serviceType);
 
         Vpn vpnMo = new Vpn();
         setVpnMo(vpnMo, vpnBasicInfo, srcTpMo, dstTpMo, inputMap, instanceId);
@@ -124,21 +127,44 @@ public class Translator {
         return inputMap;
     }
 
-    private static void setTunnelSchema(TunnelSchema tunnelSchema) {
-        TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
-        pathConstraint.setSetupPriority(4);
-        pathConstraint.setHoldupPriority(4);
+    private static void setTunnelSchema(TunnelSchema tunnelSchema, String serviceType) {
+        if("l3vpn".equals(serviceType)) {
+            TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
+            pathConstraint.setSetupPriority(4);
+            pathConstraint.setHoldupPriority(4);
 
-        MplsTESpec tunnelCreatePolicy = new MplsTESpec();
-        tunnelCreatePolicy.setBestEffort("false");
-        tunnelCreatePolicy.setBfdEnable("true");
-        tunnelCreatePolicy.setCoRoute("true");
-        tunnelCreatePolicy.setShareMode("delegate");
-        tunnelCreatePolicy.setPathConstraint(pathConstraint);
+            MplsTESpec tunnelCreatePolicy = new MplsTESpec();
+            tunnelCreatePolicy.setBestEffort("false");
+            tunnelCreatePolicy.setBfdEnable("true");
+            tunnelCreatePolicy.setCoRoute("true");
+            tunnelCreatePolicy.setShareMode("delegate");
+            tunnelCreatePolicy.setPathConstraint(pathConstraint);
 
-        tunnelSchema.setTunnelTech("RSVP-TE");
-        tunnelSchema.setTunnelLatency(2000);
-        tunnelSchema.setTunnelCreatePolicy(tunnelCreatePolicy);
+            tunnelSchema.setTunnelTech("RSVP-TE");
+            tunnelSchema.setTunnelLatency(2000);
+            tunnelSchema.setTunnelCreatePolicy(tunnelCreatePolicy);
+        } else if("l2vpn".equals(serviceType)) {
+            TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
+            pathConstraint.setSetupPriority(4);
+            pathConstraint.setHoldupPriority(4);
+
+            MplsTESpec tunnelCreatePolicy = new MplsTESpec();
+            tunnelCreatePolicy.setBestEffort("true");
+            tunnelCreatePolicy.setBfdEnable("true");
+            tunnelCreatePolicy.setCoRoute("false");
+            tunnelCreatePolicy.setShareMode("1:1");
+            tunnelCreatePolicy.setPathConstraint(pathConstraint);
+
+            tunnelSchema.setTunnelTech("RSVP-TE");
+            tunnelSchema.setTunnelLatency(12);
+            tunnelSchema.setTunnelCreatePolicy(tunnelCreatePolicy);
+
+            PWSpec pwTech = new PWSpec();
+            pwTech.setControlWord("ctrlWord");
+            pwTech.setPwVlanAction("Raw");
+            tunnelSchema.setPwTech(pwTech);
+            tunnelSchema.setTunnelSelectMode("AutoCreate");
+        }
     }
 
     private static void setVpnBasicInfo(VpnBasicInfo vpnBasicInfo, Map<String, String> inputMap) {
@@ -148,7 +174,8 @@ public class Translator {
         vpnBasicInfo.setAdminStatus("active");
     }
 
-    private static void setSrcTpMo(Tp srcTpMo, Map<String, String> inputMap) throws ServiceException {
+    private static void setSrcTpMo(Tp srcTpMo, Map<String, String> inputMap, String serviceType)
+            throws ServiceException {
         srcTpMo.setName(inputMap.get("ac1_port"));
         srcTpMo.setNeId(getMeUuid(inputMap.get("pe1_ip")));
 
@@ -157,34 +184,50 @@ public class Translator {
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
         ethernetTpSpec.setDot1qVlanList(inputMap.get("ac1_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
+        if("l2vpn".equals(serviceType)) {
+            ethernetTpSpec.setActionValue("KEEP");
+        }
         srcTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
-        IpTpSpec ipTpSpec = new IpTpSpec();
-        ipTpSpec.setMasterIp(inputMap.get("ac1_ip"));
-        srcTpTypeSpec.setIpTpSpec(ipTpSpec);
-
-        srcTpTypeSpec.setLayerRate("LR_IP");
-        setCommonTpModel(srcTpMo);
+        if("l3vpn".equals(serviceType)) {
+            IpTpSpec ipTpSpec = new IpTpSpec();
+            ipTpSpec.setMasterIp(inputMap.get("ac1_ip"));
+            srcTpTypeSpec.setIpTpSpec(ipTpSpec);
+            srcTpTypeSpec.setLayerRate("LR_IP");
+        }
+        setCommonTpModel(srcTpMo, serviceType);
 
         List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
         tpTypeSpecList.add(srcTpTypeSpec);
         srcTpMo.setTypeSpecList(tpTypeSpecList);
 
-        BgpProtocolItem bgpRoute = new BgpProtocolItem();
-        setBgpRoute(bgpRoute);
-        bgpRoute.setPeerIp(inputMap.get("ac1_peer_ip"));
+        if("l3vpn".equals(serviceType)) {
+            BgpProtocolItem bgpRoute = new BgpProtocolItem();
+            setBgpRoute(bgpRoute);
+            bgpRoute.setPeerIp(inputMap.get("ac1_peer_ip"));
 
-        RouteProtocolSpec srcRouteProtocolSpec = new RouteProtocolSpec();
-        srcRouteProtocolSpec.setType("bgp");
-        srcRouteProtocolSpec.setBgpRoute(bgpRoute);
+            RouteProtocolSpec srcRouteProtocolSpec = new RouteProtocolSpec();
+            srcRouteProtocolSpec.setType("bgp");
+            srcRouteProtocolSpec.setBgpRoute(bgpRoute);
 
-        List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
-        routeProtocolSpecs.add(srcRouteProtocolSpec);
-        srcTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
+            List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
+            routeProtocolSpecs.add(srcRouteProtocolSpec);
+            srcTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
+        }
+
+        if("l2vpn".equals(serviceType)) {
+            NVString addtionalInfo = new NVString();
+            addtionalInfo.setName("pwPeerIp");
+            addtionalInfo.setValue("1.1.1.1");
+            List<NVString> addtionalInfos = new ArrayList<NVString>();
+            addtionalInfos.add(addtionalInfo);
+            srcTpMo.setAddtionalInfo(addtionalInfos);
+        }
         srcTpMo.setContainedMainTP(getPortNativeID(inputMap.get("ac1_port")));
     }
 
-    private static void setDstTpMo(Tp dstTpMo, Map<String, String> inputMap) throws ServiceException {
+    private static void setDstTpMo(Tp dstTpMo, Map<String, String> inputMap, String serviceType)
+            throws ServiceException {
 
         dstTpMo.setName(inputMap.get("ac2_port"));
         dstTpMo.setNeId(getMeUuid(inputMap.get("pe2_ip")));
@@ -194,31 +237,46 @@ public class Translator {
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
         ethernetTpSpec.setDot1qVlanList(inputMap.get("ac2_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
+        if("l2vpn".equals(serviceType)) {
+            ethernetTpSpec.setActionValue("KEEP");
+        }
         dstTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
-        IpTpSpec ipTpSpec = new IpTpSpec();
-        ipTpSpec.setMasterIp(inputMap.get("ac2_ip"));
-        dstTpTypeSpec.setIpTpSpec(ipTpSpec);
+        if("l3vpn".equals(serviceType)) {
+            IpTpSpec ipTpSpec = new IpTpSpec();
+            ipTpSpec.setMasterIp(inputMap.get("ac2_ip"));
+            dstTpTypeSpec.setIpTpSpec(ipTpSpec);
+            dstTpTypeSpec.setLayerRate("LR_IP");
+        }
 
-        dstTpTypeSpec.setLayerRate("LR_IP");
-        setCommonTpModel(dstTpMo);
+        setCommonTpModel(dstTpMo, serviceType);
 
         List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
         tpTypeSpecList.add(dstTpTypeSpec);
         dstTpMo.setTypeSpecList(tpTypeSpecList);
 
-        BgpProtocolItem bgpRoute = new BgpProtocolItem();
-        setBgpRoute(bgpRoute);
-        bgpRoute.setPeerIp(inputMap.get("ac2_peer_ip"));
+        if("l3vpn".equals(serviceType)) {
+            BgpProtocolItem bgpRoute = new BgpProtocolItem();
+            setBgpRoute(bgpRoute);
+            bgpRoute.setPeerIp(inputMap.get("ac2_peer_ip"));
 
-        RouteProtocolSpec dstRouteProtocolSpec = new RouteProtocolSpec();
-        dstRouteProtocolSpec.setType("bgp");
-        dstRouteProtocolSpec.setBgpRoute(bgpRoute);
+            RouteProtocolSpec dstRouteProtocolSpec = new RouteProtocolSpec();
+            dstRouteProtocolSpec.setType("bgp");
+            dstRouteProtocolSpec.setBgpRoute(bgpRoute);
 
-        List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
-        routeProtocolSpecs.add(dstRouteProtocolSpec);
-        dstTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
+            List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
+            routeProtocolSpecs.add(dstRouteProtocolSpec);
+            dstTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
+        }
 
+        if("l2vpn".equals(serviceType)) {
+            NVString addtionalInfo = new NVString();
+            addtionalInfo.setName("pwPeerIp");
+            addtionalInfo.setValue("1.1.1.2");
+            List<NVString> addtionalInfos = new ArrayList<NVString>();
+            addtionalInfos.add(addtionalInfo);
+            dstTpMo.setAddtionalInfo(addtionalInfos);
+        }
         dstTpMo.setContainedMainTP(getPortNativeID(inputMap.get("ac2_port")));
     }
 
@@ -232,11 +290,13 @@ public class Translator {
         bgpRoute.setBgpMaxPrefixAlarm(100);
     }
 
-    private static void setCommonTpModel(Tp tpMo) {
+    private static void setCommonTpModel(Tp tpMo, String serviceType) {
         tpMo.setAdminStatus("active");
         tpMo.setOperStatus("up");
-        tpMo.setType("CTP");
-        tpMo.setWorkingLayer("LR_IP");
+        if("l3vpn".equals(serviceType)) {
+            tpMo.setType("CTP");
+            tpMo.setWorkingLayer("LR_IP");
+        }
     }
 
     private static void setVpnMo(Vpn vpnMo, VpnBasicInfo vpnBasicInfo, Tp srcTpMo, Tp dstTpMo,
