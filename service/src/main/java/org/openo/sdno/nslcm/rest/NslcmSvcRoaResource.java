@@ -193,6 +193,9 @@ public class NslcmSvcRoaResource {
 
         LongOperationResponse longOperationResponse = new LongOperationResponse();
         longOperationResponse.setJobId(response.get("vpnId"));
+
+        LOGGER.info("create business success, vpnid: " + longOperationResponse.getJobId());
+
         return longOperationResponse;
     }
 
