@@ -16,8 +16,8 @@
 
 package org.openo.sdno.nslcm.model.nbi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiModelProperty;
  * SDN-O Service Instance Instantiation Request.<br>
  * 
  * @author
- * @version SDNO 0.5 Sep 8, 2016
+ * @version SDNO 0.5 September 8, 2016
  */
 @ApiModel(description = "SDN-O Service Instance Instantiation Request")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-08-31T18:01:03.332+08:00")
@@ -36,7 +36,7 @@ public class NsInstantiationRequest {
 
     private String nsInstanceId = null;
 
-    private List<SdnoTemplateParameter> additionalParamForNS = new ArrayList<SdnoTemplateParameter>();
+    private Map<String, Object> additionalParamForNs = new HashMap<String, Object>();
 
     @ApiModelProperty(required = true, value = "ID of the SDN-O service instance to be instantiated")
     @JsonProperty("nsInstanceId")
@@ -49,12 +49,12 @@ public class NsInstantiationRequest {
     }
 
     @ApiModelProperty(value = "parameters used to instantiate this SDN-O service instance")
-    @JsonProperty("additionalParamForNS")
-    public List<SdnoTemplateParameter> getAdditionalParamForNS() {
-        return additionalParamForNS;
+    @JsonProperty("additionalParamForNs")
+    public Map<String, Object> getAdditionalParamForNs() {
+        return additionalParamForNs;
     }
 
-    public void setAdditionalParamForNS(List<SdnoTemplateParameter> additionalParamForNS) {
-        this.additionalParamForNS = additionalParamForNS;
+    public void setAdditionalParamForNs(Map<String, Object> additionalParamForNs) {
+        this.additionalParamForNs = additionalParamForNs;
     }
 }
