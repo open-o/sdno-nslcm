@@ -186,6 +186,7 @@ public class Translator {
         ethernetTpSpec.setAccessType("dot1q");
         if("l2vpn".equals(serviceType)) {
             ethernetTpSpec.setActionValue("KEEP");
+            ethernetTpSpec.setAccessType("untag");
         }
         srcTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
@@ -239,7 +240,7 @@ public class Translator {
         ethernetTpSpec.setAccessType("dot1q");
         if("l2vpn".equals(serviceType)) {
             ethernetTpSpec.setActionValue("KEEP");
-            ethernetTpSpec.setAccessType("port");
+            ethernetTpSpec.setAccessType("untag");
         }
         dstTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
