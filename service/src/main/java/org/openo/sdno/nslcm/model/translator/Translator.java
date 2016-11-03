@@ -26,6 +26,7 @@ import org.openo.sdno.model.common.NVString;
 import org.openo.sdno.model.servicemodel.businesstype.TunnelSchema;
 import org.openo.sdno.model.servicemodel.routeprotocol.BgpProtocolItem;
 import org.openo.sdno.model.servicemodel.routeprotocol.RouteProtocolSpec;
+import org.openo.sdno.model.servicemodel.routeprotocol.StaticRouteTable;
 import org.openo.sdno.model.servicemodel.tp.EthernetTpSpec;
 import org.openo.sdno.model.servicemodel.tp.IpTpSpec;
 import org.openo.sdno.model.servicemodel.tp.Tp;
@@ -45,6 +46,7 @@ import org.openo.sdno.overlayvpn.model.servicemodel.SiteNbi;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 import org.openo.sdno.overlayvpn.model.servicemodel.SubnetNbi;
 import org.openo.sdno.overlayvpn.model.servicemodel.VpcNbi;
+import org.springframework.util.StringUtils;
 
 /**
  * Class of NsCreationInfo Model Data. <br>
@@ -203,16 +205,42 @@ public class Translator {
         srcTpMo.setTypeSpecList(tpTypeSpecList);
 
         if("l3vpn".equals(serviceType)) {
-            BgpProtocolItem bgpRoute = new BgpProtocolItem();
-            setBgpRoute(bgpRoute);
-            bgpRoute.setPeerIp(inputMap.get("ac1_peer_ip"));
-
-            RouteProtocolSpec srcRouteProtocolSpec = new RouteProtocolSpec();
-            srcRouteProtocolSpec.setType("bgp");
-            srcRouteProtocolSpec.setBgpRoute(bgpRoute);
-
             List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
-            routeProtocolSpecs.add(srcRouteProtocolSpec);
+
+            String sRoute = inputMap.get("ac1_route");
+            String[] sRouteArray = sRoute.split(";");
+
+            for(String tempRoute : sRouteArray) {
+                String[] staticRouteArray = tempRoute.split(",");
+                if(staticRouteArray.length == 0) {
+                    continue;
+                }
+
+                RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
+                StaticRouteTable staticRoute = new StaticRouteTable();
+                staticRoute.setDestinationCidr(staticRouteArray[0]);
+                staticRoute.setNextHopIp("");
+                if(staticRouteArray.length > 1) {
+                    staticRoute.setNextHopIp(staticRouteArray[1]);
+                }
+
+                staticRouteProtocolSpecs.setType("staticRouting");
+                staticRouteProtocolSpecs.setStaticRoute(staticRoute);
+
+                routeProtocolSpecs.add(staticRouteProtocolSpecs);
+            }
+
+            if(StringUtils.hasLength(inputMap.get("ac1_peer_ip"))) {
+                RouteProtocolSpec srcRouteProtocolSpec = new RouteProtocolSpec();
+
+                BgpProtocolItem bgpRoute = new BgpProtocolItem();
+                setBgpRoute(bgpRoute);
+                bgpRoute.setPeerIp(inputMap.get("ac1_peer_ip"));
+                srcRouteProtocolSpec.setType("bgp");
+                srcRouteProtocolSpec.setBgpRoute(bgpRoute);
+                routeProtocolSpecs.add(srcRouteProtocolSpec);
+            }
+
             srcTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
         }
 
@@ -258,16 +286,42 @@ public class Translator {
         dstTpMo.setTypeSpecList(tpTypeSpecList);
 
         if("l3vpn".equals(serviceType)) {
-            BgpProtocolItem bgpRoute = new BgpProtocolItem();
-            setBgpRoute(bgpRoute);
-            bgpRoute.setPeerIp(inputMap.get("ac2_peer_ip"));
-
-            RouteProtocolSpec dstRouteProtocolSpec = new RouteProtocolSpec();
-            dstRouteProtocolSpec.setType("bgp");
-            dstRouteProtocolSpec.setBgpRoute(bgpRoute);
-
             List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
-            routeProtocolSpecs.add(dstRouteProtocolSpec);
+
+            String sRoute = inputMap.get("ac2_route");
+            String[] sRouteArray = sRoute.split(";");
+
+            for(String tempRoute : sRouteArray) {
+                String[] staticRouteArray = tempRoute.split(",");
+                if(staticRouteArray.length == 0) {
+                    continue;
+                }
+
+                RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
+                StaticRouteTable staticRoute = new StaticRouteTable();
+                staticRoute.setDestinationCidr(staticRouteArray[0]);
+                staticRoute.setNextHopIp("");
+                if(staticRouteArray.length > 1) {
+                    staticRoute.setNextHopIp(staticRouteArray[1]);
+                }
+
+                staticRouteProtocolSpecs.setType("staticRouting");
+                staticRouteProtocolSpecs.setStaticRoute(staticRoute);
+
+                routeProtocolSpecs.add(staticRouteProtocolSpecs);
+            }
+
+            if(StringUtils.hasLength(inputMap.get("ac2_peer_ip"))) {
+                BgpProtocolItem bgpRoute = new BgpProtocolItem();
+                setBgpRoute(bgpRoute);
+                bgpRoute.setPeerIp(inputMap.get("ac2_peer_ip"));
+
+                RouteProtocolSpec dstRouteProtocolSpec = new RouteProtocolSpec();
+                dstRouteProtocolSpec.setType("bgp");
+                dstRouteProtocolSpec.setBgpRoute(bgpRoute);
+
+                routeProtocolSpecs.add(dstRouteProtocolSpec);
+            }
             dstTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
         }
 

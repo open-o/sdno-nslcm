@@ -82,7 +82,7 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
             ThrowException.throwParameterInvalid("ServiceType is invalid");
         }
 
-        LOGGER.info("createUnderlay begin: " + url);
+        LOGGER.info("createUnderlay begin: " + url + ", body: " + JsonUtil.toJson(vpnVo));
         RestfulOptions restOptions = new RestfulOptions();
         restOptions.setRestTimeout(500000);
         RestfulResponse response = RestfulProxy.post(url,
