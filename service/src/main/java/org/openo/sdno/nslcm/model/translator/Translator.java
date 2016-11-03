@@ -216,18 +216,20 @@ public class Translator {
                     continue;
                 }
 
-                RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
-                StaticRouteTable staticRoute = new StaticRouteTable();
-                staticRoute.setDestinationCidr(staticRouteArray[0]);
-                staticRoute.setNextHopIp("");
-                if(staticRouteArray.length > 1) {
-                    staticRoute.setNextHopIp(staticRouteArray[1]);
+                if(StringUtils.hasLength(staticRouteArray[0])) {
+                    RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
+                    StaticRouteTable staticRoute = new StaticRouteTable();
+                    staticRoute.setDestinationCidr(staticRouteArray[0]);
+                    staticRoute.setNextHopIp("");
+                    if(staticRouteArray.length > 1) {
+                        staticRoute.setNextHopIp(staticRouteArray[1]);
+                    }
+
+                    staticRouteProtocolSpecs.setType("staticRouting");
+                    staticRouteProtocolSpecs.setStaticRoute(staticRoute);
+
+                    routeProtocolSpecs.add(staticRouteProtocolSpecs);
                 }
-
-                staticRouteProtocolSpecs.setType("staticRouting");
-                staticRouteProtocolSpecs.setStaticRoute(staticRoute);
-
-                routeProtocolSpecs.add(staticRouteProtocolSpecs);
             }
 
             if(StringUtils.hasLength(inputMap.get("ac1_peer_ip"))) {
@@ -297,18 +299,20 @@ public class Translator {
                     continue;
                 }
 
-                RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
-                StaticRouteTable staticRoute = new StaticRouteTable();
-                staticRoute.setDestinationCidr(staticRouteArray[0]);
-                staticRoute.setNextHopIp("");
-                if(staticRouteArray.length > 1) {
-                    staticRoute.setNextHopIp(staticRouteArray[1]);
+                if(StringUtils.hasLength(staticRouteArray[0])) {
+                    RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
+                    StaticRouteTable staticRoute = new StaticRouteTable();
+                    staticRoute.setDestinationCidr(staticRouteArray[0]);
+                    staticRoute.setNextHopIp("");
+                    if(staticRouteArray.length > 1) {
+                        staticRoute.setNextHopIp(staticRouteArray[1]);
+                    }
+
+                    staticRouteProtocolSpecs.setType("staticRouting");
+                    staticRouteProtocolSpecs.setStaticRoute(staticRoute);
+
+                    routeProtocolSpecs.add(staticRouteProtocolSpecs);
                 }
-
-                staticRouteProtocolSpecs.setType("staticRouting");
-                staticRouteProtocolSpecs.setStaticRoute(staticRoute);
-
-                routeProtocolSpecs.add(staticRouteProtocolSpecs);
             }
 
             if(StringUtils.hasLength(inputMap.get("ac2_peer_ip"))) {
