@@ -239,6 +239,7 @@ public class Translator {
         ethernetTpSpec.setAccessType("dot1q");
         if("l2vpn".equals(serviceType)) {
             ethernetTpSpec.setActionValue("KEEP");
+            ethernetTpSpec.setAccessType("port");
         }
         dstTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
