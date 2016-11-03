@@ -190,14 +190,14 @@ public class NslcmSvcRoaResource {
                 response = nslcmService.createUnderlay(vpnVo, instanceId);
             }
         } catch(ServiceException e) {
-            LOGGER.error("create business failed", e);
+            LOGGER.error("NsInstantiationPost failed", e);
             throw e;
         }
 
         LongOperationResponse longOperationResponse = new LongOperationResponse();
         longOperationResponse.setJobId(response.get("vpnId"));
 
-        LOGGER.info("create business success, vpnid: " + longOperationResponse.getJobId());
+        LOGGER.info("NsInstantiationPost success, vpnid: " + longOperationResponse.getJobId());
 
         return longOperationResponse;
     }
@@ -234,7 +234,7 @@ public class NslcmSvcRoaResource {
                 response = nslcmService.deleteUnderlay(instanceId, serviceParameterList);
             }
         } catch(ServiceException e) {
-            LOGGER.error("create business failed", e);
+            LOGGER.error("NsTerminationPost failed", e);
             throw e;
         }
 
@@ -398,7 +398,7 @@ public class NslcmSvcRoaResource {
         InvServiceModel serviceModel = new InvServiceModel();
         serviceModel.setServiceId(serviceId);
         serviceModel.setServiceName(nsRequest.getNsName());
-        serviceModel.setServiceType("SSAR");
+        serviceModel.setServiceType("SDNO");
         serviceModel.setDescription(nsRequest.getDescription());
         serviceModel.setActiveStatus(Const.ACTIVE);
         serviceModel.setCreator(Const.DEFAULT_STRING);
