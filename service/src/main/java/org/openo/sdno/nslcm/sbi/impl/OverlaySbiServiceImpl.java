@@ -67,7 +67,7 @@ public class OverlaySbiServiceImpl implements OverlaySbiService {
     public Map<String, String> createOverlay(SiteToDcNbi siteToDcNbiMo) throws ServiceException {
         String url = UrlAdapterConst.OVERLAY_BASE_URL + UrlAdapterConst.CREATE_OVERLAY;
 
-        LOGGER.info("createOverlay begin: " + url);
+        LOGGER.info("createOverlay begin: " + url + ", body: " + JsonUtil.toJson(siteToDcNbiMo));
         RestfulOptions restOptions = new RestfulOptions();
         restOptions.setRestTimeout(500000);
 
