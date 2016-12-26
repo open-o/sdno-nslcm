@@ -162,7 +162,7 @@ public class Translator {
             tunnelSchema.setTunnelCreatePolicy(tunnelCreatePolicy);
 
             PWSpec pwTech = new PWSpec();
-            pwTech.setControlWord("ctrlWord");
+            pwTech.setControlWord(true);
             pwTech.setPwVlanAction("Raw");
             tunnelSchema.setPwTech(pwTech);
             tunnelSchema.setTunnelSelectMode("AutoCreate");
