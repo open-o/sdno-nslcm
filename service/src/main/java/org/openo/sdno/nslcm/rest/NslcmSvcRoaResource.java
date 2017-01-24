@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -61,6 +60,8 @@ import org.openo.sdno.overlayvpn.errorcode.ErrorCode;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  * The rest interface of NSLCM.<br>
@@ -68,35 +69,23 @@ import org.slf4j.LoggerFactory;
  * @author
  * @version SDNO 0.5 September 8, 2016
  */
+@Controller("nslcmSvcRoaResource")
 @Path("/sdnonslcm/v1")
 public class NslcmSvcRoaResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NslcmSvcRoaResource.class);
 
-    @Resource
+    @Autowired
     private NslcmService nslcmService;
 
+    @Autowired
     private IServiceModelDao iServiceModelDao;
 
+    @Autowired
     private IServicePackageDao iServicePackageDao;
 
+    @Autowired
     private IServiceParameterDao iServiceParameterDao;
-
-    public void setNslcmService(NslcmService nslcmService) {
-        this.nslcmService = nslcmService;
-    }
-
-    public void setiServiceModelDao(IServiceModelDao iServiceModelDao) {
-        this.iServiceModelDao = iServiceModelDao;
-    }
-
-    public void setiServicePackageDao(IServicePackageDao iServicePackageDao) {
-        this.iServicePackageDao = iServicePackageDao;
-    }
-
-    public void setiServiceParameterDao(IServiceParameterDao iServiceParameterDao) {
-        this.iServiceParameterDao = iServiceParameterDao;
-    }
 
     /**
      * Create SDN-O service instance based on a template.<br>

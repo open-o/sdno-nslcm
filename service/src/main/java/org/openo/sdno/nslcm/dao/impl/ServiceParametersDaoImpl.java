@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.openo.sdno.nslcm.util.operation.ValidateUtil;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 /**
  * Database operation class.<br>
@@ -40,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author
  * @version SDNO 0.5 Oct 18, 2016
  */
+@Repository
 public class ServiceParametersDaoImpl implements IServiceParameterDao {
 
     /**

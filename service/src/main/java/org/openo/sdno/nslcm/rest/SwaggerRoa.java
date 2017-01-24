@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Controller;
 
 /**
  * Swagger API Doc.<br/>
@@ -31,18 +32,21 @@ import org.apache.commons.io.IOUtils;
  * @author
  * @version SDNO 0.5 Oct 24, 2016
  */
+@Controller("swaggerRoa")
 @Path("/sdnonslcm/v1")
 @Produces({MediaType.APPLICATION_JSON})
 public class SwaggerRoa {
+
     /**
      * API doc.
+     * 
      * @param filename
      * @return
      * @throws IOException
      */
     @GET
     @Path("/swagger.json")
-    public String apidoc() throws IOException{
+    public String apidoc() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         return IOUtils.toString(classLoader.getResourceAsStream("swagger.json"));
     }

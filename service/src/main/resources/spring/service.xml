@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright 2016 Huawei Technologies Co., Ltd.
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 -->
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:ctx="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="
-	http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans.xsd
-	http://www.springframework.org/schema/context
-	http://www.springframework.org/schema/context/spring-context.xsd
-	http://cxf.apache.org/jaxrs 
-	http://cxf.apache.org/schemas/jaxrs.xsd">
+    xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context.xsd
+     http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+    <context:component-scan base-package="org.openo.sdno.nslcm" />
 
     <!-- these are included in the dependency jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />
@@ -44,9 +45,9 @@
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:jdbc.properties" />
-    </bean> 
+    </bean>
     <bean id="inventory" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
-        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="driverClassName" value="${jdbc.driver}" />
         <property name="url" value="jdbc:mysql://${jdbc.host}:${jdbc.port}/inventory" />
         <property name="username" value="${jdbc.username}" />
         <property name="password" value="${jdbc.password}" />
@@ -58,58 +59,23 @@
         <property name="timeBetweenEvictionRunsMillis" value="3600000" />
         <property name="minEvictableIdleTimeMillis" value="600000" />
         <property name="validationQuery" value="SELECT 1" />
-    </bean>  
-
-    <bean id="nslcmSvcRoaResource" class="org.openo.sdno.nslcm.rest.NslcmSvcRoaResource">
-        <property name="iServiceModelDao" ref="iServiceModelDao"></property>
-        <property name="iServicePackageDao" ref="iServicePackageDao"></property>
-        <property name="iServiceParameterDao" ref="iServiceParameterDao"></property>
-        <property name="nslcmService" ref="nslcmService"></property>
     </bean>
 
-    <bean id="swaggerRoa" class="org.openo.sdno.nslcm.rest.SwaggerRoa">
-    </bean>
-    
-    <bean id="nslcmService" class="org.openo.sdno.nslcm.service.impl.NslcmServiceImpl">
-        <property name="dbOper" ref="dbOper"></property>
-        <property name="iServiceModelDao" ref="iServiceModelDao"></property>
-        <property name="iServicePackageDao" ref="iServicePackageDao"></property>
-        <property name="iServiceParameterDao" ref="iServiceParameterDao"></property>
-        <property name="catalogSbiService" ref="catalogSbiService"></property>
-        <property name="overlaySbiService" ref="overlaySbiService"></property>
-        <property name="underlaySbiService" ref="underlaySbiService"></property>
-    </bean>
-    
-    <bean id="dbOper" class="org.openo.sdno.nslcm.util.db.DbOper">
-    </bean>
-    
-    <bean id="iServiceModelDao" class="org.openo.sdno.nslcm.dao.impl.ServiceModelDaoImpl">
-        <property name="dbSessionHandler" ref="dbSessionHandler"></property>
-    </bean>
-    
-    <bean id="iServicePackageDao" class="org.openo.sdno.nslcm.dao.impl.ServicePackageDaoImpl">
-        <property name="dbSessionHandler" ref="dbSessionHandler"></property>
-    </bean>
-    
-    <bean id="iServiceParameterDao" class="org.openo.sdno.nslcm.dao.impl.ServiceParametersDaoImpl">
-        <property name="dbSessionHandler" ref="dbSessionHandler"></property>
-    </bean>
-    
     <bean id="dbSessionHandler" class="org.openo.sdno.nslcm.dao.multi.DatabaseSessionHandler">
         <property name="dataBaseName" value="inventory" />
         <property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
     </bean>
-    
+
     <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="sqlSessionFactory" />
         <constructor-arg index="1" value="SIMPLE" />
     </bean>
-    
+
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="datasource" />
         <property name="mapperLocations" value="classpath:mybatis/mysql/*.xml" />
     </bean>
-    
+
     <bean id="datasource" class="org.openo.sdno.nslcm.dao.multi.MultiDataSource">
         <property name="targetDataSources">
             <map key-type="java.lang.String">
@@ -117,16 +83,6 @@
             </map>
         </property>
         <property name="defaultTargetDataSource" ref="inventory"></property>
-    </bean>
-
-    <bean id="catalogSbiService" class="org.openo.sdno.nslcm.sbi.impl.CatalogSbiServiceImpl">
-    </bean>
-
-
-    <bean id="overlaySbiService" class="org.openo.sdno.nslcm.sbi.impl.OverlaySbiServiceImpl">
-    </bean>
-
-    <bean id="underlaySbiService" class="org.openo.sdno.nslcm.sbi.impl.UnderlaySbiServiceImpl">
     </bean>
 
     <bean id="nslcmRestModule" class="org.openo.sdno.nslcm.NslcmRestModule" init-method="init" destroy-method="destroy">

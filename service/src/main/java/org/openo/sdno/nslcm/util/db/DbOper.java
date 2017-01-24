@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.overlayvpn.inventory.sdk.util.InventoryDaoUtil;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import net.sf.json.JSONObject;
@@ -37,10 +38,10 @@ import net.sf.json.JSONObject;
  * @author
  * @version SDNO 0.5 September 8, 2016
  */
+@Repository
 public class DbOper<T> {
 
     private DbOper() {
-
     }
 
     /**
