@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.util.operation;
+package org.openo.sdno.nslcm.util;
 
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.sdno.overlayvpn.security.authentication.HttpContext;
-import org.openo.sdno.overlayvpn.security.authentication.TokenDataHolder;
 
 /**
  * Build restful parameters object for restful request.<br>
@@ -26,25 +25,22 @@ import org.openo.sdno.overlayvpn.security.authentication.TokenDataHolder;
  * @author
  * @version SDNO 0.5 August 22, 2016
  */
-public class RestfulParametesUtil {
+public class RestfulParametersUtil {
 
-    private RestfulParametesUtil() {
+    private RestfulParametersUtil() {
     }
 
     /**
      * Get restful parameters with body data.<br>
      * 
-     * @param bodyData Creating body data
+     * @param bodyStr Creating body data
      * @return Restful parameters object
      * @since SDNO 0.5
      */
-    public static RestfulParametes getRestfulParametesWithBody(String bodyData) {
+    public static RestfulParametes getRestfulParameters(String bodyStr) {
         RestfulParametes restfulParametes = new RestfulParametes();
-
         restfulParametes.putHttpContextHeader(HttpContext.CONTENT_TYPE_HEADER, HttpContext.MEDIA_TYPE_JSON);
-        TokenDataHolder.addToken2HttpRequest(restfulParametes);
-        restfulParametes.setRawData(bodyData);
-
+        restfulParametes.setRawData(bodyStr);
         return restfulParametes;
     }
 
@@ -54,10 +50,9 @@ public class RestfulParametesUtil {
      * @return Restful parameters object
      * @since SDNO 0.5
      */
-    public static RestfulParametes getRestfulParametes() {
+    public static RestfulParametes getRestfulParameters() {
         RestfulParametes restfulParametes = new RestfulParametes();
         restfulParametes.putHttpContextHeader(HttpContext.CONTENT_TYPE_HEADER, HttpContext.MEDIA_TYPE_JSON);
-        TokenDataHolder.addToken2HttpRequest(restfulParametes);
         return restfulParametes;
     }
 

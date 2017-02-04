@@ -29,7 +29,7 @@ import org.openo.sdno.model.servicemodel.vpn.Vpn;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.sbi.inf.UnderlaySbiService;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
-import org.openo.sdno.nslcm.util.operation.RestfulParametesUtil;
+import org.openo.sdno.nslcm.util.RestfulParametersUtil;
 import org.openo.sdno.overlayvpn.consts.UrlAdapterConst;
 import org.openo.sdno.rest.ResponseUtils;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
         RestfulOptions restOptions = new RestfulOptions();
         restOptions.setRestTimeout(500000);
 
-        RestfulResponse response = RestfulProxy.delete(url, RestfulParametesUtil.getRestfulParametes(), restOptions);
+        RestfulResponse response = RestfulProxy.delete(url, RestfulParametersUtil.getRestfulParameters(), restOptions);
 
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
@@ -86,7 +86,7 @@ public class UnderlaySbiServiceImpl implements UnderlaySbiService {
         RestfulOptions restOptions = new RestfulOptions();
         restOptions.setRestTimeout(500000);
         RestfulResponse response = RestfulProxy.post(url,
-                RestfulParametesUtil.getRestfulParametesWithBody(JsonUtil.toJson(vpnVo)), restOptions);
+                RestfulParametersUtil.getRestfulParameters(JsonUtil.toJson(vpnVo)), restOptions);
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
         Map<String, String> resultMap = new HashMap<String, String>();

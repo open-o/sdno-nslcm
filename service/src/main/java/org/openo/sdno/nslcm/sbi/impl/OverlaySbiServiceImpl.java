@@ -26,7 +26,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.sdno.framework.container.resthelper.RestfulProxy;
 import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.nslcm.sbi.inf.OverlaySbiService;
-import org.openo.sdno.nslcm.util.operation.RestfulParametesUtil;
+import org.openo.sdno.nslcm.util.RestfulParametersUtil;
 import org.openo.sdno.overlayvpn.consts.UrlAdapterConst;
 import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
 import org.openo.sdno.rest.ResponseUtils;
@@ -53,7 +53,7 @@ public class OverlaySbiServiceImpl implements OverlaySbiService {
         RestfulOptions restOptions = new RestfulOptions();
         restOptions.setRestTimeout(500000);
 
-        RestfulResponse response = RestfulProxy.delete(url, RestfulParametesUtil.getRestfulParametes(), restOptions);
+        RestfulResponse response = RestfulProxy.delete(url, RestfulParametersUtil.getRestfulParameters(), restOptions);
 
         String rspContent = ResponseUtils.transferResponse(response);
         Map<String, String> restResult = JsonUtil.fromJson(rspContent, new TypeReference<Map<String, String>>() {});
@@ -72,7 +72,7 @@ public class OverlaySbiServiceImpl implements OverlaySbiService {
         restOptions.setRestTimeout(500000);
 
         RestfulResponse response = RestfulProxy.post(url,
-                RestfulParametesUtil.getRestfulParametesWithBody(JsonUtil.toJson(siteToDcNbiMo)), restOptions);
+                RestfulParametersUtil.getRestfulParameters(JsonUtil.toJson(siteToDcNbiMo)), restOptions);
         String rspContent = ResponseUtils.transferResponse(response);
         Map<String, String> restResult = JsonUtil.fromJson(rspContent, new TypeReference<Map<String, String>>() {});
 

@@ -25,7 +25,7 @@ import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.sdno.framework.container.resthelper.RestfulProxy;
 import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.nslcm.sbi.inf.CatalogSbiService;
-import org.openo.sdno.nslcm.util.operation.RestfulParametesUtil;
+import org.openo.sdno.nslcm.util.RestfulParametersUtil;
 import org.openo.sdno.overlayvpn.consts.UrlAdapterConst;
 import org.openo.sdno.rest.ResponseUtils;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class CatalogSbiServiceImpl implements CatalogSbiService {
 
         LOGGER.info("queryServiceTemplate begin: " + url);
 
-        RestfulResponse response = RestfulProxy.get(url, RestfulParametesUtil.getRestfulParametes());
+        RestfulResponse response = RestfulProxy.get(url, RestfulParametersUtil.getRestfulParameters());
         String rspContent = ResponseUtils.transferResponse(response);
         Map<String, Object> restResult = JsonUtil.fromJson(rspContent, new TypeReference<Map<String, Object>>() {});
 
