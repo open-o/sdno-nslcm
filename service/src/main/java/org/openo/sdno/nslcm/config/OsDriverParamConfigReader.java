@@ -16,12 +16,15 @@
 
 package org.openo.sdno.nslcm.config;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Class of OpenStack Driver Parameter Reader.<br>
  * 
  * @author
  * @version SDNO 0.5 2017-2-7
  */
+@Component
 public class OsDriverParamConfigReader extends ConfigReader {
 
     private static final String OSDRIVER_PARAM_CONFIG_FILE = "etc/osdriver.properties";
