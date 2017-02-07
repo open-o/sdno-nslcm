@@ -16,12 +16,6 @@
 
 package org.openo.sdno.nslcm.config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,13 +25,9 @@ import org.springframework.stereotype.Component;
  * @version SDNO 0.5 2017-2-6
  */
 @Component
-public class SiteParamConfigReader {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SiteParamConfigReader.class);
+public class SiteParamConfigReader extends ConfigReader {
 
     private static final String SITEPARAM_CONFIG_FILE = "etc/siteparam.properties";
-
-    private Properties properties = new Properties();
 
     /**
      * Constructor.<br>
@@ -45,7 +35,7 @@ public class SiteParamConfigReader {
      * @since SDNO 0.5
      */
     public SiteParamConfigReader() {
-        loadProperties();
+        super(SITEPARAM_CONFIG_FILE);
     }
 
     /**
@@ -76,14 +66,6 @@ public class SiteParamConfigReader {
      */
     public String getSiteIsEncrypt() {
         return properties.getProperty("isEncrypt");
-    }
-
-    private void loadProperties() {
-        try (FileInputStream finStream = new FileInputStream(SITEPARAM_CONFIG_FILE)) {
-            properties.load(finStream);
-        } catch(IOException e) {
-            LOGGER.error("Read site parameter configuration file failed!", e);
-        }
     }
 
 }
