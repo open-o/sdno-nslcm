@@ -45,6 +45,30 @@ public class VpcSbiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(VpcSbiService.class);
 
     /**
+     * Query Vpc.<br>
+     * 
+     * @param vpcUuid Vpc Uuid
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public Vpc queryVpc(String vpcUuid) throws ServiceException {
+        if(StringUtils.isEmpty(vpcUuid)) {
+            LOGGER.error("vpcUuid is invalid");
+            throw new ParameterServiceException("vpcUuid is invalid");
+        }
+
+        String queryVpcUrl = MessageFormat.format(AdapterUrlConst.VPC_ADAPTER_URL + "/{0}", vpcUuid);
+        RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
+        RestfulResponse response = RestfulProxy.get(queryVpcUrl, restfulParameters);
+        if(!HttpCode.isSucess(response.getStatus())) {
+            LOGGER.error("Query vpc failed");
+            throw new ServiceException(response.getStatus(), response.getResponseContent());
+        }
+
+        return JsonUtil.fromJson(response.getResponseContent(), Vpc.class);
+    }
+
+    /**
      * Create Vpc.<br>
      * 
      * @param vpcModel Vpc need to create
@@ -60,7 +84,7 @@ public class VpcSbiService {
         RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters(JsonUtil.toJson(vpcModel));
         RestfulResponse response = RestfulProxy.post(AdapterUrlConst.VPC_ADAPTER_URL, restfulParameters);
         if(!HttpCode.isSucess(response.getStatus())) {
-            LOGGER.error("Create Vpc failed");
+            LOGGER.error("Create vpc failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
     }
@@ -82,7 +106,7 @@ public class VpcSbiService {
         RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
         RestfulResponse response = RestfulProxy.delete(deleteVpcUrl, restfulParameters);
         if(!HttpCode.isSucess(response.getStatus())) {
-            LOGGER.error("Delete Vpc failed");
+            LOGGER.error("Delete vpc failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
     }

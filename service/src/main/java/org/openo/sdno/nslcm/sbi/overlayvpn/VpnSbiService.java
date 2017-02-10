@@ -18,6 +18,7 @@ package org.openo.sdno.nslcm.sbi.overlayvpn;
 
 import java.text.MessageFormat;
 
+import org.apache.commons.lang.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.sdno.exception.ParameterServiceException;
@@ -41,6 +42,32 @@ import org.springframework.stereotype.Service;
 public class VpnSbiService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VpnSbiService.class);
+
+    /**
+     * Query OverlayVpn.<br>
+     * 
+     * @param vpnUuid vpn uuid
+     * @return OverlayVpn queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public NbiVpn queryVpn(String vpnUuid) throws ServiceException {
+
+        if(StringUtils.isEmpty(vpnUuid)) {
+            LOGGER.error("vpnUuid is invalid");
+            throw new ParameterServiceException("vpnUuid is invalid");
+        }
+
+        String queryUrl = MessageFormat.format(AdapterUrlConst.VPN_ADAPTER_URL + "/{0}", vpnUuid);
+
+        RestfulResponse response = RestfulProxy.get(queryUrl, RestfulParametersUtil.getRestfulParameters());
+        if(!HttpCode.isSucess(response.getStatus())) {
+            LOGGER.error("Query vpn failed");
+            throw new ServiceException(response.getStatus(), response.getResponseContent());
+        }
+
+        return JsonUtil.fromJson(response.getResponseContent(), NbiVpn.class);
+    }
 
     /**
      * Create OverlayVpn.<br>
@@ -75,6 +102,12 @@ public class VpnSbiService {
      * @since SDNO 0.5
      */
     public NbiVpn deleteVpn(String vpnUuid) throws ServiceException {
+
+        if(StringUtils.isEmpty(vpnUuid)) {
+            LOGGER.error("vpnUuid is invalid");
+            throw new ParameterServiceException("vpnUuid is invalid");
+        }
+
         String deleteUrl = MessageFormat.format(AdapterUrlConst.VPN_ADAPTER_URL + "/{0}", vpnUuid);
 
         RestfulResponse response = RestfulProxy.delete(deleteUrl, RestfulParametersUtil.getRestfulParameters());

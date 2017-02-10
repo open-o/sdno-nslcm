@@ -45,6 +45,31 @@ public class SiteSbiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SiteSbiService.class);
 
     /**
+     * Query Site.<br>
+     * 
+     * @param siteUuid Site Uuid
+     * @return SiteModel queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public NbiSiteModel querySite(String siteUuid) throws ServiceException {
+        if(StringUtils.isEmpty(siteUuid)) {
+            LOGGER.error("siteUuid is invalid");
+            throw new ParameterServiceException("siteUuid is invalid");
+        }
+
+        String querySiteUrl = MessageFormat.format(AdapterUrlConst.SITE_ADAPTER_URL + "/{0}", siteUuid);
+        RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
+        RestfulResponse response = RestfulProxy.get(querySiteUrl, restfulParameters);
+        if(!HttpCode.isSucess(response.getStatus())) {
+            LOGGER.error("Query site failed");
+            throw new ServiceException(response.getStatus(), response.getResponseContent());
+        }
+
+        return JsonUtil.fromJson(response.getResponseContent(), NbiSiteModel.class);
+    }
+
+    /**
      * Create Site.<br>
      * 
      * @param siteModel SiteModel need to create
@@ -86,5 +111,4 @@ public class SiteSbiService {
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
     }
-
 }

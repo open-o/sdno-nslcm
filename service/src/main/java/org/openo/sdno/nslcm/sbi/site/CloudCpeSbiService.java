@@ -41,8 +41,32 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CloudCpeSbiService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudCpeSbiService.class);
+
+    /**
+     * Query CloudCpe model.<br>
+     * 
+     * @param cloudCpeUuid CloudCpe Uuid
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public NbiCloudCpeModel queryCloudCpe(String cloudCpeUuid) throws ServiceException {
+        if(StringUtils.isEmpty(cloudCpeUuid)) {
+            LOGGER.error("cloudCpeUuid is invalid");
+            throw new ParameterServiceException("cloudCpeUuid is invalid");
+        }
+
+        String queryCpeUrl = MessageFormat.format(AdapterUrlConst.CLOUDCPE_ADAPTER_URL + "/{0}", cloudCpeUuid);
+        RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
+        RestfulResponse response = RestfulProxy.get(queryCpeUrl, restfulParameters);
+        if(!HttpCode.isSucess(response.getStatus())) {
+            LOGGER.error("Query CloudCpe failed");
+            throw new ServiceException(response.getStatus(), response.getResponseContent());
+        }
+
+        return JsonUtil.fromJson(response.getResponseContent(), NbiCloudCpeModel.class);
+    }
 
     /**
      * Create CloudCpe.<br>

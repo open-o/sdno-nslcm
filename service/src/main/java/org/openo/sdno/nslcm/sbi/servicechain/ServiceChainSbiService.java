@@ -49,6 +49,32 @@ public class ServiceChainSbiService {
     private static final String SERVICE_CHAIN_PATH_KEY = "serviceChainPath";
 
     /**
+     * Query ServiceChain Path.<br>
+     * 
+     * @param serviceChainUuid ServiceChain Uuid
+     * @return ServiceChainPath queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public ServiceChainPath queryServiceChain(String serviceChainUuid) throws ServiceException {
+        if(StringUtils.isEmpty(serviceChainUuid)) {
+            LOGGER.error("serviceChainUuid is invalid");
+            throw new ParameterServiceException("serviceChainUuid is invalid");
+        }
+
+        String queryServiceChainUrl =
+                MessageFormat.format(AdapterUrlConst.SERVICECHAIN_ADAPTER_URL + "/{0}", serviceChainUuid);
+        RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
+        RestfulResponse response = RestfulProxy.get(queryServiceChainUrl, restfulParameters);
+        if(!HttpCode.isSucess(response.getStatus())) {
+            LOGGER.error("Query ServiceChain failed");
+            throw new ServiceException(response.getStatus(), response.getResponseContent());
+        }
+
+        return JsonUtil.fromJson(response.getResponseContent(), ServiceChainPath.class);
+    }
+
+    /**
      * Create ServiceChain.<br>
      * 
      * @param serviceChainPath ServiceChainPath need to create

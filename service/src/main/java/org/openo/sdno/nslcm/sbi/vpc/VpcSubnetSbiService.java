@@ -17,8 +17,11 @@
 package org.openo.sdno.nslcm.sbi.vpc;
 
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.type.TypeReference;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulParametes;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
@@ -45,6 +48,39 @@ public class VpcSubnetSbiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(VpcSubnetSbiService.class);
 
     /**
+     * Query Subnet by Vpc Id.<br>
+     * 
+     * @param vpcId Vpc Id
+     * @return Subnet queried out
+     * @throws ServiceException when create failed
+     * @since SDNO 0.5
+     */
+    public SubNet queryVpcSubnet(String vpcId) throws ServiceException {
+        if(StringUtils.isEmpty(vpcId)) {
+            LOGGER.error("vpcId is invalid");
+            throw new ParameterServiceException("vpcId is invalid");
+        }
+
+        RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
+        restfulParameters.put("vpcId", vpcId);
+        RestfulResponse response = RestfulProxy.get(AdapterUrlConst.VPCSUBNET_ADAPTER_URL, restfulParameters);
+        if(!HttpCode.isSucess(response.getStatus())) {
+            LOGGER.error("Query Vpc Subnet failed");
+            throw new ServiceException(response.getStatus(), response.getResponseContent());
+        }
+
+        List<SubNet> queriedSubnets =
+                JsonUtil.fromJson(response.getResponseContent(), new TypeReference<List<SubNet>>() {});
+
+        if(CollectionUtils.isEmpty(queriedSubnets)) {
+            LOGGER.error("No vpc subnets queried out");
+            throw new ServiceException("No vpc subnets queried out");
+        }
+
+        return queriedSubnets.get(0);
+    }
+
+    /**
      * Create Vpc Subnet.<br>
      * 
      * @param subNetModel Subnet need to create
@@ -60,7 +96,7 @@ public class VpcSubnetSbiService {
         RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters(JsonUtil.toJson(subNetModel));
         RestfulResponse response = RestfulProxy.post(AdapterUrlConst.VPCSUBNET_ADAPTER_URL, restfulParameters);
         if(!HttpCode.isSucess(response.getStatus())) {
-            LOGGER.error("Create SubNet failed");
+            LOGGER.error("Create subnet failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
     }
@@ -78,12 +114,11 @@ public class VpcSubnetSbiService {
             throw new ParameterServiceException("vpcSubnetUuid is invalid");
         }
 
-        String deleteServiceChainUrl =
-                MessageFormat.format(AdapterUrlConst.VPCSUBNET_ADAPTER_URL + "/{0}", vpcSubnetUuid);
+        String deleteSubnetUrl = MessageFormat.format(AdapterUrlConst.VPCSUBNET_ADAPTER_URL + "/{0}", vpcSubnetUuid);
         RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
-        RestfulResponse response = RestfulProxy.delete(deleteServiceChainUrl, restfulParameters);
+        RestfulResponse response = RestfulProxy.delete(deleteSubnetUrl, restfulParameters);
         if(!HttpCode.isSucess(response.getStatus())) {
-            LOGGER.error("Delete Vpc Subnet failed");
+            LOGGER.error("Delete vpc subnet failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
     }
