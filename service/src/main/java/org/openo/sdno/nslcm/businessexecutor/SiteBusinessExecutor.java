@@ -16,12 +16,18 @@
 
 package org.openo.sdno.nslcm.businessexecutor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.site.CloudCpeSbiService;
 import org.openo.sdno.nslcm.sbi.site.LocalCpeSbiService;
 import org.openo.sdno.nslcm.sbi.site.SiteSbiService;
 import org.openo.sdno.nslcm.sbi.site.SubnetSbiService;
 import org.openo.sdno.nslcm.sbi.site.VlanSbiService;
+import org.openo.sdno.overlayvpn.brs.model.NetworkElementMO;
+import org.openo.sdno.overlayvpn.model.v2.cpe.NbiCloudCpeModel;
+import org.openo.sdno.overlayvpn.model.v2.cpe.NbiLocalCpeModel;
 import org.openo.sdno.overlayvpn.model.v2.site.NbiSiteModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -101,6 +107,39 @@ public class SiteBusinessExecutor {
 
         // UnDeploy Site
         siteSbiService.deleteSite(siteModel.getUuid());
+    }
+
+    /**
+     * Query SiteModel.<br>
+     * 
+     * @param siteUuid Site Uuid
+     * @return Site queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public NbiSiteModel executeQuery(String siteUuid) throws ServiceException {
+        NbiSiteModel siteModel = siteSbiService.querySite(siteUuid);
+        siteModel.setLocalCpeModels(convertLocalCpeNeToModel(siteModel.getLocalCpes()));
+        siteModel.setCloudCpeModels(convertCloudCpeNeToModel(siteModel.getCloudCpes()));
+        return siteModel;
+    }
+
+    private List<NbiCloudCpeModel> convertCloudCpeNeToModel(List<NetworkElementMO> neList) throws ServiceException {
+        List<NbiCloudCpeModel> cloudCpeModelList = new ArrayList<NbiCloudCpeModel>();
+        for(NetworkElementMO curCpeNe : neList) {
+            cloudCpeModelList.add(cloudCpeSbiService.queryCloudCpe(curCpeNe.getId()));
+        }
+        return cloudCpeModelList;
+    }
+
+    private List<NbiLocalCpeModel> convertLocalCpeNeToModel(List<NetworkElementMO> neList) {
+        List<NbiLocalCpeModel> localCpeModelList = new ArrayList<NbiLocalCpeModel>();
+        for(NetworkElementMO curCpeNe : neList) {
+            NbiLocalCpeModel localCpeModel = new NbiLocalCpeModel();
+            localCpeModel.setUuid(curCpeNe.getId());
+            localCpeModelList.add(localCpeModel);
+        }
+        return localCpeModelList;
     }
 
 }

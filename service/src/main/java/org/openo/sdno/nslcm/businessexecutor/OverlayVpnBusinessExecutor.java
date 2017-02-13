@@ -16,9 +16,19 @@
 
 package org.openo.sdno.nslcm.businessexecutor;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
+import org.openo.sdno.overlayvpn.model.servicechain.ServiceChainPath;
+import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
+import org.openo.sdno.overlayvpn.model.v2.site.NbiSiteModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +40,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OverlayVpnBusinessExecutor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OverlayVpnBusinessExecutor.class);
 
     @Autowired
     private ServiceChainBusinessExecutor serviceChainBusinessExceutor;
@@ -64,11 +76,54 @@ public class OverlayVpnBusinessExecutor {
      * @throws ServiceException when undeploy failed
      * @since SDNO 0.5
      */
-    public void executeUnDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
+    public Map<String, String> executeUnDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
         serviceChainBusinessExceutor.executeUnDeploy(businessModel.getServiceChainPathModel());
         vpnBusinessExecutor.executeUnDeploy(businessModel.getVpnModel());
         siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
         vpcBusinessExecutor.executeUnDeploy(businessModel.getVpcModel());
+        Map<String, String> resultMap = new HashMap<String, String>();
+        resultMap.put("errorCode", businessModel.getVpnModel().getUuid());
+        return resultMap;
+    }
+
+    /**
+     * Query OverlayVpn business.<br>
+     * 
+     * @param vpnUuid Vpn Uuid
+     * @return OverlayVpn business queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public OverlayVpnBusinessModel executeQuery(String vpnUuid) throws ServiceException {
+
+        OverlayVpnBusinessModel businessModel = new OverlayVpnBusinessModel();
+
+        NbiVpn vpn = vpnBusinessExecutor.executeQuery(vpnUuid);
+        businessModel.setVpnModel(vpn);
+
+        //ServiceChain has the same uuid with vpn
+        ServiceChainPath sfp = serviceChainBusinessExceutor.executeQuery(vpnUuid);
+        businessModel.setServiceChainPathModel(sfp);
+
+        Set<String> siteUuidList = vpn.getSiteList();
+        if(CollectionUtils.isEmpty(siteUuidList)) {
+            LOGGER.error("No site related to vpn");
+            throw new ServiceException("No site related to vpn");
+        }
+        String siteUuid = ((String[])siteUuidList.toArray())[0];
+        NbiSiteModel siteModel = siteBusinessExecutor.executeQuery(siteUuid);
+        businessModel.setSiteModel(siteModel);
+
+        Set<String> vpcUuidList = vpn.getVpcList();
+        if(CollectionUtils.isEmpty(vpcUuidList)) {
+            LOGGER.error("No vpc related to vpn");
+            throw new ServiceException("No vpc related to vpn");
+        }
+        String vpcUuid = ((String[])vpcUuidList.toArray())[0];
+        Vpc vpcModel = vpcBusinessExecutor.executeQuery(vpcUuid);
+        businessModel.setVpcModel(vpcModel);
+
+        return businessModel;
     }
 
 }

@@ -92,4 +92,16 @@ public class VpnBusinessExecutor {
         vpnSbiService.deleteVpn(vpnModel.getUuid());
     }
 
+    /**
+     * Query OverlayVpn Model.<br>
+     * 
+     * @param vpnUuid Vpn Uuid
+     * @return OverlayVpn queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public NbiVpn executeQuery(String vpnUuid) throws ServiceException {
+        return vpnSbiService.queryVpn(vpnUuid);
+    }
+
 }

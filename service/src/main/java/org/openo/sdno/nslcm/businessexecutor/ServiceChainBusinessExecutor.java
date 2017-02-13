@@ -58,4 +58,16 @@ public class ServiceChainBusinessExecutor {
         serviceChainSbiService.deleteServiceChain(serviceChainPath.getUuid());
     }
 
+    /**
+     * Query ServiceChainPath.<br>
+     * 
+     * @param serviceChainUuid ServiceChainPath Uuid
+     * @return ServiceChainPath queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public ServiceChainPath executeQuery(String serviceChainUuid) throws ServiceException {
+        return serviceChainSbiService.queryServiceChain(serviceChainUuid);
+    }
+
 }

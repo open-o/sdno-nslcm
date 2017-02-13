@@ -19,6 +19,7 @@ package org.openo.sdno.nslcm.businessexecutor;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.vpc.VpcSbiService;
 import org.openo.sdno.nslcm.sbi.vpc.VpcSubnetSbiService;
+import org.openo.sdno.overlayvpn.model.servicemodel.SubNet;
 import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -63,4 +64,20 @@ public class VpcBusinessExecutor {
         vpcSubnetSbiService.deleteVpcSubnet(vpcModel.getSubnet().getUuid());
         vpcSbiService.deleteVpc(vpcModel.getUuid());
     }
+
+    /**
+     * Query Vpc.<br>
+     * 
+     * @param vpcUuid Vpc Uuid
+     * @return Vpc queried out
+     * @throws ServiceException when query failed
+     * @since SDNO 0.5
+     */
+    public Vpc executeQuery(String vpcUuid) throws ServiceException {
+        Vpc vpc = vpcSbiService.queryVpc(vpcUuid);
+        SubNet vpcSubnet = vpcSubnetSbiService.queryVpcSubnet(vpcUuid);
+        vpc.setSubnet(vpcSubnet);
+        return vpc;
+    }
+
 }
