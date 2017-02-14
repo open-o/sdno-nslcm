@@ -36,6 +36,7 @@
         <jaxrs:serviceBeans>
             <ref bean="nslcmSvcRoaResource"></ref>
             <ref bean="swaggerRoa"></ref>
+            <ref bean="healthCheckRoaResource"></ref>
         </jaxrs:serviceBeans>
         <!-- registering providers -->
         <jaxrs:providers>
