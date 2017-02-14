@@ -27,6 +27,7 @@ import org.openo.sdno.nslcm.util.exception.ApplicationException;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -48,29 +49,9 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
     /**
      * Session handler.
      */
+    @Autowired
     private DatabaseSessionHandler dbSessionHandler;
 
-    /**
-     * @return Returns the dbSessionHandler.
-     */
-    public DatabaseSessionHandler getDbSessionHandler() {
-        return dbSessionHandler;
-    }
-
-    /**
-     * @param dbSessionHandler The dbSessionHandler to set.
-     */
-    public void setDbSessionHandler(DatabaseSessionHandler dbSessionHandler) {
-        this.dbSessionHandler = dbSessionHandler;
-    }
-
-    /**
-     * Insert package mapping data.<br>
-     * 
-     * @param packageMapping service package mapping data
-     * @throws ApplicationException when database exception or parameter is wrong
-     * @since SDNO 0.5
-     */
     @Override
     public void insert(ServicePackageModel packageMapping) throws ApplicationException {
         try {
@@ -88,13 +69,6 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
         }
     }
 
-    /**
-     * Delete relation instance by service ID.<br>
-     * 
-     * @param serviceId service ID
-     * @throws ApplicationException when database exception or parameter is wrong
-     * @since SDNO 0.5
-     */
     @Override
     public void delete(String serviceId) throws ApplicationException {
         try {
@@ -112,14 +86,6 @@ public class ServicePackageDaoImpl implements IServicePackageDao {
         }
     }
 
-    /**
-     * Query service instance.<br>
-     * 
-     * @param serviceId service instance ID
-     * @return service instance
-     * @throws ApplicationException when database exception
-     * @since SDNO 0.5
-     */
     @Override
     public ServicePackageModel queryServiceById(String serviceId) throws ApplicationException {
         try {

@@ -31,6 +31,7 @@ import org.openo.sdno.nslcm.util.operation.ValidateUtil;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -52,21 +53,8 @@ public class ServiceParametersDaoImpl implements IServiceParameterDao {
     /**
      * Session handler.
      */
+    @Autowired
     private DatabaseSessionHandler dbSessionHandler;
-
-    /**
-     * @return Returns the dbSessionHandler.
-     */
-    public DatabaseSessionHandler getDbSessionHandler() {
-        return dbSessionHandler;
-    }
-
-    /**
-     * @param dbSessionHandler The dbSessionHandler to set.
-     */
-    public void setDbSessionHandler(DatabaseSessionHandler dbSessionHandler) {
-        this.dbSessionHandler = dbSessionHandler;
-    }
 
     /**
      * Insert service stances.<br>
