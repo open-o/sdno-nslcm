@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
+import org.openo.sdno.nslcm.businessexecutor.OverlayVpnBusinessExecutor;
 import org.openo.sdno.nslcm.dao.inf.IServiceModelDao;
 import org.openo.sdno.nslcm.dao.inf.IServicePackageDao;
 import org.openo.sdno.nslcm.dao.inf.IServiceParameterDao;
@@ -33,15 +32,16 @@ import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.nslcm.sbi.inf.CatalogSbiService;
-import org.openo.sdno.nslcm.sbi.inf.OverlaySbiService;
-import org.openo.sdno.nslcm.sbi.inf.UnderlaySbiService;
+import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
+import org.openo.sdno.nslcm.sbi.catalog.CatalogSbiService;
+import org.openo.sdno.nslcm.sbi.underlayvpn.UnderlaySbiService;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.db.DbOper;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
-import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
+import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,51 +53,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class NslcmServiceImpl implements NslcmService {
 
-    @Resource
-    private DbOper dbOper;
+    @Autowired
+    private DbOper<NsResponseInfo> dbOper;
 
+    @Autowired
     private IServiceModelDao iServiceModelDao;
 
+    @Autowired
     private IServicePackageDao iServicePackageDao;
 
+    @Autowired
     private IServiceParameterDao iServiceParameterDao;
 
-    @Resource
+    @Autowired
     private CatalogSbiService catalogSbiService;
 
-    @Resource
-    private OverlaySbiService overlaySbiService;
+    @Autowired
+    private OverlayVpnBusinessExecutor vpnBusinessExceutor;
 
-    @Resource
+    @Autowired
     private UnderlaySbiService underlaySbiService;
-
-    public void setiServiceModelDao(IServiceModelDao iServiceModelDao) {
-        this.iServiceModelDao = iServiceModelDao;
-    }
-
-    public void setiServicePackageDao(IServicePackageDao iServicePackageDao) {
-        this.iServicePackageDao = iServicePackageDao;
-    }
-
-    public void setiServiceParameterDao(IServiceParameterDao iServiceParameterDao) {
-        this.iServiceParameterDao = iServiceParameterDao;
-    }
-
-    public void setDbOper(DbOper dbOper) {
-        this.dbOper = dbOper;
-    }
-
-    public void setCatalogSbiService(CatalogSbiService catalogSbiService) {
-        this.catalogSbiService = catalogSbiService;
-    }
-
-    public void setOverlaySbiService(OverlaySbiService overlaySbiService) {
-        this.overlaySbiService = overlaySbiService;
-    }
-
-    public void setUnderlaySbiService(UnderlaySbiService underlaySbiService) {
-        this.underlaySbiService = underlaySbiService;
-    }
 
     @Override
     public Map<String, Object> queryServiceTemplate(String nsdId) throws ServiceException {
@@ -105,20 +80,24 @@ public class NslcmServiceImpl implements NslcmService {
     }
 
     @Override
-    public Map<String, String> createOverlay(SiteToDcNbi siteToDcNbiMo, String instanceId) throws ServiceException {
-        Map<String, String> response = overlaySbiService.createOverlay(siteToDcNbiMo);
-
-        insertNsResponseInfo(instanceId, response);
-        return response;
+    public Map<String, String> createOverlayVpn(OverlayVpnBusinessModel businessModel, String instanceId)
+            throws ServiceException {
+        NbiVpn vpn = vpnBusinessExceutor.executeDeploy(businessModel);
+        Map<String, String> resultMap = new HashMap<String, String>();
+        resultMap.put("vpnId", vpn.getUuid());
+        insertNsResponseInfo(instanceId, resultMap);
+        return resultMap;
     }
 
     @Override
     public Map<String, String> deleteOverlay(String instanceId) throws ServiceException {
         ResultRsp<List<NsResponseInfo>> nsResponseInfoRsp = queryNsResponseInfo(instanceId);
-
         String nsResponseInfoUuid = nsResponseInfoRsp.getData().get(0).getUuid();
-        String site2DcUuid = nsResponseInfoRsp.getData().get(0).getExternalId();
-        Map<String, String> response = overlaySbiService.deleteOverlay(site2DcUuid);
+        String vpnUuid = nsResponseInfoRsp.getData().get(0).getExternalId();
+
+        OverlayVpnBusinessModel businessModel = vpnBusinessExceutor.executeQuery(vpnUuid);
+        Map<String, String> response = vpnBusinessExceutor.executeUnDeploy(businessModel);
+
         dbOper.delete(NsResponseInfo.class, nsResponseInfoUuid);
         return response;
     }
@@ -126,7 +105,6 @@ public class NslcmServiceImpl implements NslcmService {
     @Override
     public Map<String, String> createUnderlay(VpnVo vpnVo, String instanceId) throws ServiceException {
         Map<String, String> response = underlaySbiService.createUnderlay(vpnVo);
-
         insertNsResponseInfo(instanceId, response);
         return response;
     }

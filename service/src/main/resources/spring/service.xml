@@ -25,6 +25,7 @@
      http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
     <context:component-scan base-package="org.openo.sdno.nslcm" />
+    <context:component-scan base-package="org.openo.sdno.overlayvpn" />
 
     <!-- these are included in the dependency jar -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />
@@ -41,6 +42,8 @@
         <!-- registering providers -->
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+            <bean class="org.openo.sdno.exception.GenericExceptionMapper" />
+            <bean class="org.openo.sdno.exception.ServiceExceptionMapper" />
         </jaxrs:providers>
     </jaxrs:server>
 

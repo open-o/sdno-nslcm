@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,15 +37,10 @@ import org.openo.sdno.model.servicemodel.tunnel.TunnelPathConstraint;
 import org.openo.sdno.model.servicemodel.vpn.Vpn;
 import org.openo.sdno.model.servicemodel.vpn.VpnBasicInfo;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
+import org.openo.sdno.nslcm.dao.inf.IBaseResourceDao;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.overlayvpn.brs.invdao.LogicalTernminationPointInvDao;
-import org.openo.sdno.overlayvpn.brs.invdao.NetworkElementInvDao;
-import org.openo.sdno.overlayvpn.model.servicechain.ServicePathHop;
-import org.openo.sdno.overlayvpn.model.servicemodel.SfpNbi;
-import org.openo.sdno.overlayvpn.model.servicemodel.SiteNbi;
-import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
-import org.openo.sdno.overlayvpn.model.servicemodel.SubnetNbi;
-import org.openo.sdno.overlayvpn.model.servicemodel.VpcNbi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
@@ -57,32 +52,13 @@ import org.springframework.util.StringUtils;
  * @author
  * @version SDNO 0.5 August 30, 2016
  */
-public class Translator {
+@Component
+public class UnderlayTranslator {
 
-    private Translator() {
+    @Autowired
+    private IBaseResourceDao baseResourceDao;
 
-    }
-
-    /**
-     * Translate NsInstantiation Info List to SiteToDcNbi model.<br>
-     * 
-     * @param nsInstantiationInfoList NsInstantiation Info List
-     * @return The SiteToDcNbi object
-     * @throws ServiceException When translate failed
-     * @since SDNO 0.5
-     */
-    public static SiteToDcNbi translateList2Overlay(List<ServiceParameter> serviceParameterList, String instanceId)
-            throws ServiceException {
-        SiteToDcNbi siteToDcNbiMo = new SiteToDcNbi();
-        Map<String, String> inputMap = translateList2Map(serviceParameterList);
-
-        siteToDcNbiMo.setName(inputMap.get("name"));
-        siteToDcNbiMo.setDescription(inputMap.get("description"));
-        siteToDcNbiMo.setUuid(instanceId);
-        setSiteNbi(inputMap, siteToDcNbiMo);
-        setVpcNbi(inputMap, siteToDcNbiMo);
-        setSfpNbi(inputMap, siteToDcNbiMo);
-        return siteToDcNbiMo;
+    private UnderlayTranslator() {
 
     }
 
@@ -94,7 +70,7 @@ public class Translator {
      * @throws ServiceException When translate failed
      * @since SDNO 0.5
      */
-    public static VpnVo translateList2Underlay(List<ServiceParameter> serviceParameterList, String instanceId)
+    public VpnVo translateList2Underlay(List<ServiceParameter> serviceParameterList, String instanceId)
             throws ServiceException {
         Map<String, String> inputMap = translateList2Map(serviceParameterList);
 
@@ -121,7 +97,7 @@ public class Translator {
         return vpnVo;
     }
 
-    private static Map<String, String> translateList2Map(List<ServiceParameter> serviceParameterList) {
+    private Map<String, String> translateList2Map(List<ServiceParameter> serviceParameterList) {
         Map<String, String> inputMap = new HashMap<String, String>();
         for(ServiceParameter serviceParameter : serviceParameterList) {
             inputMap.put(serviceParameter.getInputKey(), serviceParameter.getInputValue());
@@ -129,7 +105,7 @@ public class Translator {
         return inputMap;
     }
 
-    private static void setTunnelSchema(TunnelSchema tunnelSchema, String serviceType) {
+    private void setTunnelSchema(TunnelSchema tunnelSchema, String serviceType) {
         if("l3vpn".equals(serviceType)) {
             TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
             pathConstraint.setSetupPriority(4);
@@ -169,20 +145,17 @@ public class Translator {
         }
     }
 
-    private static void setVpnBasicInfo(VpnBasicInfo vpnBasicInfo, Map<String, String> inputMap) {
+    private void setVpnBasicInfo(VpnBasicInfo vpnBasicInfo, Map<String, String> inputMap) {
         vpnBasicInfo.setTopology(inputMap.get("topology"));
         vpnBasicInfo.setServiceType(inputMap.get("serviceType"));
         vpnBasicInfo.setTechnology(inputMap.get("technology"));
         vpnBasicInfo.setAdminStatus("active");
     }
 
-    private static void setSrcTpMo(Tp srcTpMo, Map<String, String> inputMap, String serviceType)
-            throws ServiceException {
+    private void setSrcTpMo(Tp srcTpMo, Map<String, String> inputMap, String serviceType) throws ServiceException {
         srcTpMo.setName(inputMap.get("ac1_port"));
-        srcTpMo.setNeId(getMeUuid(inputMap.get("pe1_ip")));
-
+        srcTpMo.setNeId(baseResourceDao.queryNeByIpAddress(inputMap.get("pe1_ip")).getId());
         TpTypeSpec srcTpTypeSpec = new TpTypeSpec();
-
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
         ethernetTpSpec.setDot1qVlanList(inputMap.get("ac1_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
@@ -254,14 +227,13 @@ public class Translator {
             addtionalInfos.add(addtionalInfo);
             srcTpMo.setAddtionalInfo(addtionalInfos);
         }
-        srcTpMo.setContainedMainTP(getPortNativeID(inputMap.get("ac1_port")));
+        srcTpMo.setContainedMainTP(baseResourceDao.queryPortNativeID(inputMap.get("ac1_port")));
     }
 
-    private static void setDstTpMo(Tp dstTpMo, Map<String, String> inputMap, String serviceType)
-            throws ServiceException {
+    private void setDstTpMo(Tp dstTpMo, Map<String, String> inputMap, String serviceType) throws ServiceException {
 
         dstTpMo.setName(inputMap.get("ac2_port"));
-        dstTpMo.setNeId(getMeUuid(inputMap.get("pe2_ip")));
+        dstTpMo.setNeId(baseResourceDao.queryNeByIpAddress(inputMap.get("pe2_ip")).getId());
 
         TpTypeSpec dstTpTypeSpec = new TpTypeSpec();
 
@@ -337,10 +309,10 @@ public class Translator {
             addtionalInfos.add(addtionalInfo);
             dstTpMo.setAddtionalInfo(addtionalInfos);
         }
-        dstTpMo.setContainedMainTP(getPortNativeID(inputMap.get("ac2_port")));
+        dstTpMo.setContainedMainTP(baseResourceDao.queryPortNativeID(inputMap.get("ac2_port")));
     }
 
-    private static void setBgpRoute(BgpProtocolItem bgpRoute) {
+    private void setBgpRoute(BgpProtocolItem bgpRoute) {
         bgpRoute.setIdx(0);
         bgpRoute.setPeerAsNumber(100);
         bgpRoute.setKeepAliveTime(0);
@@ -350,7 +322,7 @@ public class Translator {
         bgpRoute.setBgpMaxPrefixAlarm(100);
     }
 
-    private static void setCommonTpModel(Tp tpMo, String serviceType) {
+    private void setCommonTpModel(Tp tpMo, String serviceType) {
         tpMo.setAdminStatus("active");
         tpMo.setOperStatus("up");
         if("l3vpn".equals(serviceType)) {
@@ -359,8 +331,8 @@ public class Translator {
         }
     }
 
-    private static void setVpnMo(Vpn vpnMo, VpnBasicInfo vpnBasicInfo, Tp srcTpMo, Tp dstTpMo,
-            Map<String, String> inputMap, String instanceId) {
+    private void setVpnMo(Vpn vpnMo, VpnBasicInfo vpnBasicInfo, Tp srcTpMo, Tp dstTpMo, Map<String, String> inputMap,
+            String instanceId) {
         vpnMo.setId(instanceId);
         vpnMo.setName(inputMap.get("name"));
         vpnMo.setDescription(inputMap.get("description"));
@@ -377,55 +349,5 @@ public class Translator {
         addtionalInfo.setValue("eth");
         addtionalInfoList.add(addtionalInfo);
         vpnMo.setAddtionalInfo(addtionalInfoList);
-    }
-
-    private static void setSiteNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) throws ServiceException {
-        SiteNbi siteNbi = new SiteNbi();
-        siteNbi.setCidr(inputMap.get("siteCidr"));
-        siteNbi.setThinCpeId(getMeUuid(inputMap.get("siteThinCpeIP")));
-        siteNbi.setPortAndVlan(inputMap.get("siteAccessPortVlan"));
-        siteNbi.setvCPEId(getMeUuid(inputMap.get("vCPE_MgrIp")));
-        siteToDcNbiMo.setSite(siteNbi);
-    }
-
-    private static void setVpcNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) {
-        VpcNbi vpcNbi = new VpcNbi();
-        SubnetNbi subnetNbi = new SubnetNbi();
-        subnetNbi.setName(inputMap.get("vpcSubnetName"));
-        subnetNbi.setCidr(inputMap.get("vpcSubnetCidr"));
-        subnetNbi.setVni(Integer.valueOf(inputMap.get("vpcVNI")));
-        vpcNbi.setName(inputMap.get("vpcName"));
-        vpcNbi.setSite(subnetNbi);
-        siteToDcNbiMo.setVpc(vpcNbi);
-    }
-
-    private static void setSfpNbi(Map<String, String> inputMap, SiteToDcNbi siteToDcNbiMo) throws ServiceException {
-        SfpNbi sfpNbi = new SfpNbi();
-        sfpNbi.setScfNeId(getMeUuid(inputMap.get("dcGWIP")));
-        setSfpPathHop(inputMap.get("dcFWIP"), sfpNbi, 1);
-        setSfpPathHop(inputMap.get("dcLBIP"), sfpNbi, 2);
-        siteToDcNbiMo.setSfp(sfpNbi);
-    }
-
-    private static void setSfpPathHop(String ipAddress, SfpNbi sfpNbi, Integer hopNumber) throws ServiceException {
-        ServicePathHop servicePathHop = new ServicePathHop();
-        servicePathHop.setHopNumber(hopNumber);
-        servicePathHop.setSfiId(getMeUuid(ipAddress));
-        servicePathHop.setSfgId("");
-        sfpNbi.getServicePathHops().add(servicePathHop);
-    }
-
-    private static String getMeUuid(String ipAddress) throws ServiceException {
-        NetworkElementInvDao neInvDao = new NetworkElementInvDao();
-        Map<String, String> condition = new HashMap<String, String>();
-        condition.put("ipAddress", ipAddress);
-        return neInvDao.query(condition).get(0).getId();
-    }
-
-    private static String getPortNativeID(String portName) throws ServiceException {
-        LogicalTernminationPointInvDao poryInvDao = new LogicalTernminationPointInvDao();
-        Map<String, String> condition = new HashMap<String, String>();
-        condition.put("name", portName);
-        return poryInvDao.query(condition).get(0).getNativeID();
     }
 }

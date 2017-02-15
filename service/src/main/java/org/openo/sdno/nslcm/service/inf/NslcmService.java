@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.openo.sdno.framework.container.service.IService;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
+import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
 
 /**
  * NSLCM service interface. <br>
@@ -57,13 +57,14 @@ public interface NslcmService extends IService {
     /**
      * Create overlay service instance.<br>
      * 
-     * @param siteToDcNbiMo The site2DcNbi model
+     * @param businessModel OverlayVpn business model
      * @param instanceId ID of the instance
      * @return The create result
      * @throws ServiceException When create failed
      * @since SDNO 0.5
      */
-    Map<String, String> createOverlay(SiteToDcNbi siteToDcNbiMo, String instanceId) throws ServiceException;
+    Map<String, String> createOverlayVpn(OverlayVpnBusinessModel businessModel, String instanceId)
+            throws ServiceException;
 
     /**
      * Query Vpn.<br>

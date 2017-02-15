@@ -33,6 +33,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.framework.container.util.UuidUtils;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.dao.inf.IServiceModelDao;
@@ -51,13 +52,16 @@ import org.openo.sdno.nslcm.model.nbi.PackageOnboardRequest;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.nslcm.model.translator.Translator;
+import org.openo.sdno.nslcm.model.template.OverlayTemplateModel;
+import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
+import org.openo.sdno.nslcm.model.translator.OverlayVpnTranslator;
+import org.openo.sdno.nslcm.model.translator.UnderlayTranslator;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.openo.sdno.overlayvpn.errorcode.ErrorCode;
-import org.openo.sdno.overlayvpn.model.servicemodel.SiteToDcNbi;
+import org.openo.sdno.overlayvpn.util.check.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +90,12 @@ public class NslcmSvcRoaResource {
 
     @Autowired
     private IServiceParameterDao iServiceParameterDao;
+
+    @Autowired
+    private OverlayVpnTranslator overlayVpnTranslator;
+
+    @Autowired
+    private UnderlayTranslator underlayVpnTranslator;
 
     /**
      * Create SDN-O service instance based on a template.<br>
@@ -137,6 +147,8 @@ public class NslcmSvcRoaResource {
         NsCreationResponse nsCreationResponse = new NsCreationResponse();
         nsCreationResponse.setNsInstanceId(serviceModel.getServiceId());
 
+        resp.setStatus(HttpCode.CREATE_OK);
+
         return nsCreationResponse;
     }
 
@@ -172,10 +184,21 @@ public class NslcmSvcRoaResource {
         try {
             String templateName = queryTemplateName(instanceId);
             if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
-                SiteToDcNbi siteToDcNbiMo = Translator.translateList2Overlay(serviceParameterList, instanceId);
-                response = nslcmService.createOverlay(siteToDcNbiMo, instanceId);
+                Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNs();
+
+                // Create Vpn template model and validate
+                OverlayTemplateModel vpnTemplateModel =
+                        JsonUtil.fromJson(JsonUtil.toJson(sdnoTemplateParameter), OverlayTemplateModel.class);
+                ValidationUtil.validateModel(vpnTemplateModel);
+
+                // Create Vpn usiness model
+                OverlayVpnBusinessModel businessModel =
+                        overlayVpnTranslator.translateOverlayVpnModel(vpnTemplateModel, instanceId);
+
+                // Deploy Vpn business model
+                response = nslcmService.createOverlayVpn(businessModel, instanceId);
             } else {
-                VpnVo vpnVo = Translator.translateList2Underlay(serviceParameterList, instanceId);
+                VpnVo vpnVo = underlayVpnTranslator.translateList2Underlay(serviceParameterList, instanceId);
                 response = nslcmService.createUnderlay(vpnVo, instanceId);
             }
         } catch(ServiceException e) {

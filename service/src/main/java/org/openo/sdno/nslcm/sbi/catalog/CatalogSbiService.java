@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Huawei Technologies Co., Ltd.
+ * Copyright 2016-2017 Huawei Technologies Co., Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.sbi.impl;
+package org.openo.sdno.nslcm.sbi.catalog;
 
 import java.text.MessageFormat;
 import java.util.Map;
@@ -24,27 +24,34 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.baseservice.roa.util.restclient.RestfulResponse;
 import org.openo.sdno.framework.container.resthelper.RestfulProxy;
 import org.openo.sdno.framework.container.util.JsonUtil;
-import org.openo.sdno.nslcm.sbi.inf.CatalogSbiService;
+import org.openo.sdno.nslcm.util.AdapterUrlConst;
 import org.openo.sdno.nslcm.util.RestfulParametersUtil;
-import org.openo.sdno.overlayvpn.consts.UrlAdapterConst;
 import org.openo.sdno.rest.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
- * DC gateway controller south branch interface implementation. <br>
+ * SBI service of Catalog.<br>
  * 
  * @author
  * @version SDNO 0.5 June 22, 2016
  */
-public class CatalogSbiServiceImpl implements CatalogSbiService {
+@Service
+public class CatalogSbiService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CatalogSbiServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CatalogSbiService.class);
 
-    @Override
+    /**
+     * Query template information from catalog. <br>
+     * 
+     * @param nsdId ID of the template in catalog used to create the SDN-O service instance
+     * @return The template information
+     * @throws ServiceException When query failed
+     * @since SDNO 0.5
+     */
     public Map<String, Object> queryServiceTemplate(String nsdId) throws ServiceException {
-        String url = UrlAdapterConst.CATALOG_ADAPTER_BASE_URL
-                + MessageFormat.format(UrlAdapterConst.QUERY_TEMPLATE_INFORMATION, nsdId);
+        String url = MessageFormat.format(AdapterUrlConst.CATALOG_ADAPTER_URL + "/{0}", nsdId);
 
         LOGGER.info("queryServiceTemplate begin: " + url);
 

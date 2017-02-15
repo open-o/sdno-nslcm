@@ -109,7 +109,7 @@ public class OverlayVpnTranslator {
 
         // Create LocalCpe
         NbiLocalCpeModel localCpeModel = new NbiLocalCpeModel();
-        localCpeModel.setUuid(UuidUtils.createUuid());
+        localCpeModel.setUuid(localCpeNe.getId());
         localCpeModel.setName(localCpeNe.getName());
         localCpeModel.setTenantId(brsSiteMO.getTenantID());
         localCpeModel.setDescription(localCpeNe.getDescription());
@@ -122,7 +122,7 @@ public class OverlayVpnTranslator {
 
         // Create CloudCpe
         NbiCloudCpeModel cloudCpeModel = new NbiCloudCpeModel();
-        cloudCpeModel.setUuid(UuidUtils.createUuid());
+        cloudCpeModel.setUuid(cloudCpeNe.getId());
         cloudCpeModel.setName(cloudCpeNe.getName());
         cloudCpeModel.setTenantId(brsSiteMO.getTenantID());
         cloudCpeModel.setDescription(cloudCpeNe.getDescription());
