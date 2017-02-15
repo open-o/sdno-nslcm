@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2016-2017 Huawei Technologies Co., Ltd.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<beans  xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context.xsd
+     http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+    <context:component-scan base-package="org.openo.sdno.nslcm" />
+    <context:component-scan base-package="org.openo.sdno.overlayvpn" />
+
+    <!-- these are included in the dependency jar -->
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+    <!-- jar rest server registration -->
+    <jaxrs:server id="restContainer" address="/">
+        <!-- registering beans -->
+        <jaxrs:serviceBeans>
+            <ref bean="nslcmSvcRoaResource"></ref>
+            <ref bean="swaggerRoa"></ref>
+            <ref bean="healthCheckRoaResource"></ref>
+        </jaxrs:serviceBeans>
+        <!-- registering providers -->
+        <jaxrs:providers>
+            <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+            <bean class="org.openo.sdno.exception.GenericExceptionMapper" />
+            <bean class="org.openo.sdno.exception.ServiceExceptionMapper" />
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:jdbc.properties" />
+    </bean>
+    <bean id="inventory" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName" value="org.h2.Driver" />
+        <property name="url" value="jdbc:h2:mem:inventory;MODE=MySQL" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="maxActive" value="50" />
+        <property name="maxIdle" value="50" />
+        <property name="minIdle" value="10" />
+        <property name="testOnBorrow" value="true" />
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="3600000" />
+        <property name="minEvictableIdleTimeMillis" value="600000" />
+        <property name="validationQuery" value="SELECT 1" />
+    </bean>
+
+    <bean id="dbSessionHandler" class="org.openo.sdno.nslcm.dao.multi.DatabaseSessionHandler">
+        <property name="dataBaseName" value="inventory" />
+        <property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+    </bean>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+        <constructor-arg index="1" value="SIMPLE" />
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="datasource" />
+        <property name="mapperLocations" value="classpath:mybatis/mysql/*.xml" />
+    </bean>
+
+    <bean id="datasource" class="org.openo.sdno.nslcm.dao.multi.MultiDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry value-ref="inventory" key="inventory"></entry>
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="inventory"></property>
+    </bean>
+
+    <bean id="nslcmRestModule" class="org.openo.sdno.nslcm.NslcmRestModule" init-method="init" destroy-method="destroy">
+    </bean>
+
+</beans>

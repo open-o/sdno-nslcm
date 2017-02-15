@@ -234,7 +234,6 @@ public class NslcmSvcRoaResource {
             throws ServiceException {
         LOGGER.info("NsTerminationPost enter");
 
-        List<ServiceParameter> serviceParameterList = queryServiceParameter(instanceId);
         Map<String, String> response = null;
 
         try {
@@ -243,6 +242,7 @@ public class NslcmSvcRoaResource {
             if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
                 response = nslcmService.deleteOverlay(instanceId);
             } else {
+                List<ServiceParameter> serviceParameterList = queryServiceParameter(instanceId);
                 response = nslcmService.deleteUnderlay(instanceId, serviceParameterList);
             }
         } catch(ServiceException e) {

@@ -74,7 +74,7 @@ public class VpnConnectionSbiService {
      * @throws ServiceException When delete failed
      * @since SDNO 0.5
      */
-    public NbiVpnConnection deleteVpnConnection(String vpnConnectionUuid) throws ServiceException {
+    public void deleteVpnConnection(String vpnConnectionUuid) throws ServiceException {
         String deleteUrl = MessageFormat.format(AdapterUrlConst.VPN_CONNECTION_ADAPTER_URL + "/{0}", vpnConnectionUuid);
 
         RestfulResponse response = RestfulProxy.delete(deleteUrl, RestfulParametersUtil.getRestfulParameters());
@@ -82,8 +82,6 @@ public class VpnConnectionSbiService {
             LOGGER.error("Delete vpn connection failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
-
-        return JsonUtil.fromJson(response.getResponseContent(), NbiVpnConnection.class);
     }
 
 }

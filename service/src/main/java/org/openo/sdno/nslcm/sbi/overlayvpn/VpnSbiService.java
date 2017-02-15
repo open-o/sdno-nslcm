@@ -101,7 +101,7 @@ public class VpnSbiService {
      * @throws ServiceException When delete failed
      * @since SDNO 0.5
      */
-    public NbiVpn deleteVpn(String vpnUuid) throws ServiceException {
+    public void deleteVpn(String vpnUuid) throws ServiceException {
 
         if(StringUtils.isEmpty(vpnUuid)) {
             LOGGER.error("vpnUuid is invalid");
@@ -115,8 +115,6 @@ public class VpnSbiService {
             LOGGER.error("Delete vpn failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
-
-        return JsonUtil.fromJson(response.getResponseContent(), NbiVpn.class);
     }
 
 }

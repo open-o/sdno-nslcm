@@ -101,7 +101,7 @@ public class OverlayVpnBusinessExecutor {
         NbiVpn vpn = vpnBusinessExecutor.executeQuery(vpnUuid);
         businessModel.setVpnModel(vpn);
 
-        //ServiceChain has the same uuid with vpn
+        // ServiceChain has the same uuid with vpn
         ServiceChainPath sfp = serviceChainBusinessExceutor.executeQuery(vpnUuid);
         businessModel.setServiceChainPathModel(sfp);
 
@@ -110,7 +110,8 @@ public class OverlayVpnBusinessExecutor {
             LOGGER.error("No site related to vpn");
             throw new ServiceException("No site related to vpn");
         }
-        String siteUuid = ((String[])siteUuidList.toArray())[0];
+
+        String siteUuid = siteUuidList.iterator().next();
         NbiSiteModel siteModel = siteBusinessExecutor.executeQuery(siteUuid);
         businessModel.setSiteModel(siteModel);
 
@@ -119,7 +120,8 @@ public class OverlayVpnBusinessExecutor {
             LOGGER.error("No vpc related to vpn");
             throw new ServiceException("No vpc related to vpn");
         }
-        String vpcUuid = ((String[])vpcUuidList.toArray())[0];
+
+        String vpcUuid = vpcUuidList.iterator().next();
         Vpc vpcModel = vpcBusinessExecutor.executeQuery(vpcUuid);
         businessModel.setVpcModel(vpcModel);
 

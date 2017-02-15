@@ -16,6 +16,7 @@
 
 package org.openo.sdno.nslcm.model.translator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
@@ -180,7 +181,8 @@ public class OverlayVpnTranslator {
         siteGateway.setSiteId(brsSiteMO.getId());
         siteGateway.setVpnId(vpn.getUuid());
 
-        vpn.setVpnGateways(Arrays.asList(siteGateway));
+        vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
+        vpn.getVpnGateways().add(siteGateway);
 
         // Create Vpc Gateway
         NbiVpnGateway vpcGateway = new NbiVpnGateway();
@@ -222,7 +224,8 @@ public class OverlayVpnTranslator {
         ServicePathHop fwPathHop = new ServicePathHop();
         fwPathHop.setHopNumber(1);
         fwPathHop.setSfiId(fwNe.getId());
-        sfpPath.setServicePathHops(Arrays.asList(fwPathHop));
+        sfpPath.setServicePathHops(new ArrayList<ServicePathHop>());
+        sfpPath.getServicePathHops().add(fwPathHop);
 
         NetworkElementMO lbNe = baseResourceDao.queryNeByIpAddress(templateModel.getDcLbIp());
         ServicePathHop lbPathHop = new ServicePathHop();

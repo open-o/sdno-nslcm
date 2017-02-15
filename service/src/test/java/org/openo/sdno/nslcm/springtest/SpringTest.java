@@ -17,7 +17,14 @@
 package org.openo.sdno.nslcm.springtest;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:/spring/applicationContext.xml",
+                "classpath*:META-INF/spring/service.xml", "classpath*:spring/service.xml",
+                "file:src/test/resources/spring/service.xml"})
 public class SpringTest {
 
     @Test

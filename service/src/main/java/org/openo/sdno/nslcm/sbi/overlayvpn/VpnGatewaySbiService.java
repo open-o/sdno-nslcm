@@ -74,7 +74,7 @@ public class VpnGatewaySbiService {
      * @throws ServiceException When delete failed
      * @since SDNO 0.5
      */
-    public NbiVpnGateway deleteVpnGateway(String vpnGatewayUuid) throws ServiceException {
+    public void deleteVpnGateway(String vpnGatewayUuid) throws ServiceException {
         String deleteUrl = MessageFormat.format(AdapterUrlConst.VPN_GATEWAY_ADAPTER_URL + "/{0}", vpnGatewayUuid);
 
         RestfulResponse response = RestfulProxy.delete(deleteUrl, RestfulParametersUtil.getRestfulParameters());
@@ -82,8 +82,6 @@ public class VpnGatewaySbiService {
             LOGGER.error("Delete vpn gateway failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
-
-        return JsonUtil.fromJson(response.getResponseContent(), NbiVpnGateway.class);
     }
 
 }

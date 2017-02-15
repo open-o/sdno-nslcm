@@ -16,6 +16,8 @@
 
 package org.openo.sdno.nslcm.businessexecutor;
 
+import java.util.ArrayList;
+
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnConnectionSbiService;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnGatewaySbiService;
@@ -55,19 +57,20 @@ public class VpnBusinessExecutor {
 
         // Deploy Vpn
         NbiVpn vpn = vpnSbiService.createVpn(vpnModel);
+        vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
 
         // Deploy Site Gateway
         NbiVpnGateway siteGateway = vpnGatewaySbiService.createVpnGateway(vpnModel.getVpnGateways().get(0));
-        vpn.getVpnGateways().set(0, siteGateway);
+        vpn.getVpnGateways().add(siteGateway);
 
         // Deploy Vpc Gateway
         NbiVpnGateway vpcGateway = vpnGatewaySbiService.createVpnGateway(vpnModel.getVpnGateways().get(1));
-        vpn.getVpnGateways().set(1, vpcGateway);
+        vpn.getVpnGateways().add(vpcGateway);
 
         // Deploy Vpn Connection
         connectionSbiService.createVpnConnection(vpnModel.getVpnConnections().get(0));
 
-        return vpnModel;
+        return vpn;
     }
 
     /**
@@ -86,7 +89,7 @@ public class VpnBusinessExecutor {
         vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(0).getUuid());
 
         // UnDeploy Vpn Gateway
-        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(0).getUuid());
+        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(1).getUuid());
 
         // UnDeploy Vpn
         vpnSbiService.deleteVpn(vpnModel.getUuid());

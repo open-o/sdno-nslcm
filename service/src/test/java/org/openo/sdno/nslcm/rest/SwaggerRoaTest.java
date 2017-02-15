@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.rest.healthcheck;
+package org.openo.sdno.nslcm.rest;
+
+import static org.junit.Assert.assertFalse;
+
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.sdno.nslcm.rest.HealthCheckRoaResource;
+import org.junit.Test;
+import org.openo.sdno.nslcm.rest.SwaggerRoa;
 import org.openo.sdno.nslcm.springtest.SpringTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import mockit.Mocked;
 
-public class HealthCheckRoaResourceTest extends SpringTest {
+public class SwaggerRoaTest extends SpringTest {
 
     @Autowired
-    private HealthCheckRoaResource healthCheckRoaResource;
+    private SwaggerRoa swaggerRoa;
 
     @Mocked
     private HttpServletRequest httpRequest;
@@ -37,8 +41,8 @@ public class HealthCheckRoaResourceTest extends SpringTest {
     @Mocked
     private HttpServletResponse httpResponse;
 
-    public void healthCheckTest() throws ServiceException {
-        healthCheckRoaResource.healthCheck(httpRequest, httpResponse);
+    @Test
+    public void apidocTest() throws IOException {
+        assertFalse(swaggerRoa.apidoc().isEmpty());
     }
-
 }
