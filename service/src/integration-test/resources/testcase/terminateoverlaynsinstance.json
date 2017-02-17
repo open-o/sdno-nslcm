@@ -1,0 +1,12 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns/{instanceId}/terminate",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200
+	}
+}

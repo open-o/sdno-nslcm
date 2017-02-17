@@ -81,7 +81,7 @@ public class BaseResourceDaoImpl implements IBaseResourceDao {
             throw new ServiceException("No cpes queried out");
         }
 
-        return neList.get(0);
+        return neInvDao.query(neList.get(0).getId());
     }
 
     @Override

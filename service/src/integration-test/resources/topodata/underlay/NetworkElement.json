@@ -1,0 +1,30 @@
+[
+	{
+		"id": "Pe1NeId",
+		"name": "Pe1Ne",
+		"description": "Peer1 Ne",
+		"isVirtual": "true",
+		"source": "os",
+		"ipAddress": "172.10.10.1",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	},
+	{
+		"id": "Pe2NeId",
+		"name": "Pe2Ne",
+		"description": "Peer2 Ne",
+		"isVirtual": "true",
+		"source": "os",
+		"ipAddress": "172.10.10.2",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	}
+]

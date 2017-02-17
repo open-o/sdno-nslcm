@@ -1,0 +1,9 @@
+[
+	{
+		"id": "SiteId",
+		"name": "Site1",
+		"type": "tenant_site",
+		"tenantID": "TenantId",
+		"location": "shenzhenD2-F1"
+	}
+]

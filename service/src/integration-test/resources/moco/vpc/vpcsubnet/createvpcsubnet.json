@@ -1,0 +1,12 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnovpc/v1/subnets",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 201
+	}
+}

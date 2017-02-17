@@ -1,0 +1,17 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"nsdId": "UnderlayNsdId",
+			"nsName": "NsdName",
+			"description": "Test for UnderlayVpn business"
+		}
+	},
+	"response": {
+		"status": 201
+	}
+}

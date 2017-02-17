@@ -1,0 +1,72 @@
+[
+	{
+		"serviceName": "catalog",
+		"version": "v1",
+		"url": "/openoapi/catalog/v1",
+		"protocol": "REST",
+		"visualRange": "1",
+		"nodes": [
+			{
+				"ip": "10.229.33.209",
+				"port": "8200",
+				"ttl": 0
+			}
+		]
+	},
+	{
+		"serviceName": "sdnolocalsite",
+		"version": "v1",
+		"url": "/openoapi/sdnolocalsite/v1",
+		"protocol": "REST",
+		"visualRange": "1",
+		"nodes": [
+			{
+				"ip": "10.229.33.209",
+				"port": "8548",
+				"ttl": 0
+			}
+		]
+	},
+	{
+		"serviceName": "sdnooverlay",
+		"version": "v1",
+		"url": "/openoapi/sdnooverlay/v1",
+		"protocol": "REST",
+		"visualRange": "1",
+		"nodes": [
+			{
+				"ip": "10.229.33.209",
+				"port": "8503",
+				"ttl": 0
+			}
+		]
+	},
+	{
+		"serviceName": "sdnovpc",
+		"version": "v1",
+		"url": "/openoapi/sdnovpc/v1",
+		"protocol": "REST",
+		"visualRange": "1",
+		"nodes": [
+			{
+				"ip": "10.229.33.209",
+				"port": "8518",
+				"ttl": 0
+			}
+		]
+	},
+	{
+		"serviceName": "sdnoservicechain",
+		"version": "v1",
+		"url": "/openoapi/sdnoservicechain/v1",
+		"protocol": "REST",
+		"visualRange": "1",
+		"nodes": [
+			{
+				"ip": "10.229.33.209",
+				"port": "8521",
+				"ttl": 0
+			}
+		]
+	}
+]

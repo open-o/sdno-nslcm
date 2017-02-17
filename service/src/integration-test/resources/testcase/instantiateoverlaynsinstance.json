@@ -1,0 +1,30 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns/{instanceId}/instantiate",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"nsInstanceId": "nsInstance",
+			"additionalParamForNs": {
+				"vpnName": "testOverlay",
+				"vpnDescription": "testDescription",
+				"siteName": "Site1",
+				"siteCidr": "10.100.100.0/24",
+				"subnetVlan": "13",
+				"siteVni": "2",
+				"vpcName": "default/project4",
+				"vpcSubnetName": "subnet1",
+				"vpcSubnetCidr": "10.21.3.0/24",
+				"vpcVni": "25",
+				"dcGwIp": "192.168.1.1",
+				"dcFwIp": "192.168.1.2",
+				"dcLbIp": "192.168.1.3"
+			}
+		}
+	},
+	"response": {
+		"status": 200
+	}
+}

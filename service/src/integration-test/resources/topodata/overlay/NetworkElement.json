@@ -1,0 +1,81 @@
+[
+	{
+		"id": "LocalCpeId",
+		"name": "LocalCpeDevice",
+		"description": "Local Cpe",
+		"productName": "AR169FGW-L",
+		"isVirtual": "true",
+		"siteID": [
+			"SiteId"
+		],
+		"source": "os",
+		"serialNumber": "ABCDEFGHIJKLMNOP1234",
+		"neRole": "Thin CPE",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	},
+	{
+		"id": "CloudCpeId",
+		"name": "CloudCpeDevice",
+		"description": "Cloud Cpe",
+		"isVirtual": "true",
+		"siteID": [
+			"SiteId"
+		],
+		"source": "os",
+		"serialNumber": "21ABCDEFGH12345678901234abcdefgh",
+		"neRole": "vCPE",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	},
+	{
+		"id": "DcFwId",
+		"name": "DcFireWall",
+		"description": "Test for DcFireWall",
+		"isVirtual": "true",
+		"source": "os",
+		"ipAddress": "192.168.1.2",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	},
+	{
+		"id": "DcGwId",
+		"name": "DcGateway",
+		"description": "Test for DcGateway",
+		"isVirtual": "true",
+		"source": "os",
+		"ipAddress": "192.168.1.1",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	},
+	{
+		"id": "DcLbId",
+		"name": "DcLoadBalance",
+		"description": "Test for DcLoadBalance",
+		"isVirtual": "true",
+		"source": "os",
+		"ipAddress": "192.168.1.3",
+		"version": "V1R3",
+		"adminState": "inactive",
+		"operState": "down",
+		"tenantID": "TenantId",
+		"controllerName": "SdnController",
+		"siteName": "Site1"
+	}
+]

@@ -1,0 +1,32 @@
+[
+	{
+		"serviceName": "catalog",
+		"version": "v1",
+		"ip": "10.229.33.209",
+		"port": "8200"
+	},
+	{
+		"serviceName": "sdnolocalsite",
+		"version": "v1",
+		"ip": "10.229.33.209",
+		"port": "8548"
+	},
+	{
+		"serviceName": "sdnooverlay",
+		"version": "v1",
+		"ip": "10.229.33.209",
+		"port": "8503"
+	},
+	{
+		"serviceName": "sdnovpc",
+		"version": "v1",
+		"ip": "10.229.33.209",
+		"port": "8518"
+	},
+	{
+		"serviceName": "sdnoservicechain",
+		"version": "v1",
+		"ip": "10.229.33.209",
+		"port": "8521"
+	}
+]

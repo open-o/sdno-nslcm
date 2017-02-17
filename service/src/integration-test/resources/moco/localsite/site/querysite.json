@@ -1,0 +1,71 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnolocalsite/v1/sites/SiteId",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"id": "SiteId",
+			"name": "Site1",
+			"localCpeType": "AR169FGW-L",
+			"siteDescriptor": "enterprise_l2cpe",
+			"reliability": "singleFixedNetwork",
+			"isEncrypt": "true",
+			"localCpes": [
+				{
+					"id": "LocalCpeId",
+					"name": "LocalCpeDevice",
+					"description": "Local Cpe",
+					"productName": "AR169FGW-L",
+					"isVirtual": "true",
+					"siteID": [
+						"SiteId"
+					],
+					"source": "os",
+					"serialNumber": "ABCDEFGHIJKLMNOP1234",
+					"neRole": "Thin CPE",
+					"version": "V1R3",
+					"adminState": "inactive",
+					"operState": "down",
+					"tenantID": "TenantId"
+				}
+			],
+			"cloudCpes": [
+				{
+					"id": "CloudCpeId",
+					"name": "CloudCpeDevice",
+					"description": "Cloud Cpe",
+					"isVirtual": "true",
+					"siteID": [
+						"SiteId"
+					],
+					"source": "os",
+					"serialNumber": "21ABCDEFGH12345678901234abcdefgh",
+					"neRole": "vCPE",
+					"version": "V1R3",
+					"adminState": "inactive",
+					"operState": "down",
+					"tenantID": "TenantId"
+				}
+			],
+			"vlans": [
+				{
+					"id": "VlanUuid",
+					"vlanId": 13
+				}
+			],
+			"subnets": [
+				{
+					"id": "SubnetId",
+					"siteId": "SiteId",
+					"cidrBlock": "10.100.100.0/24",
+					"vni": "13"
+				}
+			]
+		}
+	}
+}

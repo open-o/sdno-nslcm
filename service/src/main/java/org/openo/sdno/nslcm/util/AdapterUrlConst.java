@@ -45,17 +45,17 @@ public class AdapterUrlConst {
     /**
      * URL of OverlayVpn Service
      */
-    public static final String VPN_ADAPTER_URL = "/openoapi/sdnooverlayvpn/v1/vpns";
+    public static final String VPN_ADAPTER_URL = "/openoapi/sdnooverlay/v1/vpns";
 
     /**
      * URL of OverlayVpn Gateway
      */
-    public static final String VPN_GATEWAY_ADAPTER_URL = "/openoapi/sdnooverlayvpn/v1/vpn-gateways";
+    public static final String VPN_GATEWAY_ADAPTER_URL = "/openoapi/sdnooverlay/v1/vpn-gateways";
 
     /**
      * URL of OverlayVpn Connection
      */
-    public static final String VPN_CONNECTION_ADAPTER_URL = "/openoapi/sdnooverlayvpn/v1/vpn-connections";
+    public static final String VPN_CONNECTION_ADAPTER_URL = "/openoapi/sdnooverlay/v1/vpn-connections";
 
     /**
      * URL of Site Service

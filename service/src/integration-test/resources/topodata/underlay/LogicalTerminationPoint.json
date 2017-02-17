@@ -1,0 +1,24 @@
+[
+	{
+		"name": "NEPort1",
+		"description": "Test for Ltp1",
+		"logicalType": "ETH",
+		"source": "os",
+		"nativeID": "ltp1id",
+		"ipAddress": "192.168.1.1",
+		"adminState": "active",
+		"operState": "up",
+		"neName": "Pe1Ne"
+	},
+	{
+		"name": "NEPort2",
+		"description": "Test for Ltp2",
+		"source": "os",
+		"logicalType": "ETH",
+		"nativeID": "ltp2id",
+		"ipAddress": "192.168.1.2",
+		"adminState": "active",
+		"operState": "up",
+		"neName": "Pe2Ne"
+	}
+]

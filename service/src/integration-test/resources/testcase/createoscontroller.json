@@ -1,0 +1,25 @@
+{
+	"request": {
+		"uri": "/openoapi/extsys/v1/vims",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8",
+			"Accept": "application/json"
+		},
+		"json": {
+			"name": "Sdno_Vim",
+			"url": "http://10.74.151.13:5000/v2.0",
+			"userName": "admin",
+			"password": "admin",
+			"tenant": "admin",
+			"domain": "",
+			"vendor": "OpenStack",
+			"version": "v1.0",
+			"description": "",
+			"type": "openstack"
+		}
+	},
+	"response": {
+		"status": 201
+	}
+}

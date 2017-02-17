@@ -1,0 +1,34 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns/{instanceId}/instantiate",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"nsInstanceId": "nsInstance",
+			"additionalParamForNs": {
+				"name": "testL3vpn",
+				"description": "testDescription",
+				"serviceType": "l3vpn",
+				"topology": "full-mesh",
+				"technology": "mpls",
+				"pe1_ip": "172.10.10.1",
+				"ac1_port": "NEPort1",
+				"ac1_svlan": null,
+				"ac1_ip": "10.10.10.1/24",
+				"ac1_route": "",
+				"pe2_ip": "172.10.10.2",
+				"ac2_port": "NEPort2",
+				"ac2_svlan": null,
+				"ac2_route": "",
+				"ac2_ip": "11.2.2.13/24",
+				"ac1_peer_ip": "0.1.2.3",
+				"ac2_peer_ip": "1.2.3.4"
+			}
+		}
+	},
+	"response": {
+		"status": 200
+	}
+}

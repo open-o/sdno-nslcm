@@ -1,0 +1,16 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnoservicechain/v1/paths/[a-zA-Z0-9\\-\\_]{1,36}",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"id": "SfcId",
+			"name": "Sfp1"
+		}
+	}
+}

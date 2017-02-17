@@ -17,12 +17,14 @@
 package org.openo.sdno.nslcm.businessexecutor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnConnectionSbiService;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnGatewaySbiService;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnSbiService;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
+import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnConnection;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -68,7 +70,8 @@ public class VpnBusinessExecutor {
         vpn.getVpnGateways().add(vpcGateway);
 
         // Deploy Vpn Connection
-        connectionSbiService.createVpnConnection(vpnModel.getVpnConnections().get(0));
+        NbiVpnConnection vpnConnection = connectionSbiService.createVpnConnection(vpnModel.getVpnConnections().get(0));
+        vpn.setVpnConnections(Arrays.asList(vpnConnection));
 
         return vpn;
     }

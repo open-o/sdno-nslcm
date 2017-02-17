@@ -1,0 +1,12 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnolocalsite/v1/sites",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 201
+	}
+}

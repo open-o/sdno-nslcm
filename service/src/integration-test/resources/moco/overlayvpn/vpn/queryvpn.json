@@ -1,0 +1,42 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnooverlay/v1/vpns/[a-zA-Z0-9\\-\\_]{1,36}",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"id": "VpnId",
+			"vpnDescriptor": "enterprise_l2cpe",
+			"siteList": [
+				"SiteId"
+			],
+			"vpcList": [
+				"VpcId"
+			],
+			"vpnConnections": [
+				{
+					"id": "VpnConnectionId",
+					"vpnId": "VpnId",
+					"aEndVpnGatewayId": "SiteGatewayId",
+					"zEndVpnGatewayId": "VpcGatewayId"
+				}
+			],
+			"vpnGateways": [
+				{
+					"id": "SiteGatewayId",
+					"vpnId": "VpnId",
+					"siteId": "SiteId"
+				},
+				{
+					"id": "VpcGatewayId",
+					"vpnId": "VpnId",
+					"vpcId": "VpcId"
+				}
+			]
+		}
+	}
+}
