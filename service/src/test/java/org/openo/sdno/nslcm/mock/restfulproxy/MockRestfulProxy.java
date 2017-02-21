@@ -104,7 +104,7 @@ public class MockRestfulProxy extends MockUp<RestfulProxy> {
         RestfulResponse restfulResponse = new RestfulResponse();
         restfulResponse.setStatus(HttpCode.RESPOND_OK);
         NbiVpn vpn = new NbiVpn();
-        vpn.setUuid("nsInstance");
+        vpn.setId("nsInstance");
         restfulResponse.setResponseJson(JsonUtil.toJson(vpn));
         return restfulResponse;
     }
@@ -113,7 +113,7 @@ public class MockRestfulProxy extends MockUp<RestfulProxy> {
         RestfulResponse restfulResponse = new RestfulResponse();
         restfulResponse.setStatus(HttpCode.RESPOND_OK);
         NbiVpn vpn = new NbiVpn();
-        vpn.setUuid("nsInstance");
+        vpn.setId("nsInstance");
         Set<String> siteIdList = new HashSet<String>();
         siteIdList.add("SiteId");
         vpn.setSiteList(siteIdList);
@@ -122,12 +122,12 @@ public class MockRestfulProxy extends MockUp<RestfulProxy> {
         vpn.setVpcList(vpcIdList);
 
         NbiVpnGateway siteGateway = new NbiVpnGateway();
-        siteGateway.setUuid(UuidUtils.createUuid());
+        siteGateway.setId(UuidUtils.createUuid());
         siteGateway.setSiteId("SiteId");
         siteGateway.setVpnId("nsInstance");
 
         NbiVpnGateway vpcGateway = new NbiVpnGateway();
-        vpcGateway.setUuid(UuidUtils.createUuid());
+        vpcGateway.setId(UuidUtils.createUuid());
         vpcGateway.setVpcId("VpcId");
         vpcGateway.setVpnId("nsInstance");
 
@@ -136,10 +136,10 @@ public class MockRestfulProxy extends MockUp<RestfulProxy> {
         vpn.getVpnGateways().add(vpcGateway);
 
         NbiVpnConnection connection = new NbiVpnConnection();
-        connection.setUuid(UuidUtils.createUuid());
+        connection.setId(UuidUtils.createUuid());
         connection.setVpnId("VpnId");
-        connection.setaEndVpnGatewayId(siteGateway.getUuid());
-        connection.setzEndVpnGatewayId(vpcGateway.getUuid());
+        connection.setaEndVpnGatewayId(siteGateway.getId());
+        connection.setzEndVpnGatewayId(vpcGateway.getId());
         vpn.setVpnConnections(Arrays.asList(connection));
 
         restfulResponse.setResponseJson(JsonUtil.toJson(vpn));
@@ -214,7 +214,7 @@ public class MockRestfulProxy extends MockUp<RestfulProxy> {
         RestfulResponse restfulResponse = new RestfulResponse();
         restfulResponse.setStatus(HttpCode.RESPOND_OK);
         NbiVpnGateway vpnGateway = new NbiVpnGateway();
-        vpnGateway.setUuid(UuidUtils.createUuid());
+        vpnGateway.setId(UuidUtils.createUuid());
         vpnGateway.setVpnId("nsInstance");
         restfulResponse.setResponseJson(JsonUtil.toJson(vpnGateway));
         return restfulResponse;
@@ -224,7 +224,7 @@ public class MockRestfulProxy extends MockUp<RestfulProxy> {
         RestfulResponse restfulResponse = new RestfulResponse();
         restfulResponse.setStatus(HttpCode.RESPOND_OK);
         NbiVpnConnection vpnConnection = new NbiVpnConnection();
-        vpnConnection.setUuid(UuidUtils.createUuid());
+        vpnConnection.setId(UuidUtils.createUuid());
         vpnConnection.setVpnId("nsInstance");
         restfulResponse.setResponseJson(JsonUtil.toJson(vpnConnection));
         return restfulResponse;

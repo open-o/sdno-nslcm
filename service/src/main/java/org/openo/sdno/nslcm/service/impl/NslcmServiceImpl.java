@@ -84,7 +84,7 @@ public class NslcmServiceImpl implements NslcmService {
             throws ServiceException {
         NbiVpn vpn = vpnBusinessExceutor.executeDeploy(businessModel);
         Map<String, String> resultMap = new HashMap<String, String>();
-        resultMap.put("vpnId", vpn.getUuid());
+        resultMap.put("vpnId", vpn.getId());
         insertNsResponseInfo(instanceId, resultMap);
         return resultMap;
     }

@@ -191,7 +191,7 @@ public class NslcmSvcRoaResource {
                         JsonUtil.fromJson(JsonUtil.toJson(sdnoTemplateParameter), OverlayTemplateModel.class);
                 ValidationUtil.validateModel(vpnTemplateModel);
 
-                // Create Vpn usiness model
+                // Create Vpn business model
                 OverlayVpnBusinessModel businessModel =
                         overlayVpnTranslator.translateOverlayVpnModel(vpnTemplateModel, instanceId);
 

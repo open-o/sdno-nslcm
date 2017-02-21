@@ -82,7 +82,7 @@ public class OverlayVpnBusinessExecutor {
         siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
         vpcBusinessExecutor.executeUnDeploy(businessModel.getVpcModel());
         Map<String, String> resultMap = new HashMap<String, String>();
-        resultMap.put("errorCode", businessModel.getVpnModel().getUuid());
+        resultMap.put("errorCode", businessModel.getVpnModel().getId());
         return resultMap;
     }
 

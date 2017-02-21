@@ -86,16 +86,16 @@ public class VpnBusinessExecutor {
     public void executeUnDeploy(NbiVpn vpnModel) throws ServiceException {
 
         // UnDeploy VpnConnection
-        connectionSbiService.deleteVpnConnection(vpnModel.getVpnConnections().get(0).getUuid());
+        connectionSbiService.deleteVpnConnection(vpnModel.getVpnConnections().get(0).getId());
 
         // UnDeploy Site Gateway
-        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(0).getUuid());
+        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(0).getId());
 
         // UnDeploy Vpn Gateway
-        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(1).getUuid());
+        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(1).getId());
 
         // UnDeploy Vpn
-        vpnSbiService.deleteVpn(vpnModel.getUuid());
+        vpnSbiService.deleteVpn(vpnModel.getId());
     }
 
     /**

@@ -166,7 +166,7 @@ public class OverlayVpnTranslator {
 
         // Create Vpn
         NbiVpn vpn = new NbiVpn();
-        vpn.setUuid(instanceId);
+        vpn.setId(instanceId);
         vpn.setName(templateModel.getVpnName());
         vpn.setTenantId(brsSiteMO.getTenantID());
         vpn.setDescription(templateModel.getVpnDescription());
@@ -174,19 +174,19 @@ public class OverlayVpnTranslator {
 
         // Create Site Gateway
         NbiVpnGateway siteGateway = new NbiVpnGateway();
-        siteGateway.setUuid(UuidUtils.createUuid());
+        siteGateway.setId(UuidUtils.createUuid());
         siteGateway.setName("SiteGateway_" + templateModel.getVpnName());
         siteGateway.setTenantId(brsSiteMO.getTenantID());
         siteGateway.setDescription(templateModel.getVpnDescription());
         siteGateway.setSiteId(brsSiteMO.getId());
-        siteGateway.setVpnId(vpn.getUuid());
+        siteGateway.setVpnId(vpn.getId());
 
         vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
         vpn.getVpnGateways().add(siteGateway);
 
         // Create Vpc Gateway
         NbiVpnGateway vpcGateway = new NbiVpnGateway();
-        vpcGateway.setUuid(UuidUtils.createUuid());
+        vpcGateway.setId(UuidUtils.createUuid());
         siteGateway.setName("VpcGateway_" + templateModel.getVpnName());
         siteGateway.setTenantId(brsSiteMO.getTenantID());
         siteGateway.setDescription(templateModel.getVpnDescription());
@@ -197,13 +197,13 @@ public class OverlayVpnTranslator {
 
         // Create Vpn Connection
         NbiVpnConnection vpnConnection = new NbiVpnConnection();
-        vpnConnection.setUuid(UuidUtils.createUuid());
+        vpnConnection.setId(UuidUtils.createUuid());
         vpnConnection.setName("VpnConnection_" + templateModel.getVpnName());
         vpnConnection.setTenantId(brsSiteMO.getTenantID());
         vpnConnection.setDescription(templateModel.getVpnDescription());
-        vpnConnection.setaEndVpnGatewayId(siteGateway.getUuid());
-        vpnConnection.setzEndVpnGatewayId(vpcGateway.getUuid());
-        vpnConnection.setVpnId(vpn.getUuid());
+        vpnConnection.setaEndVpnGatewayId(siteGateway.getId());
+        vpnConnection.setzEndVpnGatewayId(vpcGateway.getId());
+        vpnConnection.setVpnId(vpn.getId());
 
         vpn.setVpnConnections(Arrays.asList(vpnConnection));
 
