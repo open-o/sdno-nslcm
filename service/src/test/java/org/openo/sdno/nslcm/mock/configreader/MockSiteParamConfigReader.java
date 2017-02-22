@@ -38,4 +38,9 @@ public class MockSiteParamConfigReader extends MockUp<SiteParamConfigReader> {
         return "true";
     }
 
+    @Mock
+    public int getCpeOneTime() {
+        return 500;
+    }
+
 }

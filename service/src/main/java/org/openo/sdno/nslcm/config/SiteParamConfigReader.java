@@ -68,4 +68,14 @@ public class SiteParamConfigReader extends ConfigReader {
         return properties.getProperty("isEncrypt");
     }
 
+    /**
+     * Get cpe online waiting time.<br>
+     * 
+     * @return cpe online waiting time
+     * @since SDNO 0.5
+     */
+    public int getCpeOneTime() {
+        return Integer.parseInt(properties.getProperty("cpeOneTime"));
+    }
+
 }

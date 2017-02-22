@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.sdno.nslcm.config.SiteParamConfigReader;
 import org.openo.sdno.nslcm.sbi.site.CloudCpeSbiService;
 import org.openo.sdno.nslcm.sbi.site.LocalCpeSbiService;
 import org.openo.sdno.nslcm.sbi.site.SiteSbiService;
@@ -29,6 +30,8 @@ import org.openo.sdno.overlayvpn.brs.model.NetworkElementMO;
 import org.openo.sdno.overlayvpn.model.v2.cpe.NbiCloudCpeModel;
 import org.openo.sdno.overlayvpn.model.v2.cpe.NbiLocalCpeModel;
 import org.openo.sdno.overlayvpn.model.v2.site.NbiSiteModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +43,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SiteBusinessExecutor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SiteBusinessExecutor.class);
 
     @Autowired
     private CloudCpeSbiService cloudCpeSbiService;
@@ -55,6 +60,9 @@ public class SiteBusinessExecutor {
 
     @Autowired
     private VlanSbiService vlanSbiService;
+
+    @Autowired
+    private SiteParamConfigReader siteParamConfigReader;
 
     /**
      * Deploy site related business.<br>
@@ -74,6 +82,14 @@ public class SiteBusinessExecutor {
 
         // Deploy LocalCpe
         localCpeSbiService.createLocalCpe(siteModel.getLocalCpeModels().get(0));
+
+        // Wait for Cpe Online
+        try {
+            Thread.sleep(siteParamConfigReader.getCpeOneTime());
+        } catch(InterruptedException e) {
+            LOGGER.error("Wait for CpeOnline is interrupted, cpe device may not be online.");
+            throw new ServiceException("Wait for CpeOnline is interrupted");
+        }
 
         // Deploy Vlan
         vlanSbiService.createVlan(siteModel.getVlans().get(0));
