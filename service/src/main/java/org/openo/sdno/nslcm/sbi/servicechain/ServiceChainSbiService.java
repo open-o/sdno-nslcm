@@ -58,7 +58,7 @@ public class ServiceChainSbiService {
      */
     public ServiceChainPath queryServiceChain(String serviceChainUuid) throws ServiceException {
         if(StringUtils.isEmpty(serviceChainUuid)) {
-            LOGGER.error("serviceChainUuid is invalid");
+            LOGGER.error("serviceChainUuid is invalid, need to check parameter");
             throw new ParameterServiceException("serviceChainUuid is invalid");
         }
 
@@ -83,11 +83,11 @@ public class ServiceChainSbiService {
      */
     public void createServiceChain(ServiceChainPath serviceChainPath) throws ServiceException {
         if(null == serviceChainPath) {
-            LOGGER.error("serviceChainPath is invalid");
+            LOGGER.error("serviceChainPath is invalid, need to check parameter");
             throw new ParameterServiceException("serviceChainPath is invalid");
         }
 
-        Map<String, ServiceChainPath> serviceChainPathMap = new HashMap<String, ServiceChainPath>();
+        Map<String, ServiceChainPath> serviceChainPathMap = new HashMap<>();
         serviceChainPathMap.put(SERVICE_CHAIN_PATH_KEY, serviceChainPath);
 
         RestfulParametes restfulParameters =
@@ -108,7 +108,7 @@ public class ServiceChainSbiService {
      */
     public void deleteServiceChain(String serviceChainUuid) throws ServiceException {
         if(StringUtils.isEmpty(serviceChainUuid)) {
-            LOGGER.error("serviceChainUuid is invalid");
+            LOGGER.error("serviceChainUuid is invalid, need to check parameter");
             throw new ParameterServiceException("serviceChainUuid is invalid");
         }
 
@@ -117,7 +117,7 @@ public class ServiceChainSbiService {
         RestfulParametes restfulParameters = RestfulParametersUtil.getRestfulParameters();
         RestfulResponse response = RestfulProxy.delete(deleteServiceChainUrl, restfulParameters);
         if(!HttpCode.isSucess(response.getStatus())) {
-            LOGGER.error("Delete ServiceChain failed");
+            LOGGER.error("Delete service chain failed");
             throw new ServiceException(response.getStatus(), response.getResponseContent());
         }
     }

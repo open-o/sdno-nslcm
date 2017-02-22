@@ -16,12 +16,10 @@
 
 package org.openo.sdno.nslcm.rest;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.sdno.nslcm.rest.HealthCheckRoaResource;
 import org.openo.sdno.nslcm.springtest.SpringTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,14 +31,11 @@ public class HealthCheckRoaResourceTest extends SpringTest {
     private HealthCheckRoaResource healthCheckRoaResource;
 
     @Mocked
-    private HttpServletRequest httpRequest;
-
-    @Mocked
     private HttpServletResponse httpResponse;
 
     @Test
     public void healthCheckTest() throws ServiceException {
-        healthCheckRoaResource.healthCheck(httpRequest, httpResponse);
+        healthCheckRoaResource.healthCheck(httpResponse);
     }
 
 }

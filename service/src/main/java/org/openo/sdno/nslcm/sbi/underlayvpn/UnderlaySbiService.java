@@ -69,7 +69,7 @@ public class UnderlaySbiService {
                 RestfulProxy.post(url, RestfulParametersUtil.getRestfulParameters(JsonUtil.toJson(vpnVo)));
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
-        Map<String, String> resultMap = new HashMap<String, String>();
+        Map<String, String> resultMap = new HashMap<>();
         resultMap.put("vpnId", restVpn.getId());
         LOGGER.info("createUnderlay end, result = " + resultMap.toString());
 
@@ -103,7 +103,7 @@ public class UnderlaySbiService {
 
         String rspContent = ResponseUtils.transferResponse(response);
         Vpn restVpn = JsonUtil.fromJson(rspContent, Vpn.class);
-        Map<String, String> resultMap = new HashMap<String, String>();
+        Map<String, String> resultMap = new HashMap<>();
         resultMap.put("errorCode", restVpn.getId());
         LOGGER.info("deleteUnderlay end, result = " + resultMap.toString());
 

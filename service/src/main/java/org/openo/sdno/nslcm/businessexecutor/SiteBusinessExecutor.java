@@ -141,7 +141,7 @@ public class SiteBusinessExecutor {
     }
 
     private List<NbiCloudCpeModel> convertCloudCpeNeToModel(List<NetworkElementMO> neList) throws ServiceException {
-        List<NbiCloudCpeModel> cloudCpeModelList = new ArrayList<NbiCloudCpeModel>();
+        List<NbiCloudCpeModel> cloudCpeModelList = new ArrayList<>();
         for(NetworkElementMO curCpeNe : neList) {
             cloudCpeModelList.add(cloudCpeSbiService.queryCloudCpe(curCpeNe.getId()));
         }
@@ -149,7 +149,7 @@ public class SiteBusinessExecutor {
     }
 
     private List<NbiLocalCpeModel> convertLocalCpeNeToModel(List<NetworkElementMO> neList) {
-        List<NbiLocalCpeModel> localCpeModelList = new ArrayList<NbiLocalCpeModel>();
+        List<NbiLocalCpeModel> localCpeModelList = new ArrayList<>();
         for(NetworkElementMO curCpeNe : neList) {
             NbiLocalCpeModel localCpeModel = new NbiLocalCpeModel();
             localCpeModel.setUuid(curCpeNe.getId());

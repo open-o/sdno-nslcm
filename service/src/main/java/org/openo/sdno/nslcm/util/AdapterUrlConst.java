@@ -24,9 +24,6 @@ package org.openo.sdno.nslcm.util;
  */
 public class AdapterUrlConst {
 
-    private AdapterUrlConst() {
-    }
-
     /**
      * URL of Catalog Service
      */
@@ -96,5 +93,9 @@ public class AdapterUrlConst {
      * URL of Vpc Subnet Service
      */
     public static final String VPCSUBNET_ADAPTER_URL = "/openoapi/sdnovpc/v1/subnets";
+
+    private AdapterUrlConst() {
+        // empty constructor
+    }
 
 }

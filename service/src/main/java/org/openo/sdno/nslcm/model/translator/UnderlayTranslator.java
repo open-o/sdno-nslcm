@@ -55,6 +55,8 @@ import org.springframework.util.StringUtils;
 @Component
 public class UnderlayTranslator {
 
+    private static final String LRIP_LAYER_RATE = "LR_IP";
+
     @Autowired
     private IBaseResourceDao baseResourceDao;
 
@@ -98,7 +100,7 @@ public class UnderlayTranslator {
     }
 
     private Map<String, String> translateList2Map(List<ServiceParameter> serviceParameterList) {
-        Map<String, String> inputMap = new HashMap<String, String>();
+        Map<String, String> inputMap = new HashMap<>();
         for(ServiceParameter serviceParameter : serviceParameterList) {
             inputMap.put(serviceParameter.getInputKey(), serviceParameter.getInputValue());
         }
@@ -106,7 +108,7 @@ public class UnderlayTranslator {
     }
 
     private void setTunnelSchema(TunnelSchema tunnelSchema, String serviceType) {
-        if("l3vpn".equals(serviceType)) {
+        if(isL3VpnServiceType(serviceType)) {
             TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
             pathConstraint.setSetupPriority(4);
             pathConstraint.setHoldupPriority(4);
@@ -121,7 +123,7 @@ public class UnderlayTranslator {
             tunnelSchema.setTunnelTech("RSVP-TE");
             tunnelSchema.setTunnelLatency(2000);
             tunnelSchema.setTunnelCreatePolicy(tunnelCreatePolicy);
-        } else if("l2vpn".equals(serviceType)) {
+        } else if(isL2VpnServiceType(serviceType)) {
             TunnelPathConstraint pathConstraint = new TunnelPathConstraint();
             pathConstraint.setSetupPriority(4);
             pathConstraint.setHoldupPriority(4);
@@ -159,26 +161,26 @@ public class UnderlayTranslator {
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
         ethernetTpSpec.setDot1qVlanList(inputMap.get("ac1_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
-        if("l2vpn".equals(serviceType)) {
+        if(isL2VpnServiceType(serviceType)) {
             ethernetTpSpec.setActionValue("KEEP");
             ethernetTpSpec.setAccessType("untag");
         }
         srcTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
-        if("l3vpn".equals(serviceType)) {
+        if(isL3VpnServiceType(serviceType)) {
             IpTpSpec ipTpSpec = new IpTpSpec();
             ipTpSpec.setMasterIp(inputMap.get("ac1_ip"));
             srcTpTypeSpec.setIpTpSpec(ipTpSpec);
-            srcTpTypeSpec.setLayerRate("LR_IP");
+            srcTpTypeSpec.setLayerRate(LRIP_LAYER_RATE);
         }
         setCommonTpModel(srcTpMo, serviceType);
 
-        List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
+        List<TpTypeSpec> tpTypeSpecList = new ArrayList<>();
         tpTypeSpecList.add(srcTpTypeSpec);
         srcTpMo.setTypeSpecList(tpTypeSpecList);
 
-        if("l3vpn".equals(serviceType)) {
-            List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
+        if(isL3VpnServiceType(serviceType)) {
+            List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<>();
 
             String sRoute = inputMap.get("ac1_route");
             String[] sRouteArray = sRoute.split(";");
@@ -189,20 +191,11 @@ public class UnderlayTranslator {
                     continue;
                 }
 
-                if(StringUtils.hasLength(staticRouteArray[0])) {
-                    RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
-                    StaticRouteTable staticRoute = new StaticRouteTable();
-                    staticRoute.setDestinationCidr(staticRouteArray[0]);
-                    staticRoute.setNextHopIp("");
-                    if(staticRouteArray.length > 1) {
-                        staticRoute.setNextHopIp(staticRouteArray[1]);
-                    }
-
-                    staticRouteProtocolSpecs.setType("staticRouting");
-                    staticRouteProtocolSpecs.setStaticRoute(staticRoute);
-
-                    routeProtocolSpecs.add(staticRouteProtocolSpecs);
+                RouteProtocolSpec routeProtocolSpec = createRouteProtocolSpec(staticRouteArray);
+                if(null != routeProtocolSpec) {
+                    routeProtocolSpecs.add(routeProtocolSpec);
                 }
+
             }
 
             if(StringUtils.hasLength(inputMap.get("ac1_peer_ip"))) {
@@ -219,11 +212,11 @@ public class UnderlayTranslator {
             srcTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
         }
 
-        if("l2vpn".equals(serviceType)) {
+        if(isL2VpnServiceType(serviceType)) {
             NVString addtionalInfo = new NVString();
             addtionalInfo.setName("pwPeerIp");
             addtionalInfo.setValue("1.1.1.1");
-            List<NVString> addtionalInfos = new ArrayList<NVString>();
+            List<NVString> addtionalInfos = new ArrayList<>();
             addtionalInfos.add(addtionalInfo);
             srcTpMo.setAddtionalInfo(addtionalInfos);
         }
@@ -240,27 +233,27 @@ public class UnderlayTranslator {
         EthernetTpSpec ethernetTpSpec = new EthernetTpSpec();
         ethernetTpSpec.setDot1qVlanList(inputMap.get("ac2_svlan"));
         ethernetTpSpec.setAccessType("dot1q");
-        if("l2vpn".equals(serviceType)) {
+        if(isL2VpnServiceType(serviceType)) {
             ethernetTpSpec.setActionValue("KEEP");
             ethernetTpSpec.setAccessType("untag");
         }
         dstTpTypeSpec.setEthernetTpSpec(ethernetTpSpec);
 
-        if("l3vpn".equals(serviceType)) {
+        if(isL3VpnServiceType(serviceType)) {
             IpTpSpec ipTpSpec = new IpTpSpec();
             ipTpSpec.setMasterIp(inputMap.get("ac2_ip"));
             dstTpTypeSpec.setIpTpSpec(ipTpSpec);
-            dstTpTypeSpec.setLayerRate("LR_IP");
+            dstTpTypeSpec.setLayerRate(LRIP_LAYER_RATE);
         }
 
         setCommonTpModel(dstTpMo, serviceType);
 
-        List<TpTypeSpec> tpTypeSpecList = new ArrayList<TpTypeSpec>();
+        List<TpTypeSpec> tpTypeSpecList = new ArrayList<>();
         tpTypeSpecList.add(dstTpTypeSpec);
         dstTpMo.setTypeSpecList(tpTypeSpecList);
 
-        if("l3vpn".equals(serviceType)) {
-            List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<RouteProtocolSpec>();
+        if(isL3VpnServiceType(serviceType)) {
+            List<RouteProtocolSpec> routeProtocolSpecs = new ArrayList<>();
 
             String sRoute = inputMap.get("ac2_route");
             String[] sRouteArray = sRoute.split(";");
@@ -271,19 +264,9 @@ public class UnderlayTranslator {
                     continue;
                 }
 
-                if(StringUtils.hasLength(staticRouteArray[0])) {
-                    RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
-                    StaticRouteTable staticRoute = new StaticRouteTable();
-                    staticRoute.setDestinationCidr(staticRouteArray[0]);
-                    staticRoute.setNextHopIp("");
-                    if(staticRouteArray.length > 1) {
-                        staticRoute.setNextHopIp(staticRouteArray[1]);
-                    }
-
-                    staticRouteProtocolSpecs.setType("staticRouting");
-                    staticRouteProtocolSpecs.setStaticRoute(staticRoute);
-
-                    routeProtocolSpecs.add(staticRouteProtocolSpecs);
+                RouteProtocolSpec routeProtocolSpec = createRouteProtocolSpec(staticRouteArray);
+                if(null != routeProtocolSpec) {
+                    routeProtocolSpecs.add(routeProtocolSpec);
                 }
             }
 
@@ -301,11 +284,11 @@ public class UnderlayTranslator {
             dstTpMo.setRouteProtocolSpecs(routeProtocolSpecs);
         }
 
-        if("l2vpn".equals(serviceType)) {
+        if(isL2VpnServiceType(serviceType)) {
             NVString addtionalInfo = new NVString();
             addtionalInfo.setName("pwPeerIp");
             addtionalInfo.setValue("1.1.1.2");
-            List<NVString> addtionalInfos = new ArrayList<NVString>();
+            List<NVString> addtionalInfos = new ArrayList<>();
             addtionalInfos.add(addtionalInfo);
             dstTpMo.setAddtionalInfo(addtionalInfos);
         }
@@ -325,9 +308,9 @@ public class UnderlayTranslator {
     private void setCommonTpModel(Tp tpMo, String serviceType) {
         tpMo.setAdminStatus("active");
         tpMo.setOperStatus("up");
-        if("l3vpn".equals(serviceType)) {
+        if(isL3VpnServiceType(serviceType)) {
             tpMo.setType("CTP");
-            tpMo.setWorkingLayer("LR_IP");
+            tpMo.setWorkingLayer(LRIP_LAYER_RATE);
         }
     }
 
@@ -338,16 +321,48 @@ public class UnderlayTranslator {
         vpnMo.setDescription(inputMap.get("description"));
         vpnMo.setOperStatus("up");
 
-        List<Tp> accessPointList = new ArrayList<Tp>();
+        List<Tp> accessPointList = new ArrayList<>();
         accessPointList.add(srcTpMo);
         accessPointList.add(dstTpMo);
         vpnMo.setAccessPointList(accessPointList);
         vpnMo.setVpnBasicInfo(vpnBasicInfo);
-        List<NVString> addtionalInfoList = new ArrayList<NVString>();
+        List<NVString> addtionalInfoList = new ArrayList<>();
         NVString addtionalInfo = new NVString();
         addtionalInfo.setName("encapsulation");
         addtionalInfo.setValue("eth");
         addtionalInfoList.add(addtionalInfo);
         vpnMo.setAddtionalInfo(addtionalInfoList);
+    }
+
+    private RouteProtocolSpec createRouteProtocolSpec(String[] staticRouteArray) {
+
+        if(null == staticRouteArray || 0 == staticRouteArray.length) {
+            return null;
+        }
+
+        if(!StringUtils.hasLength(staticRouteArray[0])) {
+            return null;
+        }
+
+        RouteProtocolSpec staticRouteProtocolSpecs = new RouteProtocolSpec();
+        StaticRouteTable staticRoute = new StaticRouteTable();
+        staticRoute.setDestinationCidr(staticRouteArray[0]);
+        staticRoute.setNextHopIp("");
+        if(staticRouteArray.length > 1) {
+            staticRoute.setNextHopIp(staticRouteArray[1]);
+        }
+
+        staticRouteProtocolSpecs.setType("staticRouting");
+        staticRouteProtocolSpecs.setStaticRoute(staticRoute);
+
+        return staticRouteProtocolSpecs;
+    }
+
+    private boolean isL3VpnServiceType(String serviceType) {
+        return "l3vpn".equals(serviceType);
+    }
+
+    private boolean isL2VpnServiceType(String serviceType) {
+        return "l2vpn".equals(serviceType);
     }
 }

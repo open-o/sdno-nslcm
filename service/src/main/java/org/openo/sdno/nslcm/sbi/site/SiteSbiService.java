@@ -54,7 +54,7 @@ public class SiteSbiService {
      */
     public NbiSiteModel querySite(String siteUuid) throws ServiceException {
         if(StringUtils.isEmpty(siteUuid)) {
-            LOGGER.error("siteUuid is invalid");
+            LOGGER.error("siteUuid is invalid, need to check parameter");
             throw new ParameterServiceException("siteUuid is invalid");
         }
 
@@ -99,7 +99,7 @@ public class SiteSbiService {
      */
     public void deleteSite(String siteUuid) throws ServiceException {
         if(StringUtils.isEmpty(siteUuid)) {
-            LOGGER.error("siteUuid is invalid");
+            LOGGER.error("siteUuid is invalid, need to check parameter");
             throw new ParameterServiceException("siteUuid is invalid");
         }
 

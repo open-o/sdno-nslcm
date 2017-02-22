@@ -164,7 +164,7 @@ public class NslcmServiceImpl implements NslcmService {
     }
 
     private void insertNsResponseInfo(String instanceId, Map<String, String> response) throws ServiceException {
-        List<NsResponseInfo> nsResponseInfoList = new ArrayList<NsResponseInfo>();
+        List<NsResponseInfo> nsResponseInfoList = new ArrayList<>();
         NsResponseInfo nsResponseInfo = new NsResponseInfo();
         nsResponseInfo.setInstanceId(instanceId);
         nsResponseInfo.setExternalId(response.get("vpnId"));

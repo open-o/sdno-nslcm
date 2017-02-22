@@ -53,7 +53,7 @@ public class CloudCpeSbiService {
      */
     public NbiCloudCpeModel queryCloudCpe(String cloudCpeUuid) throws ServiceException {
         if(StringUtils.isEmpty(cloudCpeUuid)) {
-            LOGGER.error("cloudCpeUuid is invalid");
+            LOGGER.error("cloudCpeUuid is invalid, need to check parameter");
             throw new ParameterServiceException("cloudCpeUuid is invalid");
         }
 
@@ -98,7 +98,7 @@ public class CloudCpeSbiService {
      */
     public void deleteCloudCpe(String cloudCpeUuid) throws ServiceException {
         if(StringUtils.isEmpty(cloudCpeUuid)) {
-            LOGGER.error("cloudCpeUuid is invalid");
+            LOGGER.error("cloudCpeUuid is invalid, need to check parameter");
             throw new ParameterServiceException("cloudCpeUuid is invalid");
         }
 

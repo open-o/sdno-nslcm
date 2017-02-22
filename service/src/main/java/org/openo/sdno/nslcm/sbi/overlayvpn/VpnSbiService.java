@@ -54,7 +54,7 @@ public class VpnSbiService {
     public NbiVpn queryVpn(String vpnUuid) throws ServiceException {
 
         if(StringUtils.isEmpty(vpnUuid)) {
-            LOGGER.error("vpnUuid is invalid");
+            LOGGER.error("vpnUuid is invalid, need to check parameter");
             throw new ParameterServiceException("vpnUuid is invalid");
         }
 
@@ -79,7 +79,7 @@ public class VpnSbiService {
      */
     public NbiVpn createVpn(NbiVpn vpn) throws ServiceException {
         if(null == vpn) {
-            LOGGER.error("vpn is invalid");
+            LOGGER.error("vpn is invalid, need to check parameter");
             throw new ParameterServiceException("vpn is invalid");
         }
 

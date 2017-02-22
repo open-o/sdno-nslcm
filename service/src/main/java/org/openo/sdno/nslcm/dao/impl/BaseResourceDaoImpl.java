@@ -57,7 +57,7 @@ public class BaseResourceDaoImpl implements IBaseResourceDao {
 
     @Override
     public SiteMO querySiteByName(String siteName) throws ServiceException {
-        Map<String, String> filterMap = new HashMap<String, String>();
+        Map<String, String> filterMap = new HashMap<>();
         filterMap.put("name", siteName);
 
         List<SiteMO> siteList = siteInvDao.query(filterMap);
@@ -71,7 +71,7 @@ public class BaseResourceDaoImpl implements IBaseResourceDao {
 
     @Override
     public NetworkElementMO querySiteCpeByType(String siteId, CpeRoleType cpeRoleType) throws ServiceException {
-        Map<String, String> conditionMap = new HashMap<String, String>();
+        Map<String, String> conditionMap = new HashMap<>();
         conditionMap.put("siteID", siteId);
         conditionMap.put("neRole", cpeRoleType.getName());
 
@@ -87,7 +87,7 @@ public class BaseResourceDaoImpl implements IBaseResourceDao {
     @Override
     public NetworkElementMO queryNeByIpAddress(String ipAddress) throws ServiceException {
 
-        Map<String, String> condition = new HashMap<String, String>();
+        Map<String, String> condition = new HashMap<>();
         condition.put("ipAddress", ipAddress);
         List<NetworkElementMO> neList = neInvDao.query(condition);
         if(CollectionUtils.isEmpty(neList)) {
@@ -100,7 +100,7 @@ public class BaseResourceDaoImpl implements IBaseResourceDao {
 
     @Override
     public String queryPortNativeID(String portName) throws ServiceException {
-        Map<String, String> condition = new HashMap<String, String>();
+        Map<String, String> condition = new HashMap<>();
         condition.put("name", portName);
 
         List<LogicalTernminationPointMO> ltpMOList = ltpInvDao.query(condition);

@@ -53,7 +53,7 @@ public class VpcSbiService {
      */
     public Vpc queryVpc(String vpcUuid) throws ServiceException {
         if(StringUtils.isEmpty(vpcUuid)) {
-            LOGGER.error("vpcUuid is invalid");
+            LOGGER.error("vpcUuid is invalid, need to check parameter");
             throw new ParameterServiceException("vpcUuid is invalid");
         }
 
@@ -98,7 +98,7 @@ public class VpcSbiService {
      */
     public void deleteVpc(String vpcUuid) throws ServiceException {
         if(StringUtils.isEmpty(vpcUuid)) {
-            LOGGER.error("vpcUuid is invalid");
+            LOGGER.error("vpcUuid is invalid, need to check parameter");
             throw new ParameterServiceException("vpcUuid is invalid");
         }
 
