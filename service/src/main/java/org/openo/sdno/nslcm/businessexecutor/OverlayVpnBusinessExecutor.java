@@ -63,8 +63,8 @@ public class OverlayVpnBusinessExecutor {
      * @since SDNO 0.5
      */
     public NbiVpn executeDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
-        vpcBusinessExecutor.executeDeploy(businessModel.getVpcModel());
         siteBusinessExecutor.executeDeploy(businessModel.getSiteModel());
+        vpcBusinessExecutor.executeDeploy(businessModel.getVpcModel());
         serviceChainBusinessExceutor.executeDeploy(businessModel.getServiceChainPathModel());
         return vpnBusinessExecutor.executeDeploy(businessModel.getVpnModel());
     }
@@ -77,10 +77,10 @@ public class OverlayVpnBusinessExecutor {
      * @since SDNO 0.5
      */
     public Map<String, String> executeUnDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
-        serviceChainBusinessExceutor.executeUnDeploy(businessModel.getServiceChainPathModel());
         vpnBusinessExecutor.executeUnDeploy(businessModel.getVpnModel());
-        siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
+        serviceChainBusinessExceutor.executeUnDeploy(businessModel.getServiceChainPathModel());
         vpcBusinessExecutor.executeUnDeploy(businessModel.getVpcModel());
+        siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("errorCode", businessModel.getVpnModel().getId());
         return resultMap;
