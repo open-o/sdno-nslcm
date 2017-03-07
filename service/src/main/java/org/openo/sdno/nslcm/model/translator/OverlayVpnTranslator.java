@@ -187,11 +187,11 @@ public class OverlayVpnTranslator {
         // Create Vpc Gateway
         NbiVpnGateway vpcGateway = new NbiVpnGateway();
         vpcGateway.setId(UuidUtils.createUuid());
-        siteGateway.setName("VpcGateway_" + templateModel.getVpnName());
-        siteGateway.setTenantId(brsSiteMO.getTenantID());
-        siteGateway.setDescription(templateModel.getVpnDescription());
-        siteGateway.setSiteId(brsSiteMO.getId());
-        siteGateway.setVpcId(vpcId);
+        vpcGateway.setName("VpcGateway_" + templateModel.getVpnName());
+        vpcGateway.setTenantId(brsSiteMO.getTenantID());
+        vpcGateway.setDescription(templateModel.getVpnDescription());
+        vpcGateway.setVpcId(vpcId);
+        vpcGateway.setVpnId(vpn.getId());
 
         vpn.getVpnGateways().add(vpcGateway);
 
