@@ -18,6 +18,9 @@ package org.openo.sdno.nslcm.model.translator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.framework.container.util.UuidUtils;
@@ -26,6 +29,8 @@ import org.openo.sdno.nslcm.config.SiteParamConfigReader;
 import org.openo.sdno.nslcm.dao.inf.IBaseResourceDao;
 import org.openo.sdno.nslcm.model.template.OverlayTemplateModel;
 import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
+import org.openo.sdno.overlayvpn.brs.invdao.LogicalTernminationPointInvDao;
+import org.openo.sdno.overlayvpn.brs.model.LogicalTernminationPointMO;
 import org.openo.sdno.overlayvpn.brs.model.NetworkElementMO;
 import org.openo.sdno.overlayvpn.brs.model.SiteMO;
 import org.openo.sdno.overlayvpn.esr.invdao.VimInvDao;
@@ -70,6 +75,9 @@ public class OverlayVpnTranslator {
 
     @Autowired
     private VimInvDao vimInvDao;
+
+    @Autowired
+    private LogicalTernminationPointInvDao ltpInvDao;
 
     /**
      * Translate OverlayVpn model.<br>
@@ -180,6 +188,8 @@ public class OverlayVpnTranslator {
         siteGateway.setDescription(templateModel.getVpnDescription());
         siteGateway.setSiteId(brsSiteMO.getId());
         siteGateway.setVpnId(vpn.getId());
+        siteGateway.setPorts(queryPorts(templateModel).get("portId"));
+        siteGateway.setPortNames(queryPorts(templateModel).get("portName"));
 
         vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
         vpn.getVpnGateways().add(siteGateway);
@@ -204,6 +214,8 @@ public class OverlayVpnTranslator {
         vpnConnection.setaEndVpnGatewayId(siteGateway.getId());
         vpnConnection.setzEndVpnGatewayId(vpcGateway.getId());
         vpnConnection.setVpnId(vpn.getId());
+        vpnConnection.setVni(templateModel.getSiteVni().toString());
+        vpnConnection.setDeployStatus("deploy");
 
         vpn.setVpnConnections(Arrays.asList(vpnConnection));
 
@@ -264,6 +276,27 @@ public class OverlayVpnTranslator {
             throw new ServiceException("This openstack controller does not exist");
         }
         return osVim.getVimId();
+    }
+
+    private Map<String, List<String>> queryPorts(OverlayTemplateModel templateModel) throws ServiceException {
+        SiteMO brsSiteMO = baseResourceDao.querySiteByName(templateModel.getSiteName());
+        NetworkElementMO localCpeNe = baseResourceDao.querySiteCpeByType(brsSiteMO.getId(), CpeRoleType.THIN_CPE);
+        Map<String, List<String>> portInfo = new HashMap<>();
+
+        List<String> ltpIdList = new ArrayList<>();
+        List<String> ltpNameList = new ArrayList<>();
+
+        Map<String, String> condition = new HashMap<String, String>();
+        condition.put("meID", localCpeNe.getId());
+        List<LogicalTernminationPointMO> localLtpMOList = ltpInvDao.query(condition);
+        for(LogicalTernminationPointMO ltpMo : localLtpMOList) {
+            ltpIdList.add(ltpMo.getId());
+            ltpNameList.add(ltpMo.getName());
+        }
+
+        portInfo.put("portId", ltpIdList);
+        portInfo.put("portName", ltpNameList);
+        return portInfo;
     }
 
 }

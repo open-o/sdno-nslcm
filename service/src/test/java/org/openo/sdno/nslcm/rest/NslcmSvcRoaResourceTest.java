@@ -34,6 +34,7 @@ import org.openo.sdno.nslcm.mock.dao.MockServiceModelDaoImpl;
 import org.openo.sdno.nslcm.mock.dao.MockServicePackageDaoImpl;
 import org.openo.sdno.nslcm.mock.dao.MockServiceParametersDaoImpl;
 import org.openo.sdno.nslcm.mock.invdao.MockInventoryDao;
+import org.openo.sdno.nslcm.mock.invdao.MockLtpInvDao;
 import org.openo.sdno.nslcm.mock.invdao.MockNetworkElementInvDao;
 import org.openo.sdno.nslcm.mock.invdao.MockSiteInvDao;
 import org.openo.sdno.nslcm.mock.invdao.MockVimInvDao;
@@ -67,7 +68,7 @@ public class NslcmSvcRoaResourceTest extends SpringTest {
 
     @Mocked
     private HttpServletResponse httpResponse;
-    
+
     @Before
     public void setUp() {
         new MockServicePackageDaoImpl();
@@ -80,6 +81,7 @@ public class NslcmSvcRoaResourceTest extends SpringTest {
         new MockNetworkElementInvDao();
         new MockVimInvDao();
         new MockInventoryDao<NsResponseInfo>();
+        new MockLtpInvDao();
     }
 
     @Test

@@ -18,6 +18,7 @@ package org.openo.sdno.nslcm.mock.invdao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.overlayvpn.brs.invdao.LogicalTernminationPointInvDao;
@@ -38,6 +39,17 @@ public class MockLtpInvDao extends MockUp<LogicalTernminationPointInvDao> {
             ltpMO.setId(curId);
             ltpMOList.add(ltpMO);
         }
+
+        return ltpMOList;
+    }
+
+    @Mock
+    public List<LogicalTernminationPointMO> query(Map<String, String> condition) throws ServiceException {
+        List<LogicalTernminationPointMO> ltpMOList = new ArrayList<LogicalTernminationPointMO>();
+        LogicalTernminationPointMO ltpMO = new LogicalTernminationPointMO();
+        ltpMO.setName("ltpName");
+        ltpMO.setId("testId");
+        ltpMOList.add(ltpMO);
 
         return ltpMOList;
     }
