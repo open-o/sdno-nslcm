@@ -42,6 +42,12 @@ public class OverlayTemplateModel {
     private String vpnDescription;
 
     /**
+     * Vpn Type, only support "IpSec", "VxLAN" and "MPLS_VPN"
+     */
+    @AString(require = true, scope = "IpSec,VxLAN,MPLS_VPN")
+    private String vpnType;
+
+    /**
      * Site name
      */
     @AString(require = true)
@@ -92,19 +98,19 @@ public class OverlayTemplateModel {
     /**
      * DC Gateway IpAddress
      */
-    @AIp(require = true)
+    @AIp
     private String dcGwIp;
 
     /**
      * DC FireWall IpAddress
      */
-    @AIp(require = true)
+    @AIp
     private String dcFwIp;
 
     /**
      * DC LoadBalance IpAddress
      */
-    @AIp(require = true)
+    @AIp
     private String dcLbIp;
 
     public String getVpnName() {
@@ -121,6 +127,14 @@ public class OverlayTemplateModel {
 
     public void setVpnDescription(String vpnDescription) {
         this.vpnDescription = vpnDescription;
+    }
+
+    public String getVpnType() {
+        return vpnType;
+    }
+
+    public void setVpnType(String vpnType) {
+        this.vpnType = vpnType;
     }
 
     public String getSiteName() {

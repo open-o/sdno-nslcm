@@ -49,16 +49,6 @@ public class SiteParamConfigReader extends ConfigReader {
     }
 
     /**
-     * Get site descriptor.<br>
-     * 
-     * @return site descriptor parameter
-     * @since SDNO 0.5
-     */
-    public String getSiteDescriptor() {
-        return properties.getProperty("siteDescriptor");
-    }
-
-    /**
      * Get site isEncrypt.<br>
      * 
      * @return isEncrypt parameter

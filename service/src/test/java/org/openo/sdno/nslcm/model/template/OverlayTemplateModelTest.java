@@ -102,4 +102,10 @@ public class OverlayTemplateModelTest {
         assertTrue("Vpn1".equals(overlayTemplateModel.getVpnName()));
     }
 
+    @Test
+    public void setGetVpnTypeTest() {
+        overlayTemplateModel.setVpnType("IpSec");
+        assertTrue("IpSec".equals(overlayTemplateModel.getVpnType()));
+    }
+
 }

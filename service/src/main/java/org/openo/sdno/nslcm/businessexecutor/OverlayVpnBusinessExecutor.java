@@ -63,10 +63,23 @@ public class OverlayVpnBusinessExecutor {
      * @since SDNO 0.5
      */
     public NbiVpn executeDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
-        siteBusinessExecutor.executeDeploy(businessModel.getSiteModel());
-        vpcBusinessExecutor.executeDeploy(businessModel.getVpcModel());
-        serviceChainBusinessExceutor.executeDeploy(businessModel.getServiceChainPathModel());
-        return vpnBusinessExecutor.executeDeploy(businessModel.getVpnModel());
+        if(null != businessModel.getSiteModel()) {
+            siteBusinessExecutor.executeDeploy(businessModel.getSiteModel());
+        }
+
+        if(null != businessModel.getVpcModel()) {
+            vpcBusinessExecutor.executeDeploy(businessModel.getVpcModel());
+        }
+
+        if(null != businessModel.getServiceChainPathModel()) {
+            serviceChainBusinessExceutor.executeDeploy(businessModel.getServiceChainPathModel());
+        }
+
+        if(null != businessModel.getVpnModel()) {
+            return vpnBusinessExecutor.executeDeploy(businessModel.getVpnModel());
+        }
+
+        return null;
     }
 
     /**
@@ -77,12 +90,25 @@ public class OverlayVpnBusinessExecutor {
      * @since SDNO 0.5
      */
     public Map<String, String> executeUnDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
-        vpnBusinessExecutor.executeUnDeploy(businessModel.getVpnModel());
-        serviceChainBusinessExceutor.executeUnDeploy(businessModel.getServiceChainPathModel());
-        vpcBusinessExecutor.executeUnDeploy(businessModel.getVpcModel());
-        siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
+        if(null != businessModel.getVpnModel()) {
+            vpnBusinessExecutor.executeUnDeploy(businessModel.getVpnModel());
+        }
+
+        if(null != businessModel.getServiceChainPathModel()) {
+            serviceChainBusinessExceutor.executeUnDeploy(businessModel.getServiceChainPathModel());
+        }
+
+        if(null != businessModel.getVpcModel()) {
+            vpcBusinessExecutor.executeUnDeploy(businessModel.getVpcModel());
+        }
+
+        if(null != businessModel.getSiteModel()) {
+            siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
+        }
+
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("errorCode", businessModel.getVpnModel().getId());
+
         return resultMap;
     }
 
@@ -101,7 +127,6 @@ public class OverlayVpnBusinessExecutor {
         NbiVpn vpn = vpnBusinessExecutor.executeQuery(vpnUuid);
         businessModel.setVpnModel(vpn);
 
-        // ServiceChain has the same uuid with vpn
         ServiceChainPath sfp = serviceChainBusinessExceutor.executeQuery(vpnUuid);
         businessModel.setServiceChainPathModel(sfp);
 

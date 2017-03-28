@@ -29,11 +29,6 @@ public class MockSiteParamConfigReader extends MockUp<SiteParamConfigReader> {
     }
 
     @Mock
-    public String getSiteDescriptor() {
-        return "enterprise_l2cpe";
-    }
-
-    @Mock
     public String getSiteIsEncrypt() {
         return "true";
     }

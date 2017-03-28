@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.framework.container.util.UuidUtils;
 import org.openo.sdno.nslcm.config.OsDriverParamConfigReader;
@@ -113,7 +114,7 @@ public class OverlayVpnTranslator {
         siteModel.initBasicInfo(brsSiteMO.getName(), brsSiteMO.getTenantID(), null, brsSiteMO.getDescription());
         siteModel.setLocalCpeType(localCpeNe.getProductName());
         siteModel.setReliability(siteParamConfigReader.getSiteReliability());
-        siteModel.setSiteDescriptor(siteParamConfigReader.getSiteDescriptor());
+        siteModel.setSiteDescriptor(templateModel.getVpnType());
         siteModel.setIsEncrypt(siteParamConfigReader.getSiteIsEncrypt());
 
         // Create LocalCpe
@@ -178,7 +179,7 @@ public class OverlayVpnTranslator {
         vpn.setName(templateModel.getVpnName());
         vpn.setTenantId(brsSiteMO.getTenantID());
         vpn.setDescription(templateModel.getVpnDescription());
-        vpn.setVpnDescriptor(siteParamConfigReader.getSiteDescriptor());
+        vpn.setVpnDescriptor(templateModel.getVpnType());
 
         // Create Site Gateway
         NbiVpnGateway siteGateway = new NbiVpnGateway();
@@ -225,21 +226,30 @@ public class OverlayVpnTranslator {
     private ServiceChainPath translateServiceChainPath(OverlayTemplateModel templateModel, String instanceId)
             throws ServiceException {
 
+        String dcGwIp = templateModel.getDcGwIp();
+        String dcFwIp = templateModel.getDcFwIp();
+        String dcLbIp = templateModel.getDcLbIp();
+
+        if(StringUtils.isEmpty(dcGwIp) || StringUtils.isEmpty(dcFwIp) || StringUtils.isEmpty(dcLbIp)) {
+            LOGGER.info("ServiceChain Ne IpAddress is empty, Service Chain will not be created.");
+            return null;
+        }
+
         ServiceChainPath sfpPath = new ServiceChainPath();
         sfpPath.setUuid(instanceId);
         sfpPath.setName("Sfp_" + templateModel.getVpnName());
         sfpPath.setDescription(templateModel.getVpnDescription());
-        NetworkElementMO gwNe = baseResourceDao.queryNeByIpAddress(templateModel.getDcGwIp());
+        NetworkElementMO gwNe = baseResourceDao.queryNeByIpAddress(dcGwIp);
         sfpPath.setScfNeId(gwNe.getId());
 
-        NetworkElementMO fwNe = baseResourceDao.queryNeByIpAddress(templateModel.getDcFwIp());
+        NetworkElementMO fwNe = baseResourceDao.queryNeByIpAddress(dcFwIp);
         ServicePathHop fwPathHop = new ServicePathHop();
         fwPathHop.setHopNumber(1);
         fwPathHop.setSfiId(fwNe.getId());
         sfpPath.setServicePathHops(new ArrayList<ServicePathHop>());
         sfpPath.getServicePathHops().add(fwPathHop);
 
-        NetworkElementMO lbNe = baseResourceDao.queryNeByIpAddress(templateModel.getDcLbIp());
+        NetworkElementMO lbNe = baseResourceDao.queryNeByIpAddress(dcLbIp);
         ServicePathHop lbPathHop = new ServicePathHop();
         lbPathHop.setHopNumber(2);
         lbPathHop.setSfiId(lbNe.getId());
@@ -275,6 +285,7 @@ public class OverlayVpnTranslator {
             LOGGER.error("This openstack controller does not exist");
             throw new ServiceException("This openstack controller does not exist");
         }
+
         return osVim.getVimId();
     }
 
@@ -296,6 +307,7 @@ public class OverlayVpnTranslator {
 
         portInfo.put("portId", ltpIdList);
         portInfo.put("portName", ltpNameList);
+
         return portInfo;
     }
 
