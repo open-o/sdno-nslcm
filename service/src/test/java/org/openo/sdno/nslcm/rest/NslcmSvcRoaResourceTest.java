@@ -92,13 +92,7 @@ public class NslcmSvcRoaResourceTest extends SpringTest {
         nsCreationRequest.setNsdId("nsdIdtest");
         nsCreationRequest.setNsName("nsNametest");
 
-        NsCreationResponse response = null;
-
-        try {
-            response = nslcmSvcRoaResource.nsCreationPost(httpRequest, httpResponse, nsCreationRequest);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        NsCreationResponse response = nslcmSvcRoaResource.nsCreationPost(httpRequest, httpResponse, nsCreationRequest);
 
         assertTrue(StringUtils.isNotEmpty(response.getNsInstanceId()));
     }

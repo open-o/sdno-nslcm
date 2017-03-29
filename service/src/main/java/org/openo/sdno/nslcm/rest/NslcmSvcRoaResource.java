@@ -145,7 +145,9 @@ public class NslcmSvcRoaResource {
         NsCreationResponse nsCreationResponse = new NsCreationResponse();
         nsCreationResponse.setNsInstanceId(serviceModel.getServiceId());
 
-        resp.setStatus(HttpCode.CREATE_OK);
+        if(null != resp) {
+            resp.setStatus(HttpCode.CREATE_OK);
+        }
 
         return nsCreationResponse;
     }
