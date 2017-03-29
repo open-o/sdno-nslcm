@@ -1,0 +1,17 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"nsdId": "Site2DCNsdId",
+			"nsName": "Site2DCNsdName",
+			"description": "Test for Site2DC OverlayVpn Business"
+		}
+	},
+	"response": {
+		"status": 201
+	}
+}

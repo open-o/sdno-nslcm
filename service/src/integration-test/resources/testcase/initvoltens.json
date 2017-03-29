@@ -1,0 +1,34 @@
+{
+	"request": {
+		"uri": "/openoapi/sdnonslcm/v1/ns/{instanceId}/instantiate",
+		"method": "post",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		},
+		"json": {
+			"nsInstanceId": "nsInstance",
+			"additionalParamForNs": {
+				"vpnName": "testOverlay",
+				"vpnDescription": "testDescription",
+				"coreVpcOpenStackName": "Sdno_Vim",
+				"coreVpcName": "default/project1",
+				"coreVpcSubnetName": "subnet1",
+				"coreVpcSubnetCidr": "10.21.3.0/24",
+				"coreVpcVni": "23",
+				"edgeVpc1OpenStackName": "Sdno_Vim",
+				"edgeVpc1Name": "default/project2",
+				"edgeVpc1SubnetName": "subnet2",
+				"edgeVpc1SubnetCidr": "10.21.4.0/24",
+				"edgeVpc1Vni": "25",
+				"edgeVpc2OpenStackName": "Sdno_Vim",
+				"edgeVpc2Name": "default/project3",
+				"edgeVpc2SubnetName": "subnet3",
+				"edgeVpc2SubnetCidr": "10.21.5.0/24",
+				"edgeVpc2Vni": "21"
+			}
+		}
+	},
+	"response": {
+		"status": 200
+	}
+}

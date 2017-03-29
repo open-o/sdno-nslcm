@@ -1,6 +1,6 @@
 {
 	"request": {
-		"uri": "/openoapi/catalog/v1/servicetemplates/OverlayNsdId",
+		"uri": "/openoapi/catalog/v1/servicetemplates/VoLTENsdId",
 		"method": "get",
 		"headers": {
 			"Content-Type": "application/json;charset=UTF-8"
@@ -9,7 +9,7 @@
 	"response": {
 		"status": 200,
 		"json": {
-			"templateName": "enterprise2DC",
+			"templateName": "VoLTE",
 			"csarId": "test"
 		}
 	}

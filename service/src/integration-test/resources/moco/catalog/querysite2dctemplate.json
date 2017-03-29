@@ -1,0 +1,16 @@
+{
+	"request": {
+		"uri": "/openoapi/catalog/v1/servicetemplates/Site2DCNsdId",
+		"method": "get",
+		"headers": {
+			"Content-Type": "application/json;charset=UTF-8"
+		}
+	},
+	"response": {
+		"status": 200,
+		"json": {
+			"templateName": "enterprise2DC",
+			"csarId": "test"
+		}
+	}
+}

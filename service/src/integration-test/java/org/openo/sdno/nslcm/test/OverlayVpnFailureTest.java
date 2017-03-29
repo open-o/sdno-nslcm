@@ -39,7 +39,7 @@ import org.openo.sdno.testframework.util.file.JsonUtil;
 public class OverlayVpnFailureTest extends TestManager {
 
     private static final String CREATE_OVERLAY_INSTANCE_TESTCASE =
-            "src/integration-test/resources/testcase/createoverlaynsinstance.json";
+            "src/integration-test/resources/testcase/createsite2dcnsinstance.json";
 
     private static final String DELETE_OVERLAY_INSTANCE_TESTCASE =
             "src/integration-test/resources/testcase/deleteoverlaynsinstance.json";

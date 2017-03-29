@@ -6,9 +6,9 @@
 			"Content-Type": "application/json;charset=UTF-8"
 		},
 		"json": {
-			"nsdId": "OverlayNsdId",
-			"nsName": "NsdName",
-			"description": "Test for OverlayVpn business"
+			"nsdId": "VoLTENsdId",
+			"nsName": "VoLTENsdName",
+			"description": "Test for VoLTE OverlayVpn Business"
 		}
 	},
 	"response": {

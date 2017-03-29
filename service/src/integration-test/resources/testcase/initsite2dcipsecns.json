@@ -10,6 +10,7 @@
 			"additionalParamForNs": {
 				"vpnName": "testOverlay",
 				"vpnDescription": "testDescription",
+				"vpnType": "IpSec",
 				"siteName": "Site1",
 				"siteCidr": "10.100.100.0/24",
 				"subnetVlan": "13",

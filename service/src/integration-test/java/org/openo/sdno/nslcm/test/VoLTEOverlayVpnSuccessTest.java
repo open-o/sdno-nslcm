@@ -46,16 +46,15 @@ import org.openo.sdno.testframework.testmanager.TestManager;
 import org.openo.sdno.testframework.topology.Topology;
 import org.openo.sdno.testframework.util.file.JsonUtil;
 
-public class OverlayVpnSuccessTest extends TestManager {
+public class VoLTEOverlayVpnSuccessTest extends TestManager {
 
     private static final String CREATE_OVERLAY_INSTANCE_TESTCASE =
-            "src/integration-test/resources/testcase/createoverlaynsinstance.json";
+            "src/integration-test/resources/testcase/createvoltensinstance.json";
 
     private static final String DELETE_OVERLAY_INSTANCE_TESTCASE =
             "src/integration-test/resources/testcase/deleteoverlaynsinstance.json";
 
-    private static final String INSTANTIATE_OVERLAY_INSTANCE_TESTCASE =
-            "src/integration-test/resources/testcase/instantiateoverlaynsinstance.json";
+    private static final String INIT_VOLTE_NS_TESTCASE = "src/integration-test/resources/testcase/initvoltens.json";
 
     private static final String TERMINATE_OVERLAY_INSTANCE_TESTCASE =
             "src/integration-test/resources/testcase/terminateoverlaynsinstance.json";
@@ -127,7 +126,7 @@ public class OverlayVpnSuccessTest extends TestManager {
 
         // Instantiate NsInstance
         HttpRquestResponse httpInstantiateNsInstanceObject =
-                HttpModelUtils.praseHttpRquestResponseFromFile(INSTANTIATE_OVERLAY_INSTANCE_TESTCASE);
+                HttpModelUtils.praseHttpRquestResponseFromFile(INIT_VOLTE_NS_TESTCASE);
         HttpRequest httpInstantiateNsInstanceRequest = httpInstantiateNsInstanceObject.getRequest();
         httpInstantiateNsInstanceRequest
                 .setUri(PathReplace.replaceUuid("instanceId", httpInstantiateNsInstanceRequest.getUri(), nsInstanceId));

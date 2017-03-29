@@ -20,8 +20,11 @@ import org.openo.sdno.testframework.moco.MocoHttpServer;
 
 public class CatalogMocoServer extends MocoHttpServer {
 
-    private static final String QUERY_OVERLAY_TEMPLATE =
-            "src/integration-test/resources/moco/catalog/queryoverlaytemplate.json";
+    private static final String QUERY_SITE2DC_TEMPLATE =
+            "src/integration-test/resources/moco/catalog/querysite2dctemplate.json";
+
+    private static final String QUERY_VOLTE_TEMPLATE =
+            "src/integration-test/resources/moco/catalog/queryvoltetemplate.json";
 
     private static final String QUERY_UNDERLAY_TEMPLATE =
             "src/integration-test/resources/moco/catalog/queryunderlaytemplate.json";
@@ -32,7 +35,8 @@ public class CatalogMocoServer extends MocoHttpServer {
 
     @Override
     public void addRequestResponsePairs() {
-        this.addRequestResponsePair(QUERY_OVERLAY_TEMPLATE);
+        this.addRequestResponsePair(QUERY_SITE2DC_TEMPLATE);
+        this.addRequestResponsePair(QUERY_VOLTE_TEMPLATE);
         this.addRequestResponsePair(QUERY_UNDERLAY_TEMPLATE);
     }
 
