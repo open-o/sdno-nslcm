@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.businessexecutor;
+package org.openo.sdno.nslcm.serviceexecutor;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.vpc.VpcSbiService;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.businessexecutor;
+package org.openo.sdno.nslcm.serviceexecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
  * @version SDNO 0.5 2017-2-7
  */
 @Component
-public class VpnBusinessExecutor {
+public class OverlayVpnBusinessExecutor {
 
     @Autowired
     private VpnConnectionSbiService connectionSbiService;

@@ -23,22 +23,24 @@ import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
-import org.openo.sdno.nslcm.businessexecutor.OverlayVpnBusinessExecutor;
 import org.openo.sdno.nslcm.dao.inf.IServiceModelDao;
 import org.openo.sdno.nslcm.dao.inf.IServicePackageDao;
 import org.openo.sdno.nslcm.dao.inf.IServiceParameterDao;
+import org.openo.sdno.nslcm.model.BusinessModel;
 import org.openo.sdno.nslcm.model.db.NsResponseInfo;
 import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
 import org.openo.sdno.nslcm.sbi.catalog.CatalogSbiService;
 import org.openo.sdno.nslcm.sbi.underlayvpn.UnderlaySbiService;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.db.DbOper;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
+import org.openo.sdno.nslcm.vpnbusinessexecutor.Site2DCVpnBusinessExecutor;
+import org.openo.sdno.nslcm.vpnbusinessexecutor.VoLteVpnBusinessExecutor;
+import org.openo.sdno.nslcm.vpnbusinessexecutor.VpnBusinessExecutor;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +71,10 @@ public class NslcmServiceImpl implements NslcmService {
     private CatalogSbiService catalogSbiService;
 
     @Autowired
-    private OverlayVpnBusinessExecutor vpnBusinessExceutor;
+    private Site2DCVpnBusinessExecutor site2DCVpnBusinessExceutor;
+
+    @Autowired
+    private VoLteVpnBusinessExecutor voLteVpnBusinessExceutor;
 
     @Autowired
     private UnderlaySbiService underlaySbiService;
@@ -80,9 +85,9 @@ public class NslcmServiceImpl implements NslcmService {
     }
 
     @Override
-    public Map<String, String> createOverlayVpn(OverlayVpnBusinessModel businessModel, String instanceId)
+    public Map<String, String> createOverlayVpn(BusinessModel businessModel, String instanceId, String templateName)
             throws ServiceException {
-        NbiVpn vpn = vpnBusinessExceutor.executeDeploy(businessModel);
+        NbiVpn vpn = getVpnBusinessExecutor(templateName).executeDeploy(businessModel);
         Map<String, String> resultMap = new HashMap<String, String>();
         resultMap.put("vpnId", vpn.getId());
         insertNsResponseInfo(instanceId, resultMap);
@@ -90,15 +95,16 @@ public class NslcmServiceImpl implements NslcmService {
     }
 
     @Override
-    public Map<String, String> deleteOverlay(String instanceId) throws ServiceException {
+    public Map<String, String> deleteOverlay(String instanceId, String templateName) throws ServiceException {
         ResultRsp<List<NsResponseInfo>> nsResponseInfoRsp = queryNsResponseInfo(instanceId);
         String nsResponseInfoUuid = nsResponseInfoRsp.getData().get(0).getUuid();
         String vpnUuid = nsResponseInfoRsp.getData().get(0).getExternalId();
 
-        OverlayVpnBusinessModel businessModel = vpnBusinessExceutor.executeQuery(vpnUuid);
-        Map<String, String> response = vpnBusinessExceutor.executeUnDeploy(businessModel);
+        BusinessModel businessModel = getVpnBusinessExecutor(templateName).executeQuery(vpnUuid);
+        Map<String, String> response = getVpnBusinessExecutor(templateName).executeUnDeploy(businessModel);
 
         dbOper.delete(NsResponseInfo.class, nsResponseInfoUuid);
+
         return response;
     }
 
@@ -171,5 +177,13 @@ public class NslcmServiceImpl implements NslcmService {
         nsResponseInfo.allocateUuid();
         nsResponseInfoList.add(nsResponseInfo);
         dbOper.insert(nsResponseInfoList);
+    }
+
+    private VpnBusinessExecutor getVpnBusinessExecutor(String templateName) {
+        if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName)) {
+            return site2DCVpnBusinessExceutor;
+        } else {
+            return voLteVpnBusinessExceutor;
+        }
     }
 }

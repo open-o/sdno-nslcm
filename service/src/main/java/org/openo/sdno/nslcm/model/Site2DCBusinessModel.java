@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.model.template;
+package org.openo.sdno.nslcm.model;
 
 import org.openo.sdno.overlayvpn.model.servicechain.ServiceChainPath;
 import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
-import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.model.v2.site.NbiSiteModel;
 
 /**
- * Business model of OverlayVpn.<br>
+ * Business model of Site2DC OverlayVpn.<br>
  * 
  * @author
  * @version SDNO 0.5 2017-2-7
  */
-public class OverlayVpnBusinessModel {
+public class Site2DCBusinessModel extends BusinessModel {
 
     private NbiSiteModel siteModel;
-
-    private NbiVpn vpnModel;
 
     private ServiceChainPath serviceChainPathModel;
 
@@ -43,14 +40,6 @@ public class OverlayVpnBusinessModel {
 
     public void setSiteModel(NbiSiteModel siteModel) {
         this.siteModel = siteModel;
-    }
-
-    public NbiVpn getVpnModel() {
-        return vpnModel;
-    }
-
-    public void setVpnModel(NbiVpn vpnModel) {
-        this.vpnModel = vpnModel;
     }
 
     public ServiceChainPath getServiceChainPathModel() {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.businessexecutor;
+package org.openo.sdno.nslcm.vpnbusinessexecutor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +22,12 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
+import org.openo.sdno.nslcm.model.BusinessModel;
+import org.openo.sdno.nslcm.model.Site2DCBusinessModel;
+import org.openo.sdno.nslcm.serviceexecutor.OverlayVpnBusinessExecutor;
+import org.openo.sdno.nslcm.serviceexecutor.ServiceChainBusinessExecutor;
+import org.openo.sdno.nslcm.serviceexecutor.SiteBusinessExecutor;
+import org.openo.sdno.nslcm.serviceexecutor.VpcBusinessExecutor;
 import org.openo.sdno.overlayvpn.model.servicechain.ServiceChainPath;
 import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
@@ -33,15 +38,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Business executor of OverlayVpn.<br>
+ * Business executor of Site2DC OverlayVpn.<br>
  * 
  * @author
  * @version SDNO 0.5 2017-2-7
  */
 @Component
-public class OverlayVpnBusinessExecutor {
+public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OverlayVpnBusinessExecutor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Site2DCVpnBusinessExecutor.class);
 
     @Autowired
     private ServiceChainBusinessExecutor serviceChainBusinessExceutor;
@@ -53,57 +58,51 @@ public class OverlayVpnBusinessExecutor {
     private VpcBusinessExecutor vpcBusinessExecutor;
 
     @Autowired
-    private VpnBusinessExecutor vpnBusinessExecutor;
+    private OverlayVpnBusinessExecutor vpnBusinessExecutor;
 
-    /**
-     * Deploy OverlayVpn business.<br>
-     * 
-     * @param businessModel OverlayVpnBusinessModel need to deploy
-     * @throws ServiceException when deploy failed
-     * @since SDNO 0.5
-     */
-    public NbiVpn executeDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
-        if(null != businessModel.getSiteModel()) {
-            siteBusinessExecutor.executeDeploy(businessModel.getSiteModel());
+    @Override
+    public NbiVpn executeDeploy(BusinessModel businessModel) throws ServiceException {
+
+        Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
+
+        if(null != site2DCBusinessModel.getSiteModel()) {
+            siteBusinessExecutor.executeDeploy(site2DCBusinessModel.getSiteModel());
         }
 
-        if(null != businessModel.getVpcModel()) {
-            vpcBusinessExecutor.executeDeploy(businessModel.getVpcModel());
+        if(null != site2DCBusinessModel.getVpcModel()) {
+            vpcBusinessExecutor.executeDeploy(site2DCBusinessModel.getVpcModel());
         }
 
-        if(null != businessModel.getServiceChainPathModel()) {
-            serviceChainBusinessExceutor.executeDeploy(businessModel.getServiceChainPathModel());
+        if(null != site2DCBusinessModel.getServiceChainPathModel()) {
+            serviceChainBusinessExceutor.executeDeploy(site2DCBusinessModel.getServiceChainPathModel());
         }
 
-        if(null != businessModel.getVpnModel()) {
-            return vpnBusinessExecutor.executeDeploy(businessModel.getVpnModel());
+        if(null != site2DCBusinessModel.getVpnModel()) {
+            return vpnBusinessExecutor.executeDeploy(site2DCBusinessModel.getVpnModel());
         }
 
         return null;
     }
 
-    /**
-     * UnDeploy OverlayVpn business.<br>
-     * 
-     * @param businessModel OverlayVpnBusinessModel need to undeploy
-     * @throws ServiceException when undeploy failed
-     * @since SDNO 0.5
-     */
-    public Map<String, String> executeUnDeploy(OverlayVpnBusinessModel businessModel) throws ServiceException {
-        if(null != businessModel.getVpnModel()) {
-            vpnBusinessExecutor.executeUnDeploy(businessModel.getVpnModel());
+    @Override
+    public Map<String, String> executeUnDeploy(BusinessModel businessModel) throws ServiceException {
+
+        Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
+
+        if(null != site2DCBusinessModel.getVpnModel()) {
+            vpnBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getVpnModel());
         }
 
-        if(null != businessModel.getServiceChainPathModel()) {
-            serviceChainBusinessExceutor.executeUnDeploy(businessModel.getServiceChainPathModel());
+        if(null != site2DCBusinessModel.getServiceChainPathModel()) {
+            serviceChainBusinessExceutor.executeUnDeploy(site2DCBusinessModel.getServiceChainPathModel());
         }
 
-        if(null != businessModel.getVpcModel()) {
-            vpcBusinessExecutor.executeUnDeploy(businessModel.getVpcModel());
+        if(null != site2DCBusinessModel.getVpcModel()) {
+            vpcBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getVpcModel());
         }
 
-        if(null != businessModel.getSiteModel()) {
-            siteBusinessExecutor.executeUnDeploy(businessModel.getSiteModel());
+        if(null != site2DCBusinessModel.getSiteModel()) {
+            siteBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getSiteModel());
         }
 
         Map<String, String> resultMap = new HashMap<>();
@@ -112,22 +111,17 @@ public class OverlayVpnBusinessExecutor {
         return resultMap;
     }
 
-    /**
-     * Query OverlayVpn business.<br>
-     * 
-     * @param vpnUuid Vpn Uuid
-     * @return OverlayVpn business queried out
-     * @throws ServiceException when query failed
-     * @since SDNO 0.5
-     */
-    public OverlayVpnBusinessModel executeQuery(String vpnUuid) throws ServiceException {
+    @Override
+    public Site2DCBusinessModel executeQuery(String vpnUuid) throws ServiceException {
 
-        OverlayVpnBusinessModel businessModel = new OverlayVpnBusinessModel();
+        Site2DCBusinessModel businessModel = new Site2DCBusinessModel();
 
         NbiVpn vpn = vpnBusinessExecutor.executeQuery(vpnUuid);
         businessModel.setVpnModel(vpn);
 
-        ServiceChainPath sfp = serviceChainBusinessExceutor.executeQuery(vpnUuid);
+        // ServiceChain has the same id with vpn, just fill in id field
+        ServiceChainPath sfp = new ServiceChainPath();
+        sfp.setUuid(vpn.getId());
         businessModel.setServiceChainPathModel(sfp);
 
         Set<String> siteUuidList = vpn.getSiteList();

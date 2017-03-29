@@ -33,12 +33,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
-import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.framework.container.util.UuidUtils;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.dao.inf.IServiceModelDao;
 import org.openo.sdno.nslcm.dao.inf.IServicePackageDao;
 import org.openo.sdno.nslcm.dao.inf.IServiceParameterDao;
+import org.openo.sdno.nslcm.model.BusinessModel;
 import org.openo.sdno.nslcm.model.nbi.JobQueryResponse;
 import org.openo.sdno.nslcm.model.nbi.JobResponseDescriptor;
 import org.openo.sdno.nslcm.model.nbi.LongOperationResponse;
@@ -52,8 +52,6 @@ import org.openo.sdno.nslcm.model.nbi.PackageOnboardRequest;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.nslcm.model.template.OverlayTemplateModel;
-import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
 import org.openo.sdno.nslcm.model.translator.OverlayVpnTranslator;
 import org.openo.sdno.nslcm.model.translator.UnderlayTranslator;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
@@ -61,11 +59,10 @@ import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.openo.sdno.overlayvpn.errorcode.ErrorCode;
-import org.openo.sdno.overlayvpn.util.check.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Controller;;
 
 /**
  * The rest interface of NSLCM.<br>
@@ -129,7 +126,8 @@ public class NslcmSvcRoaResource {
         String templateName = (String)templateInfo.get(Const.TEMPLATE_NAME);
         String serviceDefId = (String)templateInfo.get(Const.CSAR_ID);
         if(null == templateName || (!templateName.equals(Const.UNDERLAYVPN_TEMPLATE_NAME)
-                && !templateName.equals(Const.OVERLAYVPN_TEMPLATE_NAME))) {
+                && !templateName.equals(Const.SITE2DC_TEMPLATE_NAME))
+                && !templateName.equals(Const.VOLTE_TEMPLATE_NAME)) {
             ThrowException.throwParameterInvalid("templateName[" + templateName + "] is invalid");
         }
 
@@ -183,20 +181,15 @@ public class NslcmSvcRoaResource {
         Map<String, String> response = null;
         try {
             String templateName = queryTemplateName(instanceId);
-            if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
+            if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName) || Const.VOLTE_TEMPLATE_NAME.equals(templateName)) {
                 Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNs();
 
-                // Create Vpn template model and validate
-                OverlayTemplateModel vpnTemplateModel =
-                        JsonUtil.fromJson(JsonUtil.toJson(sdnoTemplateParameter), OverlayTemplateModel.class);
-                ValidationUtil.validateModel(vpnTemplateModel);
+                // Create vpn business model
+                BusinessModel businessModel =
+                        overlayVpnTranslator.translateVpnModel(sdnoTemplateParameter, instanceId, templateName);
 
-                // Create Vpn business model
-                OverlayVpnBusinessModel businessModel =
-                        overlayVpnTranslator.translateOverlayVpnModel(vpnTemplateModel, instanceId);
-
-                // Deploy Vpn business model
-                response = nslcmService.createOverlayVpn(businessModel, instanceId);
+                // Deploy vpn business model
+                response = nslcmService.createOverlayVpn(businessModel, instanceId, templateName);
             } else {
                 VpnVo vpnVo = underlayVpnTranslator.translateList2Underlay(serviceParameterList, instanceId);
                 response = nslcmService.createUnderlay(vpnVo, instanceId);
@@ -238,9 +231,8 @@ public class NslcmSvcRoaResource {
 
         try {
             String templateName = queryTemplateName(instanceId);
-
-            if(Const.OVERLAYVPN_TEMPLATE_NAME.equals(templateName)) {
-                response = nslcmService.deleteOverlay(instanceId);
+            if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName) || Const.VOLTE_TEMPLATE_NAME.equals(templateName)) {
+                response = nslcmService.deleteOverlay(instanceId, templateName);
             } else {
                 List<ServiceParameter> serviceParameterList = queryServiceParameter(instanceId);
                 response = nslcmService.deleteUnderlay(instanceId, serviceParameterList);

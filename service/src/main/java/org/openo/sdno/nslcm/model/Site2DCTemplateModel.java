@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.model.template;
+package org.openo.sdno.nslcm.model;
 
 import org.openo.sdno.overlayvpn.verify.annotation.AInt;
 import org.openo.sdno.overlayvpn.verify.annotation.AIp;
@@ -22,24 +22,12 @@ import org.openo.sdno.overlayvpn.verify.annotation.AIpMask;
 import org.openo.sdno.overlayvpn.verify.annotation.AString;
 
 /**
- * Model class of OverlayVpn Template.<br>
+ * Model class of Site OverlayVpn Template.<br>
  * 
  * @author
  * @version SDNO 0.5 2017-1-25
  */
-public class OverlayTemplateModel {
-
-    /**
-     * OverlayVpn name
-     */
-    @AString(require = true)
-    private String vpnName;
-
-    /**
-     * OverlayVpn description
-     */
-    @AString(require = true)
-    private String vpnDescription;
+public class Site2DCTemplateModel extends TemplateModel {
 
     /**
      * Vpn Type, only support "IpSec", "VxLAN" and "MPLS_VPN"
@@ -112,22 +100,6 @@ public class OverlayTemplateModel {
      */
     @AIp
     private String dcLbIp;
-
-    public String getVpnName() {
-        return vpnName;
-    }
-
-    public void setVpnName(String vpnName) {
-        this.vpnName = vpnName;
-    }
-
-    public String getVpnDescription() {
-        return vpnDescription;
-    }
-
-    public void setVpnDescription(String vpnDescription) {
-        this.vpnDescription = vpnDescription;
-    }
 
     public String getVpnType() {
         return vpnType;

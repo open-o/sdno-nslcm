@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.businessexecutor;
+package org.openo.sdno.nslcm.serviceexecutor;
 
 import java.util.ArrayList;
 import java.util.List;

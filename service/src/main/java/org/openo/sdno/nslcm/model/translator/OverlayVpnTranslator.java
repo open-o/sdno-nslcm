@@ -24,12 +24,18 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.framework.container.util.UuidUtils;
 import org.openo.sdno.nslcm.config.OsDriverParamConfigReader;
 import org.openo.sdno.nslcm.config.SiteParamConfigReader;
 import org.openo.sdno.nslcm.dao.inf.IBaseResourceDao;
-import org.openo.sdno.nslcm.model.template.OverlayTemplateModel;
-import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
+import org.openo.sdno.nslcm.model.BusinessModel;
+import org.openo.sdno.nslcm.model.Site2DCBusinessModel;
+import org.openo.sdno.nslcm.model.Site2DCTemplateModel;
+import org.openo.sdno.nslcm.model.TemplateModel;
+import org.openo.sdno.nslcm.model.VoLteBusinessModel;
+import org.openo.sdno.nslcm.model.VoLteTemplateModel;
+import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.overlayvpn.brs.invdao.LogicalTernminationPointInvDao;
 import org.openo.sdno.overlayvpn.brs.model.LogicalTernminationPointMO;
 import org.openo.sdno.overlayvpn.brs.model.NetworkElementMO;
@@ -46,9 +52,11 @@ import org.openo.sdno.overlayvpn.model.v2.cpe.NbiLocalCpeModel;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnConnection;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnGateway;
+import org.openo.sdno.overlayvpn.model.v2.overlay.Site2DCVpnType;
 import org.openo.sdno.overlayvpn.model.v2.site.NbiSiteModel;
 import org.openo.sdno.overlayvpn.model.v2.subnet.NbiSubnetModel;
 import org.openo.sdno.overlayvpn.model.v2.vlan.NbiVlanModel;
+import org.openo.sdno.overlayvpn.util.check.ValidationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,26 +91,68 @@ public class OverlayVpnTranslator {
     /**
      * Translate OverlayVpn model.<br>
      * 
-     * @param templateModel OverlayTemplateModel object
+     * @param templateModel template parameter
      * @param instanceId Nslcm Instance Id
-     * @return OverlayVpnBusinessModel translated
+     * @param templateName OverlayVpn template name
+     * @return BusinessModel translated
      * @throws ServiceException when translate failed
      * @since SDNO 0.5
      */
-    public OverlayVpnBusinessModel translateOverlayVpnModel(OverlayTemplateModel templateModel, String instanceId)
-            throws ServiceException {
+    public BusinessModel translateVpnModel(Map<String, Object> templateParameter, String instanceId,
+            String templateName) throws ServiceException {
 
-        OverlayVpnBusinessModel businessModel = new OverlayVpnBusinessModel();
+        // Create Vpn template model and validate
+        TemplateModel vpnTemplateModel = null;
+        if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName)) {
+            vpnTemplateModel = JsonUtil.fromJson(JsonUtil.toJson(templateParameter), Site2DCTemplateModel.class);
+        } else {
+            vpnTemplateModel = JsonUtil.fromJson(JsonUtil.toJson(templateParameter), VoLteTemplateModel.class);
+        }
+
+        ValidationUtil.validateModel(vpnTemplateModel);
+
+        if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName)) {
+            return translateSite2DCModel((Site2DCTemplateModel)vpnTemplateModel, instanceId);
+        } else {
+            return translateVoLTEModel((VoLteTemplateModel)vpnTemplateModel, instanceId);
+        }
+    }
+
+    private Site2DCBusinessModel translateSite2DCModel(Site2DCTemplateModel templateModel, String instanceId)
+            throws ServiceException {
+        Site2DCBusinessModel businessModel = new Site2DCBusinessModel();
 
         businessModel.setSiteModel(translateSiteModel(templateModel));
         businessModel.setServiceChainPathModel(translateServiceChainPath(templateModel, instanceId));
-        businessModel.setVpcModel(translateVpc(templateModel));
-        businessModel.setVpnModel(translateVpn(templateModel, instanceId, businessModel.getVpcModel().getUuid()));
+        String openStackName = osDriverParamConfigReader.getVimName();
+        businessModel.setVpcModel(translateVpc(templateModel.getVpcName(), templateModel.getVpcSubnetName(),
+                templateModel.getVpcSubnetCidr(), templateModel.getVpcVni(), openStackName));
+        businessModel
+                .setVpnModel(translateSite2DCVpn(templateModel, instanceId, businessModel.getVpcModel().getUuid()));
 
         return businessModel;
     }
 
-    private NbiSiteModel translateSiteModel(OverlayTemplateModel templateModel) throws ServiceException {
+    private VoLteBusinessModel translateVoLTEModel(VoLteTemplateModel templateModel, String instanceId)
+            throws ServiceException {
+        VoLteBusinessModel businessModel = new VoLteBusinessModel();
+
+        businessModel.setCoreVpcModel(translateVpc(templateModel.getCoreVpcName(), templateModel.getCoreVpcSubnetName(),
+                templateModel.getCoreVpcSubnetCidr(), templateModel.getCoreVpcVni(),
+                templateModel.getCoreVpcOpenStackName()));
+        businessModel.setEdgeVpc1Model(translateVpc(templateModel.getEdgeVpc1Name(),
+                templateModel.getEdgeVpc1SubnetName(), templateModel.getEdgeVpc1SubnetCidr(),
+                templateModel.getEdgeVpc1Vni(), templateModel.getEdgeVpc1OpenStackName()));
+        businessModel.setEdgeVpc2Model(translateVpc(templateModel.getEdgeVpc2Name(),
+                templateModel.getEdgeVpc2SubnetName(), templateModel.getEdgeVpc2SubnetCidr(),
+                templateModel.getEdgeVpc2Vni(), templateModel.getEdgeVpc2OpenStackName()));
+
+        businessModel.setVpnModel(translateVoLteVpn(templateModel, instanceId, businessModel));
+
+        return businessModel;
+    }
+
+    private NbiSiteModel translateSiteModel(Site2DCTemplateModel templateModel) throws ServiceException {
 
         SiteMO brsSiteMO = baseResourceDao.querySiteByName(templateModel.getSiteName());
         NetworkElementMO localCpeNe = baseResourceDao.querySiteCpeByType(brsSiteMO.getId(), CpeRoleType.THIN_CPE);
@@ -168,7 +218,7 @@ public class OverlayVpnTranslator {
         return siteModel;
     }
 
-    private NbiVpn translateVpn(OverlayTemplateModel templateModel, String instanceId, String vpcId)
+    private NbiVpn translateSite2DCVpn(Site2DCTemplateModel templateModel, String instanceId, String vpcId)
             throws ServiceException {
 
         SiteMO brsSiteMO = baseResourceDao.querySiteByName(templateModel.getSiteName());
@@ -223,7 +273,90 @@ public class OverlayVpnTranslator {
         return vpn;
     }
 
-    private ServiceChainPath translateServiceChainPath(OverlayTemplateModel templateModel, String instanceId)
+    private NbiVpn translateVoLteVpn(VoLteTemplateModel templateModel, String instanceId,
+            VoLteBusinessModel businesssModel) throws ServiceException {
+
+        // Create Vpn
+        NbiVpn vpn = new NbiVpn();
+        vpn.setId(instanceId);
+        vpn.setName(templateModel.getVpnName());
+        vpn.setDescription(templateModel.getVpnDescription());
+        vpn.setVpnDescriptor(Site2DCVpnType.IPSEC.getName());
+
+        vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
+
+        // Create CoreVpc Gateway
+        NbiVpnGateway coreVpcGateway = new NbiVpnGateway();
+        coreVpcGateway.setId(UuidUtils.createUuid());
+        coreVpcGateway.setName("CoreVpcGw_" + templateModel.getVpnName());
+        coreVpcGateway.setDescription(templateModel.getVpnDescription());
+        coreVpcGateway.setVpcId(businesssModel.getCoreVpcModel().getUuid());
+        coreVpcGateway.setVpnId(vpn.getId());
+
+        vpn.getVpnGateways().add(coreVpcGateway);
+
+        // Create EdgeVpc1 Gateway
+        NbiVpnGateway edgeVpc1Gateway = new NbiVpnGateway();
+        edgeVpc1Gateway.setId(UuidUtils.createUuid());
+        edgeVpc1Gateway.setName("EdgeVpc1Gw_" + templateModel.getVpnName());
+        edgeVpc1Gateway.setDescription(templateModel.getVpnDescription());
+        edgeVpc1Gateway.setVpcId(businesssModel.getEdgeVpc1Model().getUuid());
+        edgeVpc1Gateway.setVpnId(vpn.getId());
+
+        vpn.getVpnGateways().add(edgeVpc1Gateway);
+
+        // Create EdgeVpc2 Gateway
+        NbiVpnGateway edgeVpc2Gateway = new NbiVpnGateway();
+        edgeVpc2Gateway.setId(UuidUtils.createUuid());
+        edgeVpc2Gateway.setName("EdgeVpc2Gw_" + templateModel.getVpnName());
+        edgeVpc2Gateway.setDescription(templateModel.getVpnDescription());
+        edgeVpc2Gateway.setVpcId(businesssModel.getEdgeVpc2Model().getUuid());
+        edgeVpc2Gateway.setVpnId(vpn.getId());
+
+        vpn.getVpnGateways().add(edgeVpc2Gateway);
+
+        vpn.setVpnConnections(new ArrayList<NbiVpnConnection>());
+
+        // Create CoreVpcToEdgeVpc1 Connection
+        NbiVpnConnection coreToEdge1VpnConnection = new NbiVpnConnection();
+        coreToEdge1VpnConnection.setId(UuidUtils.createUuid());
+        coreToEdge1VpnConnection.setName("CoreToEdge1_" + templateModel.getVpnName());
+        coreToEdge1VpnConnection.setDescription(templateModel.getVpnDescription());
+        coreToEdge1VpnConnection.setaEndVpnGatewayId(coreVpcGateway.getId());
+        coreToEdge1VpnConnection.setzEndVpnGatewayId(edgeVpc1Gateway.getId());
+        coreToEdge1VpnConnection.setVpnId(vpn.getId());
+        coreToEdge1VpnConnection.setDeployStatus("deploy");
+
+        vpn.getVpnConnections().add(coreToEdge1VpnConnection);
+
+        // Create CoreVpcToEdgeVpc2 Connection
+        NbiVpnConnection coreToEdge2VpnConnection = new NbiVpnConnection();
+        coreToEdge2VpnConnection.setId(UuidUtils.createUuid());
+        coreToEdge2VpnConnection.setName("CoreToEdge2_" + templateModel.getVpnName());
+        coreToEdge2VpnConnection.setDescription(templateModel.getVpnDescription());
+        coreToEdge2VpnConnection.setaEndVpnGatewayId(coreVpcGateway.getId());
+        coreToEdge2VpnConnection.setzEndVpnGatewayId(edgeVpc2Gateway.getId());
+        coreToEdge2VpnConnection.setVpnId(vpn.getId());
+        coreToEdge2VpnConnection.setDeployStatus("deploy");
+
+        vpn.getVpnConnections().add(coreToEdge2VpnConnection);
+
+        // Create Vpn Connection
+        NbiVpnConnection edge1ToEdge2VpnConnection = new NbiVpnConnection();
+        edge1ToEdge2VpnConnection.setId(UuidUtils.createUuid());
+        edge1ToEdge2VpnConnection.setName("Edge1ToEdge2_" + templateModel.getVpnName());
+        edge1ToEdge2VpnConnection.setDescription(templateModel.getVpnDescription());
+        edge1ToEdge2VpnConnection.setaEndVpnGatewayId(edgeVpc1Gateway.getId());
+        edge1ToEdge2VpnConnection.setzEndVpnGatewayId(edgeVpc2Gateway.getId());
+        edge1ToEdge2VpnConnection.setVpnId(vpn.getId());
+        edge1ToEdge2VpnConnection.setDeployStatus("deploy");
+
+        vpn.getVpnConnections().add(edge1ToEdge2VpnConnection);
+
+        return vpn;
+    }
+
+    private ServiceChainPath translateServiceChainPath(Site2DCTemplateModel templateModel, String instanceId)
             throws ServiceException {
 
         String dcGwIp = templateModel.getDcGwIp();
@@ -258,29 +391,26 @@ public class OverlayVpnTranslator {
         return sfpPath;
     }
 
-    private Vpc translateVpc(OverlayTemplateModel templateModel) throws ServiceException {
+    private Vpc translateVpc(String vpcName, String vpcSubnetName, String vpcSubnetCidr, Integer vpcVni,
+            String openStackName) throws ServiceException {
         Vpc vpc = new Vpc();
+
         vpc.setUuid(UuidUtils.createUuid());
-        vpc.setName(templateModel.getVpcName());
-        vpc.setDescription(templateModel.getVpnDescription());
-
-        vpc.setOsControllerId(queryOsControllerId());
-
+        vpc.setName(vpcName);
+        vpc.setOsControllerId(queryOsControllerId(openStackName));
         vpc.setSubnet(new SubNet());
-
         vpc.getSubnet().setUuid(UuidUtils.createUuid());
-        vpc.getSubnet().setName(templateModel.getVpcSubnetName());
-        vpc.getSubnet().setDescription(templateModel.getVpnDescription());
+        vpc.getSubnet().setName(vpcSubnetName);
         vpc.getSubnet().setVpcId(vpc.getUuid());
-        vpc.getSubnet().setCidr(templateModel.getVpcSubnetCidr());
-        vpc.getSubnet().setVni(templateModel.getVpcVni());
+        vpc.getSubnet().setCidr(vpcSubnetCidr);
+        vpc.getSubnet().setVni(vpcVni);
 
         return vpc;
     }
 
-    private String queryOsControllerId() throws ServiceException {
-        String vimName = osDriverParamConfigReader.getVimName();
-        Vim osVim = vimInvDao.queryVimByName(vimName);
+    private String queryOsControllerId(String openStackName) throws ServiceException {
+
+        Vim osVim = vimInvDao.queryVimByName(openStackName);
         if(null == osVim) {
             LOGGER.error("This openstack controller does not exist");
             throw new ServiceException("This openstack controller does not exist");
@@ -289,7 +419,7 @@ public class OverlayVpnTranslator {
         return osVim.getVimId();
     }
 
-    private Map<String, List<String>> queryPorts(OverlayTemplateModel templateModel) throws ServiceException {
+    private Map<String, List<String>> queryPorts(Site2DCTemplateModel templateModel) throws ServiceException {
         SiteMO brsSiteMO = baseResourceDao.querySiteByName(templateModel.getSiteName());
         NetworkElementMO localCpeNe = baseResourceDao.querySiteCpeByType(brsSiteMO.getId(), CpeRoleType.THIN_CPE);
         Map<String, List<String>> portInfo = new HashMap<>();

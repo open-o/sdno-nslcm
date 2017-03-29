@@ -14,46 +14,45 @@
  * limitations under the License.
  */
 
-package org.openo.sdno.nslcm.model.template;
+package org.openo.sdno.nslcm.model.site2dc;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.openo.sdno.nslcm.model.Site2DCBusinessModel;
 import org.openo.sdno.overlayvpn.model.servicechain.ServiceChainPath;
 import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.model.v2.site.NbiSiteModel;
 
-public class OverlayVpnBusinessModelTest {
-
-    private OverlayVpnBusinessModel overlayVpnBusinessModel = new OverlayVpnBusinessModel();
+public class Site2DCBusinessModelTest extends Site2DCBusinessModel {
 
     @Test
     public void setGetServiceChainPathModelTest() {
         ServiceChainPath sfpModel = new ServiceChainPath();
-        overlayVpnBusinessModel.setServiceChainPathModel(sfpModel);
-        assertTrue(sfpModel.equals(overlayVpnBusinessModel.getServiceChainPathModel()));
+        this.setServiceChainPathModel(sfpModel);
+        assertTrue(sfpModel.equals(this.getServiceChainPathModel()));
     }
 
     @Test
     public void setGetSiteModelTest() {
         NbiSiteModel siteModel = new NbiSiteModel();
-        overlayVpnBusinessModel.setSiteModel(siteModel);
-        assertTrue(siteModel.equals(overlayVpnBusinessModel.getSiteModel()));
+        this.setSiteModel(siteModel);
+        assertTrue(siteModel.equals(this.getSiteModel()));
     }
 
     @Test
     public void setGetVpcModelTest() {
         Vpc vpcModel = new Vpc();
-        overlayVpnBusinessModel.setVpcModel(vpcModel);
-        assertTrue(vpcModel.equals(overlayVpnBusinessModel.getVpcModel()));
+        this.setVpcModel(vpcModel);
+        assertTrue(vpcModel.equals(this.getVpcModel()));
     }
 
     @Test
     public void setGetVpnModelTest() {
         NbiVpn vpnModel = new NbiVpn();
-        overlayVpnBusinessModel.setVpnModel(vpnModel);
-        assertTrue(vpnModel.equals(overlayVpnBusinessModel.getVpnModel()));
+        this.setVpnModel(vpnModel);
+        assertTrue(vpnModel.equals(this.getVpnModel()));
     }
 
 }

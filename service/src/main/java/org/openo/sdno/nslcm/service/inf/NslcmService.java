@@ -22,9 +22,9 @@ import java.util.Map;
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.framework.container.service.IService;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
+import org.openo.sdno.nslcm.model.BusinessModel;
 import org.openo.sdno.nslcm.model.nbi.NsInstanceQueryResponse;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.nslcm.model.template.OverlayVpnBusinessModel;
 
 /**
  * NSLCM service interface. <br>
@@ -48,22 +48,24 @@ public interface NslcmService extends IService {
      * Delete overlay service instance.<br>
      * 
      * @param instanceId ID of the instance
+     * @param templateName template name
      * @return The delete result
      * @throws ServiceException When delete failed
      * @since SDNO 0.5
      */
-    Map<String, String> deleteOverlay(String instanceId) throws ServiceException;
+    Map<String, String> deleteOverlay(String instanceId, String templateName) throws ServiceException;
 
     /**
      * Create overlay service instance.<br>
      * 
-     * @param businessModel OverlayVpn business model
+     * @param businessModel business model
      * @param instanceId ID of the instance
+     * @param templateName template name
      * @return The create result
      * @throws ServiceException When create failed
      * @since SDNO 0.5
      */
-    Map<String, String> createOverlayVpn(OverlayVpnBusinessModel businessModel, String instanceId)
+    Map<String, String> createOverlayVpn(BusinessModel businessModel, String instanceId, String templateName)
             throws ServiceException;
 
     /**

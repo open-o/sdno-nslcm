@@ -38,7 +38,9 @@ public class Const {
 
     public static final String UNDERLAYVPN_TEMPLATE_NAME = "underlayvpn";
 
-    public static final String OVERLAYVPN_TEMPLATE_NAME = "enterprise2DC";
+    public static final String SITE2DC_TEMPLATE_NAME = "enterprise2DC";
+
+    public static final String VOLTE_TEMPLATE_NAME = "VoLTE";
 
     /**
      * Fail to operate database.
