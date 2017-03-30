@@ -39,7 +39,7 @@ import org.springframework.stereotype.Component;
  * @author
  * @version SDNO 0.5 2017-2-7
  */
-@Component
+@Component("VoLteVpnBusinessExecutor")
 public class VoLteVpnBusinessExecutor implements VpnBusinessExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VoLteVpnBusinessExecutor.class);
@@ -52,6 +52,11 @@ public class VoLteVpnBusinessExecutor implements VpnBusinessExecutor {
 
     @Override
     public NbiVpn executeDeploy(BusinessModel businessModel) throws ServiceException {
+
+        if(!(businessModel instanceof VoLteBusinessModel)) {
+            LOGGER.error("only VoLteBusinessModel object can be processed here");
+            throw new ServiceException("only VoLteBusinessModel object can be processed here");
+        }
 
         VoLteBusinessModel voLteBusinessModel = (VoLteBusinessModel)businessModel;
 
@@ -76,6 +81,11 @@ public class VoLteVpnBusinessExecutor implements VpnBusinessExecutor {
 
     @Override
     public Map<String, String> executeUnDeploy(BusinessModel businessModel) throws ServiceException {
+
+        if(!(businessModel instanceof VoLteBusinessModel)) {
+            LOGGER.error("only VoLteBusinessModel object can be processed here");
+            throw new ServiceException("only VoLteBusinessModel object can be processed here");
+        }
 
         VoLteBusinessModel voLteBusinessModel = (VoLteBusinessModel)businessModel;
 

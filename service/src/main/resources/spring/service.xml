@@ -14,7 +14,6 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:context="http://www.springframework.org/schema/context"
     xmlns:jaxrs="http://cxf.apache.org/jaxrs"
@@ -90,6 +89,24 @@
     </bean>
 
     <bean id="nslcmRestModule" class="org.openo.sdno.nslcm.NslcmRestModule" init-method="init" destroy-method="destroy">
+    </bean>
+
+    <bean id="vpnTranslatorMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="enterprise2DC" value-ref="Site2DCVpnTranslator"></entry>
+                <entry key="VoLTE" value-ref="VoLteVpnTranslator"></entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="vpnBusinessExceutorMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="enterprise2DC" value-ref="Site2DCVpnBusinessExecutor"></entry>
+                <entry key="VoLTE" value-ref="VoLteVpnBusinessExecutor"></entry>
+            </map>
+        </constructor-arg>
     </bean>
 
 </beans>

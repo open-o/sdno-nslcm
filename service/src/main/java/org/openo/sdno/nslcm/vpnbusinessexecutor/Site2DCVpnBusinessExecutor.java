@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
  * @author
  * @version SDNO 0.5 2017-2-7
  */
-@Component
+@Component("Site2DCVpnBusinessExecutor")
 public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Site2DCVpnBusinessExecutor.class);
@@ -62,6 +62,11 @@ public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
 
     @Override
     public NbiVpn executeDeploy(BusinessModel businessModel) throws ServiceException {
+
+        if(!(businessModel instanceof Site2DCBusinessModel)) {
+            LOGGER.error("only Site2DCBusinessModel object can be processed here");
+            throw new ServiceException("only Site2DCBusinessModel object can be processed here");
+        }
 
         Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
 
@@ -86,6 +91,11 @@ public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
 
     @Override
     public Map<String, String> executeUnDeploy(BusinessModel businessModel) throws ServiceException {
+
+        if(!(businessModel instanceof Site2DCBusinessModel)) {
+            LOGGER.error("only Site2DCBusinessModel object can be processed here");
+            throw new ServiceException("only Site2DCBusinessModel object can be processed here");
+        }
 
         Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
 

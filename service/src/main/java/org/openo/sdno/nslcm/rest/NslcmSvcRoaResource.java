@@ -17,6 +17,7 @@
 package org.openo.sdno.nslcm.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,8 +53,8 @@ import org.openo.sdno.nslcm.model.nbi.PackageOnboardRequest;
 import org.openo.sdno.nslcm.model.servicemo.InvServiceModel;
 import org.openo.sdno.nslcm.model.servicemo.ServicePackageModel;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
-import org.openo.sdno.nslcm.model.translator.OverlayVpnTranslator;
 import org.openo.sdno.nslcm.model.translator.UnderlayTranslator;
+import org.openo.sdno.nslcm.model.translator.VpnTranslator;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
@@ -89,7 +90,7 @@ public class NslcmSvcRoaResource {
     private IServiceParameterDao iServiceParameterDao;
 
     @Autowired
-    private OverlayVpnTranslator overlayVpnTranslator;
+    private HashMap<String, VpnTranslator> vpnTranslatorMap;
 
     @Autowired
     private UnderlayTranslator underlayVpnTranslator;
@@ -188,7 +189,7 @@ public class NslcmSvcRoaResource {
 
                 // Create vpn business model
                 BusinessModel businessModel =
-                        overlayVpnTranslator.translateVpnModel(sdnoTemplateParameter, instanceId, templateName);
+                        vpnTranslatorMap.get(templateName).translateVpnModel(sdnoTemplateParameter, instanceId);
 
                 // Deploy vpn business model
                 response = nslcmService.createOverlayVpn(businessModel, instanceId, templateName);

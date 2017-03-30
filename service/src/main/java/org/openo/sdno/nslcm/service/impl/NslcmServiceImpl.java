@@ -38,8 +38,6 @@ import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
 import org.openo.sdno.nslcm.util.db.DbOper;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
-import org.openo.sdno.nslcm.vpnbusinessexecutor.Site2DCVpnBusinessExecutor;
-import org.openo.sdno.nslcm.vpnbusinessexecutor.VoLteVpnBusinessExecutor;
 import org.openo.sdno.nslcm.vpnbusinessexecutor.VpnBusinessExecutor;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.result.ResultRsp;
@@ -71,10 +69,7 @@ public class NslcmServiceImpl implements NslcmService {
     private CatalogSbiService catalogSbiService;
 
     @Autowired
-    private Site2DCVpnBusinessExecutor site2DCVpnBusinessExceutor;
-
-    @Autowired
-    private VoLteVpnBusinessExecutor voLteVpnBusinessExceutor;
+    private HashMap<String, VpnBusinessExecutor> vpnBusinessExceutorMap;
 
     @Autowired
     private UnderlaySbiService underlaySbiService;
@@ -87,7 +82,7 @@ public class NslcmServiceImpl implements NslcmService {
     @Override
     public Map<String, String> createOverlayVpn(BusinessModel businessModel, String instanceId, String templateName)
             throws ServiceException {
-        NbiVpn vpn = getVpnBusinessExecutor(templateName).executeDeploy(businessModel);
+        NbiVpn vpn = vpnBusinessExceutorMap.get(templateName).executeDeploy(businessModel);
         Map<String, String> resultMap = new HashMap<String, String>();
         resultMap.put("vpnId", vpn.getId());
         insertNsResponseInfo(instanceId, resultMap);
@@ -100,8 +95,8 @@ public class NslcmServiceImpl implements NslcmService {
         String nsResponseInfoUuid = nsResponseInfoRsp.getData().get(0).getUuid();
         String vpnUuid = nsResponseInfoRsp.getData().get(0).getExternalId();
 
-        BusinessModel businessModel = getVpnBusinessExecutor(templateName).executeQuery(vpnUuid);
-        Map<String, String> response = getVpnBusinessExecutor(templateName).executeUnDeploy(businessModel);
+        BusinessModel businessModel = vpnBusinessExceutorMap.get(templateName).executeQuery(vpnUuid);
+        Map<String, String> response = vpnBusinessExceutorMap.get(templateName).executeUnDeploy(businessModel);
 
         dbOper.delete(NsResponseInfo.class, nsResponseInfoUuid);
 
@@ -177,13 +172,5 @@ public class NslcmServiceImpl implements NslcmService {
         nsResponseInfo.allocateUuid();
         nsResponseInfoList.add(nsResponseInfo);
         dbOper.insert(nsResponseInfoList);
-    }
-
-    private VpnBusinessExecutor getVpnBusinessExecutor(String templateName) {
-        if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName)) {
-            return site2DCVpnBusinessExceutor;
-        } else {
-            return voLteVpnBusinessExceutor;
-        }
     }
 }
