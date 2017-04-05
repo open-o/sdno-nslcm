@@ -17,7 +17,6 @@
 package org.openo.sdno.nslcm.serviceexecutor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnConnectionSbiService;
@@ -26,8 +25,11 @@ import org.openo.sdno.nslcm.sbi.overlayvpn.VpnSbiService;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnConnection;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnGateway;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Executor class of OverlayVpn Business.<br>
@@ -37,6 +39,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class OverlayVpnBusinessExecutor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OverlayVpnBusinessExecutor.class);
 
     @Autowired
     private VpnConnectionSbiService connectionSbiService;
@@ -60,18 +64,23 @@ public class OverlayVpnBusinessExecutor {
         // Deploy Vpn
         NbiVpn vpn = vpnSbiService.createVpn(vpnModel);
         vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
+        vpn.setVpnConnections(new ArrayList<NbiVpnConnection>());
 
-        // Deploy Site Gateway
-        NbiVpnGateway siteGateway = vpnGatewaySbiService.createVpnGateway(vpnModel.getVpnGateways().get(0));
-        vpn.getVpnGateways().add(siteGateway);
+        if(CollectionUtils.isEmpty(vpnModel.getVpnGateways())
+                || CollectionUtils.isEmpty(vpnModel.getVpnConnections())) {
+            LOGGER.info("No Vpn Gateways or Connections in Vpn model");
+            return vpn;
+        }
 
-        // Deploy Vpc Gateway
-        NbiVpnGateway vpcGateway = vpnGatewaySbiService.createVpnGateway(vpnModel.getVpnGateways().get(1));
-        vpn.getVpnGateways().add(vpcGateway);
+        for(NbiVpnGateway curGateway : vpnModel.getVpnGateways()) {
+            NbiVpnGateway createdVpnGateway = vpnGatewaySbiService.createVpnGateway(curGateway);
+            vpn.getVpnGateways().add(createdVpnGateway);
+        }
 
-        // Deploy Vpn Connection
-        NbiVpnConnection vpnConnection = connectionSbiService.createVpnConnection(vpnModel.getVpnConnections().get(0));
-        vpn.setVpnConnections(Arrays.asList(vpnConnection));
+        for(NbiVpnConnection vpnConnection : vpnModel.getVpnConnections()) {
+            NbiVpnConnection createdVpnConnection = connectionSbiService.createVpnConnection(vpnConnection);
+            vpn.getVpnConnections().add(createdVpnConnection);
+        }
 
         return vpn;
     }
@@ -85,14 +94,15 @@ public class OverlayVpnBusinessExecutor {
      */
     public void executeUnDeploy(NbiVpn vpnModel) throws ServiceException {
 
-        // UnDeploy VpnConnection
-        connectionSbiService.deleteVpnConnection(vpnModel.getVpnConnections().get(0).getId());
+        // UnDeploy VpnConnections
+        for(NbiVpnConnection vpnConnection : vpnModel.getVpnConnections()) {
+            connectionSbiService.deleteVpnConnection(vpnConnection.getId());
+        }
 
-        // UnDeploy Site Gateway
-        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(0).getId());
-
-        // UnDeploy Vpn Gateway
-        vpnGatewaySbiService.deleteVpnGateway(vpnModel.getVpnGateways().get(1).getId());
+        // UnDeploy VpnGateways
+        for(NbiVpnGateway vpnGateway : vpnModel.getVpnGateways()) {
+            vpnGatewaySbiService.deleteVpnGateway(vpnGateway.getId());
+        }
 
         // UnDeploy Vpn
         vpnSbiService.deleteVpn(vpnModel.getId());
