@@ -99,6 +99,10 @@ public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
 
         Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
 
+        if(null != site2DCBusinessModel.getSiteModel()) {
+            siteBusinessExecutor.executeUnDeploySubnet(site2DCBusinessModel.getSiteModel());
+        }
+
         if(null != site2DCBusinessModel.getVpnModel()) {
             vpnBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getVpnModel());
         }

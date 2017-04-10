@@ -109,9 +109,6 @@ public class SiteBusinessExecutor {
      */
     public void executeUnDeploy(NbiSiteModel siteModel) throws ServiceException {
 
-        // UnDeploy Subnet
-        subnetSbiService.deleteSubnet(siteModel.getSubnets().get(0).getUuid());
-
         // UnDeploy Vlan
         vlanSbiService.deleteVlan(siteModel.getVlans().get(0).getUuid());
 
@@ -123,6 +120,19 @@ public class SiteBusinessExecutor {
 
         // UnDeploy Site
         siteSbiService.deleteSite(siteModel.getUuid());
+    }
+
+    /**
+     * UnDeploy subnet.<br>
+     * 
+     * @param siteModel Site need to undeploy
+     * @throws ServiceException when undeploy failed
+     * @since SDNO 0.5
+     */
+    public void executeUnDeploySubnet(NbiSiteModel siteModel) throws ServiceException {
+
+        // UnDeploy Subnet
+        subnetSbiService.deleteSubnet(siteModel.getSubnets().get(0).getUuid());
     }
 
     /**
