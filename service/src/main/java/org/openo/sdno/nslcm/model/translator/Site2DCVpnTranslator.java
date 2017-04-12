@@ -104,7 +104,7 @@ public class Site2DCVpnTranslator implements VpnTranslator {
         businessModel.setSiteModel(translateSiteModel(templateModel));
         businessModel.setServiceChainPathModel(translateServiceChainPath(templateModel, instanceId));
         businessModel.setVpcModel(translateVpc(templateModel));
-        businessModel.setVpnModel(translateVpnModel(templateModel, instanceId, businessModel.getVpcModel().getUuid()));
+        businessModel.setVpnModel(translateVpnModel(templateModel, instanceId, businessModel.getVpcModel()));
 
         return businessModel;
     }
@@ -175,7 +175,7 @@ public class Site2DCVpnTranslator implements VpnTranslator {
         return siteModel;
     }
 
-    private NbiVpn translateVpnModel(Site2DCTemplateModel templateModel, String instanceId, String vpcId)
+    private NbiVpn translateVpnModel(Site2DCTemplateModel templateModel, String instanceId, Vpc vpcModel)
             throws ServiceException {
 
         SiteMO brsSiteMO = baseResourceDao.querySiteByName(templateModel.getSiteName());
@@ -208,8 +208,10 @@ public class Site2DCVpnTranslator implements VpnTranslator {
         vpcGateway.setName("VpcGateway_" + templateModel.getVpnName());
         vpcGateway.setTenantId(brsSiteMO.getTenantID());
         vpcGateway.setDescription(templateModel.getVpnDescription());
-        vpcGateway.setVpcId(vpcId);
+        vpcGateway.setVpcId(vpcModel.getUuid());
         vpcGateway.setVpnId(vpn.getId());
+        vpcGateway.setSubnets(new ArrayList<String>());
+        vpcGateway.getSubnets().add(vpcModel.getSubNetList().get(0).getUuid());
 
         vpn.getVpnGateways().add(vpcGateway);
 
@@ -273,12 +275,12 @@ public class Site2DCVpnTranslator implements VpnTranslator {
         vpc.setName(templateModel.getVpcName());
         vpc.setDescription(templateModel.getVpnDescription());
         vpc.setOsControllerId(queryOsControllerId(osDriverParamConfigReader.getVimName()));
-        vpc.setSubnet(new SubNet());
-        vpc.getSubnet().setUuid(UuidUtils.createUuid());
-        vpc.getSubnet().setName(templateModel.getVpcName());
-        vpc.getSubnet().setVpcId(vpc.getUuid());
-        vpc.getSubnet().setCidr(templateModel.getVpcSubnetCidr());
-        vpc.getSubnet().setVni(templateModel.getVpcVni());
+        SubNet subNet = vpc.getSubNetList().get(0);
+        subNet.setUuid(UuidUtils.createUuid());
+        subNet.setName(templateModel.getVpcName());
+        subNet.setVpcId(vpc.getUuid());
+        subNet.setCidr(templateModel.getVpcSubnetCidr());
+        subNet.setVni(templateModel.getVpcVni());
 
         return vpc;
     }

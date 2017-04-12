@@ -17,12 +17,15 @@
 package org.openo.sdno.nslcm.model.translator;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.openo.baseservice.remoteservice.exception.ServiceException;
+import org.openo.sdno.exception.ParameterServiceException;
 import org.openo.sdno.framework.container.util.JsonUtil;
 import org.openo.sdno.framework.container.util.UuidUtils;
 import org.openo.sdno.nslcm.model.BusinessModel;
+import org.openo.sdno.nslcm.model.SubnetModel;
 import org.openo.sdno.nslcm.model.VoLteBusinessModel;
 import org.openo.sdno.nslcm.model.VoLteTemplateModel;
 import org.openo.sdno.overlayvpn.esr.invdao.VimInvDao;
@@ -50,6 +53,14 @@ public class VoLteVpnTranslator implements VpnTranslator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VoLteVpnTranslator.class);
 
+    private static final int SUBNET_PARAMETER_NUMBER = 3;
+
+    private static final int SUBNET_PARAMETER_NAME = 0;
+
+    private static final int SUBNET_PARAMETER_CIDR = 1;
+
+    private static final int SUBNET_PARAMETER_VNI = 2;
+
     @Autowired
     private VimInvDao vimInvDao;
 
@@ -72,15 +83,12 @@ public class VoLteVpnTranslator implements VpnTranslator {
             throws ServiceException {
         VoLteBusinessModel businessModel = new VoLteBusinessModel();
 
-        businessModel.setCoreVpcModel(translateVpc(templateModel.getCoreVpcName(), templateModel.getCoreVpcSubnetName(),
-                templateModel.getCoreVpcSubnetCidr(), templateModel.getCoreVpcVni(),
-                templateModel.getCoreVpcOpenStackName()));
-        businessModel.setEdgeVpc1Model(translateVpc(templateModel.getEdgeVpc1Name(),
-                templateModel.getEdgeVpc1SubnetName(), templateModel.getEdgeVpc1SubnetCidr(),
-                templateModel.getEdgeVpc1Vni(), templateModel.getEdgeVpc1OpenStackName()));
-        businessModel.setEdgeVpc2Model(translateVpc(templateModel.getEdgeVpc2Name(),
-                templateModel.getEdgeVpc2SubnetName(), templateModel.getEdgeVpc2SubnetCidr(),
-                templateModel.getEdgeVpc2Vni(), templateModel.getEdgeVpc2OpenStackName()));
+        businessModel.setCoreVpcModel(translateVpc(templateModel.getCoreVpcName(), templateModel.getCoreSubnets(),
+                templateModel.getCoreOpenStackName()));
+        businessModel.setEdgeVpc1Model(translateVpc(templateModel.getEdge1VpcName(), templateModel.getEdge1Subnets(),
+                templateModel.getEdge1OpenStackName()));
+        businessModel.setEdgeVpc2Model(translateVpc(templateModel.getEdge2VpcName(), templateModel.getEdge2Subnets(),
+                templateModel.getEdge2OpenStackName()));
 
         businessModel.setVpnModel(translateVpnModel(templateModel, instanceId, businessModel));
 
@@ -100,89 +108,55 @@ public class VoLteVpnTranslator implements VpnTranslator {
         vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
 
         // Create CoreVpc Gateway
-        NbiVpnGateway coreVpcGateway = new NbiVpnGateway();
-        coreVpcGateway.setId(UuidUtils.createUuid());
-        coreVpcGateway.setName("CoreVpcGw_" + templateModel.getVpnName());
-        coreVpcGateway.setDescription(templateModel.getVpnDescription());
-        coreVpcGateway.setVpcId(businesssModel.getCoreVpcModel().getUuid());
-        coreVpcGateway.setVpnId(vpn.getId());
-
-        vpn.getVpnGateways().add(coreVpcGateway);
+        List<NbiVpnGateway> coreNbiVpcGateways = translateVpnGateways(vpn.getVpnGateways(), templateModel,
+                businesssModel.getCoreVpcModel().getSubNetList(), "CoreVpcGw_",
+                businesssModel.getCoreVpcModel().getUuid(), vpn.getId());
 
         // Create EdgeVpc1 Gateway
-        NbiVpnGateway edgeVpc1Gateway = new NbiVpnGateway();
-        edgeVpc1Gateway.setId(UuidUtils.createUuid());
-        edgeVpc1Gateway.setName("EdgeVpc1Gw_" + templateModel.getVpnName());
-        edgeVpc1Gateway.setDescription(templateModel.getVpnDescription());
-        edgeVpc1Gateway.setVpcId(businesssModel.getEdgeVpc1Model().getUuid());
-        edgeVpc1Gateway.setVpnId(vpn.getId());
-
-        vpn.getVpnGateways().add(edgeVpc1Gateway);
+        List<NbiVpnGateway> edge1NbiVpcGateways = translateVpnGateways(vpn.getVpnGateways(), templateModel,
+                businesssModel.getEdgeVpc1Model().getSubNetList(), "EdgeVpc1Gw_",
+                businesssModel.getEdgeVpc1Model().getUuid(), vpn.getId());
 
         // Create EdgeVpc2 Gateway
-        NbiVpnGateway edgeVpc2Gateway = new NbiVpnGateway();
-        edgeVpc2Gateway.setId(UuidUtils.createUuid());
-        edgeVpc2Gateway.setName("EdgeVpc2Gw_" + templateModel.getVpnName());
-        edgeVpc2Gateway.setDescription(templateModel.getVpnDescription());
-        edgeVpc2Gateway.setVpcId(businesssModel.getEdgeVpc2Model().getUuid());
-        edgeVpc2Gateway.setVpnId(vpn.getId());
-
-        vpn.getVpnGateways().add(edgeVpc2Gateway);
+        List<NbiVpnGateway> edge2NbiVpcGateways = translateVpnGateways(vpn.getVpnGateways(), templateModel,
+                businesssModel.getEdgeVpc2Model().getSubNetList(), "EdgeVpc2Gw_",
+                businesssModel.getEdgeVpc2Model().getUuid(), vpn.getId());
 
         vpn.setVpnConnections(new ArrayList<NbiVpnConnection>());
 
         // Create CoreVpcToEdgeVpc1 Connection
-        NbiVpnConnection coreToEdge1VpnConnection = new NbiVpnConnection();
-        coreToEdge1VpnConnection.setId(UuidUtils.createUuid());
-        coreToEdge1VpnConnection.setName("CoreToEdge1_" + templateModel.getVpnName());
-        coreToEdge1VpnConnection.setDescription(templateModel.getVpnDescription());
-        coreToEdge1VpnConnection.setaEndVpnGatewayId(coreVpcGateway.getId());
-        coreToEdge1VpnConnection.setzEndVpnGatewayId(edgeVpc1Gateway.getId());
-        coreToEdge1VpnConnection.setVpnId(vpn.getId());
-        coreToEdge1VpnConnection.setDeployStatus("deploy");
-
-        vpn.getVpnConnections().add(coreToEdge1VpnConnection);
+        translateVpnConnections(vpn.getVpnConnections(), templateModel, coreNbiVpcGateways, edge1NbiVpcGateways,
+                "CoreToEdge1_", vpn.getId());
 
         // Create CoreVpcToEdgeVpc2 Connection
-        NbiVpnConnection coreToEdge2VpnConnection = new NbiVpnConnection();
-        coreToEdge2VpnConnection.setId(UuidUtils.createUuid());
-        coreToEdge2VpnConnection.setName("CoreToEdge2_" + templateModel.getVpnName());
-        coreToEdge2VpnConnection.setDescription(templateModel.getVpnDescription());
-        coreToEdge2VpnConnection.setaEndVpnGatewayId(coreVpcGateway.getId());
-        coreToEdge2VpnConnection.setzEndVpnGatewayId(edgeVpc2Gateway.getId());
-        coreToEdge2VpnConnection.setVpnId(vpn.getId());
-        coreToEdge2VpnConnection.setDeployStatus("deploy");
-
-        vpn.getVpnConnections().add(coreToEdge2VpnConnection);
+        translateVpnConnections(vpn.getVpnConnections(), templateModel, coreNbiVpcGateways, edge2NbiVpcGateways,
+                "CoreToEdge2_", vpn.getId());
 
         // Create EdgeVpc1ToEdgeVpc2 Connection
-        NbiVpnConnection edge1ToEdge2VpnConnection = new NbiVpnConnection();
-        edge1ToEdge2VpnConnection.setId(UuidUtils.createUuid());
-        edge1ToEdge2VpnConnection.setName("Edge1ToEdge2_" + templateModel.getVpnName());
-        edge1ToEdge2VpnConnection.setDescription(templateModel.getVpnDescription());
-        edge1ToEdge2VpnConnection.setaEndVpnGatewayId(edgeVpc1Gateway.getId());
-        edge1ToEdge2VpnConnection.setzEndVpnGatewayId(edgeVpc2Gateway.getId());
-        edge1ToEdge2VpnConnection.setVpnId(vpn.getId());
-        edge1ToEdge2VpnConnection.setDeployStatus("deploy");
-
-        vpn.getVpnConnections().add(edge1ToEdge2VpnConnection);
+        translateVpnConnections(vpn.getVpnConnections(), templateModel, edge1NbiVpcGateways, edge2NbiVpcGateways,
+                "Edge1ToEdge2_", vpn.getId());
 
         return vpn;
     }
 
-    private Vpc translateVpc(String vpcName, String vpcSubnetName, String vpcSubnetCidr, Integer vpcVni,
-            String openStackName) throws ServiceException {
+    private Vpc translateVpc(String vpcName, String subnetInfo, String openStackName) throws ServiceException {
         Vpc vpc = new Vpc();
 
         vpc.setUuid(UuidUtils.createUuid());
         vpc.setName(vpcName);
         vpc.setOsControllerId(queryOsControllerId(openStackName));
-        vpc.setSubnet(new SubNet());
-        vpc.getSubnet().setUuid(UuidUtils.createUuid());
-        vpc.getSubnet().setName(vpcSubnetName);
-        vpc.getSubnet().setVpcId(vpc.getUuid());
-        vpc.getSubnet().setCidr(vpcSubnetCidr);
-        vpc.getSubnet().setVni(vpcVni);
+        vpc.getSubNetList().clear();
+
+        List<SubnetModel> subnetModelList = parseSubnets(subnetInfo);
+        for(SubnetModel subnetModel : subnetModelList) {
+            SubNet subNet = new SubNet();
+            subNet.setUuid(UuidUtils.createUuid());
+            subNet.setVpcId(vpc.getUuid());
+            subNet.setName(subnetModel.getSubnetName());
+            subNet.setCidr(subnetModel.getSubnetCidr());
+            subNet.setVni(subnetModel.getVni());
+            vpc.getSubNetList().add(subNet);
+        }
 
         return vpc;
     }
@@ -192,10 +166,85 @@ public class VoLteVpnTranslator implements VpnTranslator {
         Vim osVim = vimInvDao.queryVimByName(openStackName);
         if(null == osVim) {
             LOGGER.error("This openstack controller does not exist");
-            throw new ServiceException("This openstack controller does not exist");
+            throw new ParameterServiceException("This openstack controller does not exist");
         }
 
         return osVim.getVimId();
+    }
+
+    private List<SubnetModel> parseSubnets(String subnetInfo) throws ServiceException {
+        List<SubnetModel> subnetModelList = new ArrayList<>();
+
+        String[] subnetInfoList = subnetInfo.split("\\|");
+
+        for(String tempSubnetInfo : subnetInfoList) {
+            String[] subnetModelParas = tempSubnetInfo.split(",");
+            if(SUBNET_PARAMETER_NUMBER != subnetModelParas.length) {
+                LOGGER.error("The format of subnet info is wrong, each subnet info only can have 3 parameters");
+                throw new ParameterServiceException(
+                        "The format of subnet info is wrong, each subnet info only can have 3 parameters");
+            }
+
+            String subnetName = subnetModelParas[SUBNET_PARAMETER_NAME];
+            String subnetCidr = subnetModelParas[SUBNET_PARAMETER_CIDR];
+            String vni = subnetModelParas[SUBNET_PARAMETER_VNI];
+
+            SubnetModel subnetModel = new SubnetModel();
+            subnetModel.setSubnetName(subnetName);
+            subnetModel.setSubnetCidr(subnetCidr);
+            subnetModel.setVni(Integer.valueOf(vni));
+
+            ValidationUtil.validateModel(subnetModel);
+            subnetModelList.add(subnetModel);
+        }
+
+        return subnetModelList;
+    }
+
+    private List<NbiVpnGateway> translateVpnGateways(List<NbiVpnGateway> nbiVpnGatewayList,
+            VoLteTemplateModel templateModel, List<SubNet> subNetList, String namePrefix, String vpcId, String vpnId) {
+        int index = 1;
+
+        List<NbiVpnGateway> nbiVpnGateways = new ArrayList<>();
+
+        for(SubNet subNet : subNetList) {
+            NbiVpnGateway nbiVpnGateway = new NbiVpnGateway();
+            nbiVpnGateway.setId(UuidUtils.createUuid());
+            nbiVpnGateway.setName(namePrefix + templateModel.getVpnName() + "_" + index);
+            nbiVpnGateway.setDescription(templateModel.getVpnDescription());
+            nbiVpnGateway.setVpcId(vpcId);
+            nbiVpnGateway.setVpnId(vpnId);
+
+            nbiVpnGateway.setSubnets(new ArrayList<String>());
+            nbiVpnGateway.getSubnets().add(subNet.getUuid());
+
+            nbiVpnGatewayList.add(nbiVpnGateway);
+            nbiVpnGateways.add(nbiVpnGateway);
+            index++;
+        }
+
+        return nbiVpnGateways;
+    }
+
+    private void translateVpnConnections(List<NbiVpnConnection> vpnConnectionList, VoLteTemplateModel templateModel,
+            List<NbiVpnGateway> nbiVpcGateways1, List<NbiVpnGateway> nbiVpcGateways2, String namePrefix, String vpnId) {
+        int index = 1;
+
+        for(NbiVpnGateway nbiVpnGateway1 : nbiVpcGateways1) {
+            for(NbiVpnGateway nbiVpnGateway2 : nbiVpcGateways2) {
+                NbiVpnConnection nbiVpnConnection = new NbiVpnConnection();
+                nbiVpnConnection.setId(UuidUtils.createUuid());
+                nbiVpnConnection.setName(namePrefix + templateModel.getVpnName() + "_" + index);
+                nbiVpnConnection.setDescription(templateModel.getVpnDescription());
+                nbiVpnConnection.setaEndVpnGatewayId(nbiVpnGateway1.getId());
+                nbiVpnConnection.setzEndVpnGatewayId(nbiVpnGateway2.getId());
+                nbiVpnConnection.setVpnId(vpnId);
+                nbiVpnConnection.setDeployStatus("deploy");
+
+                vpnConnectionList.add(nbiVpnConnection);
+                index++;
+            }
+        }
     }
 
 }

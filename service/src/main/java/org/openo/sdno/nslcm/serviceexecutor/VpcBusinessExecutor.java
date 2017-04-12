@@ -16,6 +16,8 @@
 
 package org.openo.sdno.nslcm.serviceexecutor;
 
+import java.util.List;
+
 import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.vpc.VpcSbiService;
 import org.openo.sdno.nslcm.sbi.vpc.VpcSubnetSbiService;
@@ -49,7 +51,11 @@ public class VpcBusinessExecutor {
      */
     public Vpc executeDeploy(Vpc vpcModel) throws ServiceException {
         vpcSbiService.createVpc(vpcModel);
-        vpcSubnetSbiService.createVpcSubnet(vpcModel.getSubnet());
+
+        for(SubNet subNet : vpcModel.getSubNetList()) {
+            vpcSubnetSbiService.createVpcSubnet(subNet);
+        }
+
         return vpcModel;
     }
 
@@ -61,7 +67,10 @@ public class VpcBusinessExecutor {
      * @since SDNO 0.5
      */
     public void executeUnDeploy(Vpc vpcModel) throws ServiceException {
-        vpcSubnetSbiService.deleteVpcSubnet(vpcModel.getSubnet().getUuid());
+        for(SubNet subNet : vpcModel.getSubNetList()) {
+            vpcSubnetSbiService.deleteVpcSubnet(subNet.getUuid());
+        }
+
         vpcSbiService.deleteVpc(vpcModel.getUuid());
     }
 
@@ -75,8 +84,8 @@ public class VpcBusinessExecutor {
      */
     public Vpc executeQuery(String vpcUuid) throws ServiceException {
         Vpc vpc = vpcSbiService.queryVpc(vpcUuid);
-        SubNet vpcSubnet = vpcSubnetSbiService.queryVpcSubnet(vpcUuid);
-        vpc.setSubnet(vpcSubnet);
+        List<SubNet> vpcSubnetList = vpcSubnetSbiService.queryVpcSubnet(vpcUuid);
+        vpc.setSubNetList(vpcSubnetList);
         return vpc;
     }
 

@@ -16,12 +16,10 @@
 
 package org.openo.sdno.nslcm.model;
 
-import org.openo.sdno.overlayvpn.verify.annotation.AInt;
-import org.openo.sdno.overlayvpn.verify.annotation.AIpMask;
 import org.openo.sdno.overlayvpn.verify.annotation.AString;
 
 /**
- * Model class of Site OverlayVpn Template.<br>
+ * Model class of Volte Template.<br>
  * 
  * @author
  * @version SDNO 0.5 2017-1-25
@@ -29,10 +27,10 @@ import org.openo.sdno.overlayvpn.verify.annotation.AString;
 public class VoLteTemplateModel extends TemplateModel {
 
     /**
-     * Core vpc openstack name
+     * Core openstack name
      */
     @AString(require = true)
-    private String coreVpcOpenStackName;
+    private String coreOpenStackName;
 
     /**
      * Core vpc name
@@ -41,89 +39,56 @@ public class VoLteTemplateModel extends TemplateModel {
     private String coreVpcName;
 
     /**
-     * Core vpc subnet name
+     * Core subnet information, the format is
+     * "SubnetName,SubnetCidr,Vni|SubnetName,SubnetCidr,Vni|..."
      */
     @AString(require = true)
-    private String coreVpcSubnetName;
+    private String coreSubnets;
 
     /**
-     * Core vpc subnet cidr
-     */
-    @AIpMask(require = true)
-    private String coreVpcSubnetCidr;
-
-    /**
-     * core vpc vni
-     */
-    @AInt(min = 2, max = 16777215, require = true)
-    private Integer coreVpcVni;
-
-    /**
-     * Core vpc openstack name
+     * Edge1 openstack name
      */
     @AString(require = true)
-    private String edgeVpc1OpenStackName;
+    private String edge1OpenStackName;
 
     /**
-     * Edge vpc1 name
+     * Edge1 vpc name
      */
     @AString(require = true)
-    private String edgeVpc1Name;
+    private String edge1VpcName;
 
     /**
-     * Edge vpc1 subnet name
+     * Edge1 subnet information, the format is
+     * "SubnetName,SubnetCidr,Vni|SubnetName,SubnetCidr,Vni|..."
      */
     @AString(require = true)
-    private String edgeVpc1SubnetName;
+    private String edge1Subnets;
 
     /**
-     * Edge vpc1 subnet cidr
-     */
-    @AIpMask(require = true)
-    private String edgeVpc1SubnetCidr;
-
-    /**
-     * Edge vpc1 vni
-     */
-    @AInt(min = 2, max = 16777215, require = true)
-    private Integer edgeVpc1Vni;
-
-    /**
-     * Edge vpc2 openstack name
+     * Edge2 openstack name
      */
     @AString(require = true)
-    private String edgeVpc2OpenStackName;
+    private String edge2OpenStackName;
 
     /**
-     * Edge vpc2 name
+     * Edge2 vpc name
      */
     @AString(require = true)
-    private String edgeVpc2Name;
+    private String edge2VpcName;
 
     /**
-     * Edge vpc2 subnet name
+     * Edge2 subnet information, the format is
+     * "SubnetName,SubnetCidr,Vni|SubnetName,SubnetCidr,Vni|..."
      */
     @AString(require = true)
-    private String edgeVpc2SubnetName;
+    private String edge2Subnets;
 
-    /**
-     * Edge vpc2 subnet cidr
-     */
-    @AIpMask(require = true)
-    private String edgeVpc2SubnetCidr;
-
-    /**
-     * Edge vpc2 vni
-     */
-    @AInt(min = 2, max = 16777215, require = true)
-    private Integer edgeVpc2Vni;
-
-    public String getCoreVpcOpenStackName() {
-        return coreVpcOpenStackName;
+    public String getCoreOpenStackName() {
+        return coreOpenStackName;
     }
 
-    public void setCoreVpcOpenStackName(String coreVpcOpenStackName) {
-        this.coreVpcOpenStackName = coreVpcOpenStackName;
+    public void setCoreOpenStackName(String coreOpenStackName) {
+        this.coreOpenStackName = coreOpenStackName;
     }
 
     public String getCoreVpcName() {
@@ -134,108 +99,60 @@ public class VoLteTemplateModel extends TemplateModel {
         this.coreVpcName = coreVpcName;
     }
 
-    public String getCoreVpcSubnetName() {
-        return coreVpcSubnetName;
+    public String getCoreSubnets() {
+        return coreSubnets;
     }
 
-    public void setCoreVpcSubnetName(String coreVpcSubnetName) {
-        this.coreVpcSubnetName = coreVpcSubnetName;
+    public void setCoreSubnets(String coreSubnets) {
+        this.coreSubnets = coreSubnets;
     }
 
-    public String getCoreVpcSubnetCidr() {
-        return coreVpcSubnetCidr;
+    public String getEdge1OpenStackName() {
+        return edge1OpenStackName;
     }
 
-    public void setCoreVpcSubnetCidr(String coreVpcSubnetCidr) {
-        this.coreVpcSubnetCidr = coreVpcSubnetCidr;
+    public void setEdge1OpenStackName(String edge1OpenStackName) {
+        this.edge1OpenStackName = edge1OpenStackName;
     }
 
-    public Integer getCoreVpcVni() {
-        return coreVpcVni;
+    public String getEdge1VpcName() {
+        return edge1VpcName;
     }
 
-    public void setCoreVpcVni(Integer coreVpcVni) {
-        this.coreVpcVni = coreVpcVni;
+    public void setEdge1VpcName(String edge1VpcName) {
+        this.edge1VpcName = edge1VpcName;
     }
 
-    public String getEdgeVpc1OpenStackName() {
-        return edgeVpc1OpenStackName;
+    public String getEdge1Subnets() {
+        return edge1Subnets;
     }
 
-    public void setEdgeVpc1OpenStackName(String edgeVpc1OpenStackName) {
-        this.edgeVpc1OpenStackName = edgeVpc1OpenStackName;
+    public void setEdge1Subnets(String edge1Subnets) {
+        this.edge1Subnets = edge1Subnets;
     }
 
-    public String getEdgeVpc1Name() {
-        return edgeVpc1Name;
+    public String getEdge2OpenStackName() {
+        return edge2OpenStackName;
     }
 
-    public void setEdgeVpc1Name(String edgeVpc1Name) {
-        this.edgeVpc1Name = edgeVpc1Name;
+    public void setEdge2OpenStackName(String edge2OpenStackName) {
+        this.edge2OpenStackName = edge2OpenStackName;
     }
 
-    public String getEdgeVpc1SubnetName() {
-        return edgeVpc1SubnetName;
+    public String getEdge2VpcName() {
+        return edge2VpcName;
     }
 
-    public void setEdgeVpc1SubnetName(String edgeVpc1SubnetName) {
-        this.edgeVpc1SubnetName = edgeVpc1SubnetName;
+    public void setEdge2VpcName(String edge2VpcName) {
+        this.edge2VpcName = edge2VpcName;
     }
 
-    public String getEdgeVpc1SubnetCidr() {
-        return edgeVpc1SubnetCidr;
+    public String getEdge2Subnets() {
+        return edge2Subnets;
     }
 
-    public void setEdgeVpc1SubnetCidr(String edgeVpc1SubnetCidr) {
-        this.edgeVpc1SubnetCidr = edgeVpc1SubnetCidr;
-    }
-
-    public Integer getEdgeVpc1Vni() {
-        return edgeVpc1Vni;
-    }
-
-    public void setEdgeVpc1Vni(Integer edgeVpc1Vni) {
-        this.edgeVpc1Vni = edgeVpc1Vni;
-    }
-
-    public String getEdgeVpc2OpenStackName() {
-        return edgeVpc2OpenStackName;
-    }
-
-    public void setEdgeVpc2OpenStackName(String edgeVpc2OpenStackName) {
-        this.edgeVpc2OpenStackName = edgeVpc2OpenStackName;
-    }
-
-    public String getEdgeVpc2Name() {
-        return edgeVpc2Name;
-    }
-
-    public void setEdgeVpc2Name(String edgeVpc2Name) {
-        this.edgeVpc2Name = edgeVpc2Name;
-    }
-
-    public String getEdgeVpc2SubnetName() {
-        return edgeVpc2SubnetName;
-    }
-
-    public void setEdgeVpc2SubnetName(String edgeVpc2SubnetName) {
-        this.edgeVpc2SubnetName = edgeVpc2SubnetName;
-    }
-
-    public String getEdgeVpc2SubnetCidr() {
-        return edgeVpc2SubnetCidr;
-    }
-
-    public void setEdgeVpc2SubnetCidr(String edgeVpc2SubnetCidr) {
-        this.edgeVpc2SubnetCidr = edgeVpc2SubnetCidr;
-    }
-
-    public Integer getEdgeVpc2Vni() {
-        return edgeVpc2Vni;
-    }
-
-    public void setEdgeVpc2Vni(Integer edgeVpc2Vni) {
-        this.edgeVpc2Vni = edgeVpc2Vni;
+    public void setEdge2Subnets(String edge2Subnets) {
+        this.edge2Subnets = edge2Subnets;
     }
 
 }

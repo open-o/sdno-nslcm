@@ -48,14 +48,14 @@ public class VpcSubnetSbiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(VpcSubnetSbiService.class);
 
     /**
-     * Query Subnet by Vpc Id.<br>
+     * Query SubnetList by Vpc Id.<br>
      * 
      * @param vpcId Vpc Id
      * @return Subnet queried out
      * @throws ServiceException when create failed
      * @since SDNO 0.5
      */
-    public SubNet queryVpcSubnet(String vpcId) throws ServiceException {
+    public List<SubNet> queryVpcSubnet(String vpcId) throws ServiceException {
         if(StringUtils.isEmpty(vpcId)) {
             LOGGER.error("vpcId is invalid");
             throw new ParameterServiceException("vpcId is invalid");
@@ -77,7 +77,7 @@ public class VpcSubnetSbiService {
             throw new ServiceException("No vpc subnets queried out");
         }
 
-        return queriedSubnets.get(0);
+        return queriedSubnets;
     }
 
     /**
