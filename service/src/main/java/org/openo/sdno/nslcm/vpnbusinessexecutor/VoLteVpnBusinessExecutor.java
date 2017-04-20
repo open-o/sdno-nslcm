@@ -26,6 +26,7 @@ import org.openo.sdno.nslcm.model.BusinessModel;
 import org.openo.sdno.nslcm.model.VoLteBusinessModel;
 import org.openo.sdno.nslcm.serviceexecutor.OverlayVpnBusinessExecutor;
 import org.openo.sdno.nslcm.serviceexecutor.VpcBusinessExecutor;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.slf4j.Logger;
@@ -59,21 +60,22 @@ public class VoLteVpnBusinessExecutor implements VpnBusinessExecutor {
         }
 
         VoLteBusinessModel voLteBusinessModel = (VoLteBusinessModel)businessModel;
+        String instanceId = voLteBusinessModel.getVpnModel().getId();
 
         if(null != voLteBusinessModel.getCoreVpcModel()) {
-            vpcBusinessExecutor.executeDeploy(voLteBusinessModel.getCoreVpcModel());
+            vpcBusinessExecutor.executeDeploy(instanceId, voLteBusinessModel.getCoreVpcModel());
         }
 
         if(null != voLteBusinessModel.getEdgeVpc1Model()) {
-            vpcBusinessExecutor.executeDeploy(voLteBusinessModel.getEdgeVpc1Model());
+            vpcBusinessExecutor.executeDeploy(instanceId, voLteBusinessModel.getEdgeVpc1Model());
         }
 
         if(null != voLteBusinessModel.getEdgeVpc2Model()) {
-            vpcBusinessExecutor.executeDeploy(voLteBusinessModel.getEdgeVpc2Model());
+            vpcBusinessExecutor.executeDeploy(instanceId, voLteBusinessModel.getEdgeVpc2Model());
         }
 
         if(null != voLteBusinessModel.getVpnModel()) {
-            return vpnBusinessExecutor.executeDeploy(voLteBusinessModel.getVpnModel());
+            return vpnBusinessExecutor.executeDeploy(instanceId, voLteBusinessModel.getVpnModel());
         }
 
         return null;
@@ -88,21 +90,22 @@ public class VoLteVpnBusinessExecutor implements VpnBusinessExecutor {
         }
 
         VoLteBusinessModel voLteBusinessModel = (VoLteBusinessModel)businessModel;
+        String instanceId = voLteBusinessModel.getVpnModel().getId();
 
         if(null != voLteBusinessModel.getVpnModel()) {
-            vpnBusinessExecutor.executeUnDeploy(voLteBusinessModel.getVpnModel());
+            vpnBusinessExecutor.executeUnDeploy(instanceId, voLteBusinessModel.getVpnModel());
         }
 
         if(null != voLteBusinessModel.getCoreVpcModel()) {
-            vpcBusinessExecutor.executeUnDeploy(voLteBusinessModel.getCoreVpcModel());
+            vpcBusinessExecutor.executeUnDeploy(instanceId, voLteBusinessModel.getCoreVpcModel());
         }
 
         if(null != voLteBusinessModel.getEdgeVpc1Model()) {
-            vpcBusinessExecutor.executeUnDeploy(voLteBusinessModel.getEdgeVpc1Model());
+            vpcBusinessExecutor.executeUnDeploy(instanceId, voLteBusinessModel.getEdgeVpc1Model());
         }
 
         if(null != voLteBusinessModel.getEdgeVpc2Model()) {
-            vpcBusinessExecutor.executeUnDeploy(voLteBusinessModel.getEdgeVpc2Model());
+            vpcBusinessExecutor.executeUnDeploy(instanceId, voLteBusinessModel.getEdgeVpc2Model());
         }
 
         Map<String, String> resultMap = new HashMap<>();
@@ -136,6 +139,15 @@ public class VoLteVpnBusinessExecutor implements VpnBusinessExecutor {
         String edgeVpc2Uuid = vpcUuidList.iterator().next();
         Vpc edgeVpc2Model = vpcBusinessExecutor.executeQuery(edgeVpc2Uuid);
         businessModel.setEdgeVpc2Model(edgeVpc2Model);
+
+        int total = 5;
+        total += businessModel.getCoreVpcModel().getSubNetList().size()
+                + businessModel.getEdgeVpc1Model().getSubNetList().size()
+                + businessModel.getEdgeVpc2Model().getSubNetList().size()
+                + businessModel.getVpnModel().getVpnGateways().size()
+                + businessModel.getVpnModel().getVpnConnections().size();
+
+        RecordProgress.setTotalSteps(vpnUuid, total);
 
         return businessModel;
     }

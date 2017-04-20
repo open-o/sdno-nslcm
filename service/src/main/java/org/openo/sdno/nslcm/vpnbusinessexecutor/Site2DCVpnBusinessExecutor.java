@@ -28,6 +28,7 @@ import org.openo.sdno.nslcm.serviceexecutor.OverlayVpnBusinessExecutor;
 import org.openo.sdno.nslcm.serviceexecutor.ServiceChainBusinessExecutor;
 import org.openo.sdno.nslcm.serviceexecutor.SiteBusinessExecutor;
 import org.openo.sdno.nslcm.serviceexecutor.VpcBusinessExecutor;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.overlayvpn.model.servicechain.ServiceChainPath;
 import org.openo.sdno.overlayvpn.model.servicemodel.Vpc;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
@@ -69,21 +70,23 @@ public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
         }
 
         Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
+        String instanceId = site2DCBusinessModel.getVpnModel().getId();
 
         if(null != site2DCBusinessModel.getSiteModel()) {
-            siteBusinessExecutor.executeDeploy(site2DCBusinessModel.getSiteModel());
+            siteBusinessExecutor.executeDeploy(instanceId, site2DCBusinessModel.getSiteModel());
         }
 
         if(null != site2DCBusinessModel.getVpcModel()) {
-            vpcBusinessExecutor.executeDeploy(site2DCBusinessModel.getVpcModel());
+            vpcBusinessExecutor.executeDeploy(instanceId, site2DCBusinessModel.getVpcModel());
         }
 
         if(null != site2DCBusinessModel.getServiceChainPathModel()) {
             serviceChainBusinessExceutor.executeDeploy(site2DCBusinessModel.getServiceChainPathModel());
+            RecordProgress.increaseCurrentStep(instanceId);
         }
 
         if(null != site2DCBusinessModel.getVpnModel()) {
-            return vpnBusinessExecutor.executeDeploy(site2DCBusinessModel.getVpnModel());
+            return vpnBusinessExecutor.executeDeploy(instanceId, site2DCBusinessModel.getVpnModel());
         }
 
         return null;
@@ -99,24 +102,27 @@ public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
 
         Site2DCBusinessModel site2DCBusinessModel = (Site2DCBusinessModel)businessModel;
 
+        String instanceId = site2DCBusinessModel.getVpnModel().getId();
+
         if(null != site2DCBusinessModel.getSiteModel()) {
-            siteBusinessExecutor.executeUnDeploySubnet(site2DCBusinessModel.getSiteModel());
+            siteBusinessExecutor.executeUnDeploySubnet(instanceId, site2DCBusinessModel.getSiteModel());
         }
 
         if(null != site2DCBusinessModel.getVpnModel()) {
-            vpnBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getVpnModel());
+            vpnBusinessExecutor.executeUnDeploy(instanceId, site2DCBusinessModel.getVpnModel());
         }
 
         if(null != site2DCBusinessModel.getServiceChainPathModel()) {
             serviceChainBusinessExceutor.executeUnDeploy(site2DCBusinessModel.getServiceChainPathModel());
+            RecordProgress.increaseCurrentStep(instanceId);
         }
 
         if(null != site2DCBusinessModel.getVpcModel()) {
-            vpcBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getVpcModel());
+            vpcBusinessExecutor.executeUnDeploy(instanceId, site2DCBusinessModel.getVpcModel());
         }
 
         if(null != site2DCBusinessModel.getSiteModel()) {
-            siteBusinessExecutor.executeUnDeploy(site2DCBusinessModel.getSiteModel());
+            siteBusinessExecutor.executeUnDeploy(instanceId, site2DCBusinessModel.getSiteModel());
         }
 
         Map<String, String> resultMap = new HashMap<>();
@@ -157,6 +163,16 @@ public class Site2DCVpnBusinessExecutor implements VpnBusinessExecutor {
         String vpcUuid = vpcUuidList.iterator().next();
         Vpc vpcModel = vpcBusinessExecutor.executeQuery(vpcUuid);
         businessModel.setVpcModel(vpcModel);
+
+        int total = 5;
+        total += businessModel.getSiteModel().getLocalCpeModels().size()
+                + businessModel.getSiteModel().getCloudCpeModels().size()
+                + businessModel.getSiteModel().getVlans().size() + businessModel.getSiteModel().getSubnets().size()
+                + businessModel.getVpcModel().getSubNetList().size()
+                + businessModel.getVpnModel().getVpnGateways().size()
+                + businessModel.getVpnModel().getVpnConnections().size();
+
+        RecordProgress.setTotalSteps(vpnUuid, total);
 
         return businessModel;
     }

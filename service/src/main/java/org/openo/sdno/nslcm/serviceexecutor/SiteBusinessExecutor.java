@@ -26,6 +26,7 @@ import org.openo.sdno.nslcm.sbi.site.LocalCpeSbiService;
 import org.openo.sdno.nslcm.sbi.site.SiteSbiService;
 import org.openo.sdno.nslcm.sbi.site.SubnetSbiService;
 import org.openo.sdno.nslcm.sbi.site.VlanSbiService;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.overlayvpn.brs.model.NetworkElementMO;
 import org.openo.sdno.overlayvpn.model.v2.cpe.NbiCloudCpeModel;
 import org.openo.sdno.overlayvpn.model.v2.cpe.NbiLocalCpeModel;
@@ -67,21 +68,25 @@ public class SiteBusinessExecutor {
     /**
      * Deploy site related business.<br>
      * 
+     * @param instanceId ID of the SDN-O service instance to be instantiated
      * @param siteModel Site need to deploy
      * @return Site deployed
      * @throws ServiceException when deploy failed
      * @since SDNO 0.5
      */
-    public NbiSiteModel executeDeploy(NbiSiteModel siteModel) throws ServiceException {
+    public NbiSiteModel executeDeploy(String instanceId, NbiSiteModel siteModel) throws ServiceException {
 
         // Deploy Site Model
         siteSbiService.createSite(siteModel);
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // Deploy CloudCpe
         cloudCpeSbiService.createCloudCpe(siteModel.getCloudCpeModels().get(0));
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // Deploy LocalCpe
         localCpeSbiService.createLocalCpe(siteModel.getLocalCpeModels().get(0));
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // Wait for Cpe Online
         try {
@@ -93,9 +98,11 @@ public class SiteBusinessExecutor {
 
         // Deploy Vlan
         vlanSbiService.createVlan(siteModel.getVlans().get(0));
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // Deploy Subnet
         subnetSbiService.createSubnet(siteModel.getSubnets().get(0));
+        RecordProgress.increaseCurrentStep(instanceId);
 
         return siteModel;
     }
@@ -103,36 +110,43 @@ public class SiteBusinessExecutor {
     /**
      * UnDeploy site related business.<br>
      * 
+     * @param instanceId ID of the SDN-O service instance to be instantiated
      * @param siteModel Site need to undeploy
      * @throws ServiceException when undeploy failed
      * @since SDNO 0.5
      */
-    public void executeUnDeploy(NbiSiteModel siteModel) throws ServiceException {
+    public void executeUnDeploy(String instanceId, NbiSiteModel siteModel) throws ServiceException {
 
         // UnDeploy Vlan
         vlanSbiService.deleteVlan(siteModel.getVlans().get(0).getUuid());
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // UnDeploy LocalCpe
         localCpeSbiService.deleteLocalCpe(siteModel.getLocalCpeModels().get(0).getUuid());
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // UnDeploy CloudCpe
         cloudCpeSbiService.deleteCloudCpe(siteModel.getCloudCpeModels().get(0).getUuid());
+        RecordProgress.increaseCurrentStep(instanceId);
 
         // UnDeploy Site
         siteSbiService.deleteSite(siteModel.getUuid());
+        RecordProgress.increaseCurrentStep(instanceId);
     }
 
     /**
      * UnDeploy subnet.<br>
      * 
+     * @param instanceId ID of the SDN-O service instance to be instantiated
      * @param siteModel Site need to undeploy
      * @throws ServiceException when undeploy failed
      * @since SDNO 0.5
      */
-    public void executeUnDeploySubnet(NbiSiteModel siteModel) throws ServiceException {
+    public void executeUnDeploySubnet(String instanceId, NbiSiteModel siteModel) throws ServiceException {
 
         // UnDeploy Subnet
         subnetSbiService.deleteSubnet(siteModel.getSubnets().get(0).getUuid());
+        RecordProgress.increaseCurrentStep(instanceId);
     }
 
     /**

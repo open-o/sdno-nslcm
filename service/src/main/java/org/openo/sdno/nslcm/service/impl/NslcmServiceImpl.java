@@ -36,6 +36,7 @@ import org.openo.sdno.nslcm.sbi.catalog.CatalogSbiService;
 import org.openo.sdno.nslcm.sbi.underlayvpn.UnderlaySbiService;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.nslcm.util.db.DbOper;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
 import org.openo.sdno.nslcm.vpnbusinessexecutor.VpnBusinessExecutor;
@@ -86,6 +87,8 @@ public class NslcmServiceImpl implements NslcmService {
         Map<String, String> resultMap = new HashMap<String, String>();
         resultMap.put("vpnId", vpn.getId());
         insertNsResponseInfo(instanceId, resultMap);
+        RecordProgress.increaseCurrentStep(instanceId);
+
         return resultMap;
     }
 
@@ -99,14 +102,21 @@ public class NslcmServiceImpl implements NslcmService {
         Map<String, String> response = vpnBusinessExceutorMap.get(templateName).executeUnDeploy(businessModel);
 
         dbOper.delete(NsResponseInfo.class, nsResponseInfoUuid);
+        RecordProgress.increaseCurrentStep(instanceId);
 
         return response;
     }
 
     @Override
     public Map<String, String> createUnderlay(VpnVo vpnVo, String instanceId) throws ServiceException {
+        RecordProgress.increaseCurrentStep(instanceId);
+
         Map<String, String> response = underlaySbiService.createUnderlay(vpnVo);
+        RecordProgress.increaseCurrentStep(instanceId);
+
         insertNsResponseInfo(instanceId, response);
+        RecordProgress.increaseCurrentStep(instanceId);
+
         return response;
     }
 

@@ -39,6 +39,7 @@ import org.openo.sdno.model.servicemodel.vpn.VpnBasicInfo;
 import org.openo.sdno.model.servicemodel.vpn.VpnVo;
 import org.openo.sdno.nslcm.dao.inf.IBaseResourceDao;
 import org.openo.sdno.nslcm.model.servicemo.ServiceParameter;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -96,6 +97,9 @@ public class UnderlayTranslator {
         VpnVo vpnVo = new VpnVo();
         vpnVo.setVpn(vpnMo);
         vpnVo.setTunnelSchema(tunnelSchema);
+
+        RecordProgress.setTotalSteps(instanceId, 3);
+
         return vpnVo;
     }
 

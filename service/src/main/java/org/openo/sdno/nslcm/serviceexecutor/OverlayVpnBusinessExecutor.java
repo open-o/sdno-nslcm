@@ -22,6 +22,7 @@ import org.openo.baseservice.remoteservice.exception.ServiceException;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnConnectionSbiService;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnGatewaySbiService;
 import org.openo.sdno.nslcm.sbi.overlayvpn.VpnSbiService;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpn;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnConnection;
 import org.openo.sdno.overlayvpn.model.v2.overlay.NbiVpnGateway;
@@ -54,15 +55,18 @@ public class OverlayVpnBusinessExecutor {
     /**
      * Deploy Vpn related business.<br>
      * 
+     * @param instanceId ID of the SDN-O service instance to be instantiated
      * @param vpnModel Vpn need to deploy
      * @return Vpn deployed
      * @throws ServiceException when deploy failed
      * @since SDNO 0.5
      */
-    public NbiVpn executeDeploy(NbiVpn vpnModel) throws ServiceException {
+    public NbiVpn executeDeploy(String instanceId, NbiVpn vpnModel) throws ServiceException {
 
         // Deploy Vpn
         NbiVpn vpn = vpnSbiService.createVpn(vpnModel);
+        RecordProgress.increaseCurrentStep(instanceId);
+
         vpn.setVpnGateways(new ArrayList<NbiVpnGateway>());
         vpn.setVpnConnections(new ArrayList<NbiVpnConnection>());
 
@@ -75,11 +79,13 @@ public class OverlayVpnBusinessExecutor {
         for(NbiVpnGateway curGateway : vpnModel.getVpnGateways()) {
             NbiVpnGateway createdVpnGateway = vpnGatewaySbiService.createVpnGateway(curGateway);
             vpn.getVpnGateways().add(createdVpnGateway);
+            RecordProgress.increaseCurrentStep(instanceId);
         }
 
         for(NbiVpnConnection vpnConnection : vpnModel.getVpnConnections()) {
             NbiVpnConnection createdVpnConnection = connectionSbiService.createVpnConnection(vpnConnection);
             vpn.getVpnConnections().add(createdVpnConnection);
+            RecordProgress.increaseCurrentStep(instanceId);
         }
 
         return vpn;
@@ -88,24 +94,28 @@ public class OverlayVpnBusinessExecutor {
     /**
      * UnDeploy vpn related business.<br>
      * 
+     * @param instanceId ID of the SDN-O service instance to be instantiated
      * @param siteModel Vpn need to undeploy
      * @throws ServiceException when undeploy failed
      * @since SDNO 0.5
      */
-    public void executeUnDeploy(NbiVpn vpnModel) throws ServiceException {
+    public void executeUnDeploy(String instanceId, NbiVpn vpnModel) throws ServiceException {
 
         // UnDeploy VpnConnections
         for(NbiVpnConnection vpnConnection : vpnModel.getVpnConnections()) {
             connectionSbiService.deleteVpnConnection(vpnConnection.getId());
+            RecordProgress.increaseCurrentStep(instanceId);
         }
 
         // UnDeploy VpnGateways
         for(NbiVpnGateway vpnGateway : vpnModel.getVpnGateways()) {
             vpnGatewaySbiService.deleteVpnGateway(vpnGateway.getId());
+            RecordProgress.increaseCurrentStep(instanceId);
         }
 
         // UnDeploy Vpn
         vpnSbiService.deleteVpn(vpnModel.getId());
+        RecordProgress.increaseCurrentStep(instanceId);
     }
 
     /**

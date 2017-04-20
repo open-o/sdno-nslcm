@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +58,8 @@ import org.openo.sdno.nslcm.model.translator.UnderlayTranslator;
 import org.openo.sdno.nslcm.model.translator.VpnTranslator;
 import org.openo.sdno.nslcm.service.inf.NslcmService;
 import org.openo.sdno.nslcm.util.Const;
+import org.openo.sdno.nslcm.util.Progress;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.nslcm.util.exception.ThrowException;
 import org.openo.sdno.overlayvpn.consts.HttpCode;
 import org.openo.sdno.overlayvpn.errorcode.ErrorCode;
@@ -141,14 +144,17 @@ public class NslcmSvcRoaResource {
         iServiceModelDao.insert(serviceModel);
         iServicePackageDao.insert(servicePackageModel);
 
-        LOGGER.info("Exit nsCreationPost method. cost time = " + (System.currentTimeMillis() - infterEnterTime));
-
         NsCreationResponse nsCreationResponse = new NsCreationResponse();
         nsCreationResponse.setNsInstanceId(serviceModel.getServiceId());
+
+        RecordProgress.addJobProgress(serviceModel.getServiceId());
 
         if(null != resp) {
             resp.setStatus(HttpCode.CREATE_OK);
         }
+
+        LOGGER.info("Exit nsCreationPost method, instanceId: " + serviceModel.getServiceId() + " . cost time = "
+                + (System.currentTimeMillis() - infterEnterTime));
 
         return nsCreationResponse;
     }
@@ -171,7 +177,7 @@ public class NslcmSvcRoaResource {
     public LongOperationResponse nsInstantiationPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId, NsInstantiationRequest nsInstantiationRequest)
             throws ServiceException {
-        LOGGER.info("NsInstantiationPost enter");
+        LOGGER.info("NsInstantiationPost enter, instanceId: " + instanceId);
 
         String nsInstanceId = nsInstantiationRequest.getNsInstanceId();
         if(!nsInstanceId.equals(instanceId)) {
@@ -181,31 +187,15 @@ public class NslcmSvcRoaResource {
         List<ServiceParameter> serviceParameterList = new ArrayList<ServiceParameter>();
         insertServiceParameter(nsInstantiationRequest, nsInstanceId, serviceParameterList);
 
-        Map<String, String> response = null;
-        try {
-            String templateName = queryTemplateName(instanceId);
-            if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName) || Const.VOLTE_TEMPLATE_NAME.equals(templateName)) {
-                Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNs();
-
-                // Create vpn business model
-                BusinessModel businessModel =
-                        vpnTranslatorMap.get(templateName).translateVpnModel(sdnoTemplateParameter, instanceId);
-
-                // Deploy vpn business model
-                response = nslcmService.createOverlayVpn(businessModel, instanceId, templateName);
-            } else {
-                VpnVo vpnVo = underlayVpnTranslator.translateList2Underlay(serviceParameterList, instanceId);
-                response = nslcmService.createUnderlay(vpnVo, instanceId);
-            }
-        } catch(ServiceException e) {
-            LOGGER.error("NsInstantiationPost failed", e);
-            throw e;
-        }
+        RecordProgress.clearJobProgress(instanceId);
+        InstantiationThread instantiationThread =
+                new InstantiationThread(instanceId, serviceParameterList, nsInstantiationRequest);
+        Executors.newSingleThreadExecutor().submit(instantiationThread);
 
         LongOperationResponse longOperationResponse = new LongOperationResponse();
-        longOperationResponse.setJobId(response.get("vpnId"));
+        longOperationResponse.setJobId(instanceId);
 
-        LOGGER.info("NsInstantiationPost success, vpnid: " + longOperationResponse.getJobId());
+        LOGGER.info("NsInstantiationPost success, instanceId: " + longOperationResponse.getJobId());
 
         return longOperationResponse;
     }
@@ -228,27 +218,16 @@ public class NslcmSvcRoaResource {
     public LongOperationResponse nsTerminationPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId, NsTerminationRequest nsTerminationRequest)
             throws ServiceException {
-        LOGGER.info("NsTerminationPost enter");
+        LOGGER.info("NsTerminationPost enter, instanceId: " + instanceId);
 
-        Map<String, String> response = null;
-
-        try {
-            String templateName = queryTemplateName(instanceId);
-            if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName) || Const.VOLTE_TEMPLATE_NAME.equals(templateName)) {
-                response = nslcmService.deleteOverlay(instanceId, templateName);
-            } else {
-                List<ServiceParameter> serviceParameterList = queryServiceParameter(instanceId);
-                response = nslcmService.deleteUnderlay(instanceId, serviceParameterList);
-            }
-        } catch(ServiceException e) {
-            LOGGER.error("NsTerminationPost failed", e);
-            throw e;
-        }
+        RecordProgress.clearJobProgress(instanceId);
+        TerminationThread terminationThread = new TerminationThread(instanceId);
+        Executors.newSingleThreadExecutor().submit(terminationThread);
 
         LongOperationResponse longOperationResponse = new LongOperationResponse();
-        longOperationResponse.setJobId(response.get("errorCode"));
+        longOperationResponse.setJobId(instanceId);
 
-        LOGGER.info("NsTerminationPost exit");
+        LOGGER.info("NsTerminationPost exit, instanceId: " + instanceId);
 
         return longOperationResponse;
     }
@@ -287,13 +266,15 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void nsDeletionDelete(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("instanceid") String instanceId) throws ServiceException {
-        LOGGER.info("NsDeletionDelete enter");
+        LOGGER.info("NsDeletionDelete enter, instanceId: " + instanceId);
 
         iServiceParameterDao.delete(instanceId);
         iServicePackageDao.delete(instanceId);
         iServiceModelDao.delete(instanceId);
 
-        LOGGER.info("NsDeletionDelete exit");
+        RecordProgress.rmvJobProgress(instanceId);
+
+        LOGGER.info("NsDeletionDelete exit, instanceId: " + instanceId);
     }
 
     /**
@@ -312,16 +293,28 @@ public class NslcmSvcRoaResource {
     @Produces(MediaType.APPLICATION_JSON)
     public JobQueryResponse jobQueryGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
             @PathParam("jobid") String jobId) throws ServiceException {
-        LOGGER.info("JobQueryGet enter");
+        LOGGER.info("JobQueryGet enter, jobId: " + jobId);
 
         JobQueryResponse jobQueryResponse = new JobQueryResponse();
         jobQueryResponse.setJobId(jobId);
+
+        String status = "finished";
+        String progress = "100";
+        String statusDescription = "finished";
+        Progress jobProgress = RecordProgress.getJobProgress(jobId);
+        if(null != jobProgress) {
+            status = jobProgress.getStatus();
+            progress = jobProgress.getProgress();
+            statusDescription = jobProgress.getStatusDescription();
+        }
+
         JobResponseDescriptor jobResponseDescriptor = new JobResponseDescriptor();
-        jobResponseDescriptor.setProgress("100");
-        jobResponseDescriptor.setStatus("finished");
+        jobResponseDescriptor.setProgress(progress);
+        jobResponseDescriptor.setStatus(status);
+        jobResponseDescriptor.setStatusDescription(statusDescription);
         jobQueryResponse.setResponseDescriptor(jobResponseDescriptor);
 
-        LOGGER.info("JobQueryGet exit");
+        LOGGER.info("JobQueryGet exit, jobId: " + jobId);
 
         return jobQueryResponse;
     }
@@ -423,4 +416,87 @@ public class NslcmSvcRoaResource {
         servicePackageMo.setServiceDefId(serviceDefId);
         return servicePackageMo;
     }
+
+    private class InstantiationThread implements Runnable {
+
+        NsInstantiationRequest nsInstantiationRequest;
+
+        List<ServiceParameter> serviceParameterList;
+
+        String instanceId;
+
+        public InstantiationThread(String instanceId, List<ServiceParameter> serviceParameterList,
+                NsInstantiationRequest nsInstantiationRequest) {
+            this.instanceId = instanceId;
+            this.serviceParameterList = serviceParameterList;
+            this.nsInstantiationRequest = nsInstantiationRequest;
+        }
+
+        @Override
+        public void run() {
+            LOGGER.info("InstantiationThread enter, instanceId: " + instanceId);
+
+            try {
+                String templateName = queryTemplateName(instanceId);
+                if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName) || Const.VOLTE_TEMPLATE_NAME.equals(templateName)) {
+                    Map<String, Object> sdnoTemplateParameter = nsInstantiationRequest.getAdditionalParamForNs();
+
+                    // Create vpn business model
+                    BusinessModel businessModel =
+                            vpnTranslatorMap.get(templateName).translateVpnModel(sdnoTemplateParameter, instanceId);
+
+                    // Deploy vpn business model
+                    nslcmService.createOverlayVpn(businessModel, instanceId, templateName);
+                } else {
+                    VpnVo vpnVo = underlayVpnTranslator.translateList2Underlay(serviceParameterList, instanceId);
+                    nslcmService.createUnderlay(vpnVo, instanceId);
+                }
+
+                RecordProgress.setJobProgressFinish(instanceId);
+            } catch(ServiceException e) {
+                LOGGER.error("NsInstantiationPost failed, ", e);
+                RecordProgress.setStatus(instanceId, "error");
+                RecordProgress.setStatusDescription(instanceId, "error");
+            }
+
+        }
+    }
+
+    private class TerminationThread implements Runnable {
+
+        String instanceId;
+
+        public TerminationThread(String instanceId) {
+            this.instanceId = instanceId;
+
+        }
+
+        @Override
+        public void run() {
+            LOGGER.info("TerminationThread enter, instanceId: " + instanceId);
+
+            try {
+                String templateName = queryTemplateName(instanceId);
+                if(Const.SITE2DC_TEMPLATE_NAME.equals(templateName) || Const.VOLTE_TEMPLATE_NAME.equals(templateName)) {
+                    nslcmService.deleteOverlay(instanceId, templateName);
+                } else {
+                    RecordProgress.setTotalSteps(instanceId, 3);
+                    RecordProgress.increaseCurrentStep(instanceId);
+                    List<ServiceParameter> serviceParameterList = queryServiceParameter(instanceId);
+
+                    RecordProgress.increaseCurrentStep(instanceId);
+                    nslcmService.deleteUnderlay(instanceId, serviceParameterList);
+                    RecordProgress.increaseCurrentStep(instanceId);
+                }
+
+                RecordProgress.setJobProgressFinish(instanceId);
+            } catch(ServiceException e) {
+                LOGGER.error("NsTerminationPost failed, ", e);
+                RecordProgress.setStatus(instanceId, "error");
+                RecordProgress.setStatusDescription(instanceId, "error");
+            }
+
+        }
+    }
+
 }

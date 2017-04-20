@@ -28,6 +28,7 @@ import org.openo.sdno.nslcm.model.BusinessModel;
 import org.openo.sdno.nslcm.model.SubnetModel;
 import org.openo.sdno.nslcm.model.VoLteBusinessModel;
 import org.openo.sdno.nslcm.model.VoLteTemplateModel;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.overlayvpn.esr.invdao.VimInvDao;
 import org.openo.sdno.overlayvpn.esr.model.Vim;
 import org.openo.sdno.overlayvpn.model.servicemodel.SubNet;
@@ -91,6 +92,15 @@ public class VoLteVpnTranslator implements VpnTranslator {
                 templateModel.getEdge2OpenStackName()));
 
         businessModel.setVpnModel(translateVpnModel(templateModel, instanceId, businessModel));
+
+        int total = 5;
+        total += businessModel.getCoreVpcModel().getSubNetList().size()
+                + businessModel.getEdgeVpc1Model().getSubNetList().size()
+                + businessModel.getEdgeVpc2Model().getSubNetList().size()
+                + businessModel.getVpnModel().getVpnGateways().size()
+                + businessModel.getVpnModel().getVpnConnections().size();
+
+        RecordProgress.setTotalSteps(instanceId, total);
 
         return businessModel;
     }

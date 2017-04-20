@@ -32,6 +32,7 @@ import org.openo.sdno.nslcm.dao.inf.IBaseResourceDao;
 import org.openo.sdno.nslcm.model.BusinessModel;
 import org.openo.sdno.nslcm.model.Site2DCBusinessModel;
 import org.openo.sdno.nslcm.model.Site2DCTemplateModel;
+import org.openo.sdno.nslcm.util.RecordProgress;
 import org.openo.sdno.overlayvpn.brs.invdao.LogicalTernminationPointInvDao;
 import org.openo.sdno.overlayvpn.brs.model.LogicalTernminationPointMO;
 import org.openo.sdno.overlayvpn.brs.model.NetworkElementMO;
@@ -105,6 +106,16 @@ public class Site2DCVpnTranslator implements VpnTranslator {
         businessModel.setServiceChainPathModel(translateServiceChainPath(templateModel, instanceId));
         businessModel.setVpcModel(translateVpc(templateModel));
         businessModel.setVpnModel(translateVpnModel(templateModel, instanceId, businessModel.getVpcModel()));
+
+        int total = 5;
+        total += businessModel.getSiteModel().getLocalCpeModels().size()
+                + businessModel.getSiteModel().getCloudCpeModels().size()
+                + businessModel.getSiteModel().getVlans().size() + businessModel.getSiteModel().getSubnets().size()
+                + businessModel.getVpcModel().getSubNetList().size()
+                + businessModel.getVpnModel().getVpnGateways().size()
+                + businessModel.getVpnModel().getVpnConnections().size();
+
+        RecordProgress.setTotalSteps(instanceId, total);
 
         return businessModel;
     }
