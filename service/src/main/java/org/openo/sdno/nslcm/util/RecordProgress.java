@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class RecordProgress {
 
-    private static Map<String, Progress> progressList = new HashMap<>();
+    private static volatile Map<String, Progress> progressList = new HashMap<>();
 
     public static Progress getJobProgress(String jobId) {
         return progressList.get(jobId);
@@ -64,11 +64,15 @@ public class RecordProgress {
 
     public static void setTotalSteps(String jobId, int total) {
         Progress progress = progressList.get(jobId);
-        if(null == progress) {
+        if(null != progress) {
+            progress.setTotal(total);
             return;
         }
 
-        progress.setTotal(total);
+        Progress newProgress = new Progress();
+        progressList.put(jobId, newProgress);
+        clearJobProgress(jobId);
+        newProgress.setTotal(total);
     }
 
     public static void increaseCurrentStep(String jobId) {

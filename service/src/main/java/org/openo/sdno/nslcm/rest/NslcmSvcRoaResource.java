@@ -314,7 +314,8 @@ public class NslcmSvcRoaResource {
         jobResponseDescriptor.setStatusDescription(statusDescription);
         jobQueryResponse.setResponseDescriptor(jobResponseDescriptor);
 
-        LOGGER.info("JobQueryGet exit, jobId: " + jobId);
+        LOGGER.info("JobQueryGet exit, jobId: " + jobId + ", status:" + status + ", progress: " + progress
+                + ", statusDescription: " + statusDescription);
 
         return jobQueryResponse;
     }
@@ -454,7 +455,7 @@ public class NslcmSvcRoaResource {
 
                 RecordProgress.setJobProgressFinish(instanceId);
             } catch(ServiceException e) {
-                LOGGER.error("NsInstantiationPost failed, ", e);
+                LOGGER.error("InstantiationThread failed, instanceId: " + instanceId, e);
                 RecordProgress.setStatus(instanceId, "error");
                 RecordProgress.setStatusDescription(instanceId, "error");
             }
@@ -491,7 +492,7 @@ public class NslcmSvcRoaResource {
 
                 RecordProgress.setJobProgressFinish(instanceId);
             } catch(ServiceException e) {
-                LOGGER.error("NsTerminationPost failed, ", e);
+                LOGGER.error("TerminationThread failed, instanceId: " + instanceId, e);
                 RecordProgress.setStatus(instanceId, "error");
                 RecordProgress.setStatusDescription(instanceId, "error");
             }
