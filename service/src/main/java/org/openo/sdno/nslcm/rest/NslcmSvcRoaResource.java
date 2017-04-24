@@ -458,6 +458,10 @@ public class NslcmSvcRoaResource {
                 LOGGER.error("InstantiationThread failed, instanceId: " + instanceId, e);
                 RecordProgress.setStatus(instanceId, "error");
                 RecordProgress.setStatusDescription(instanceId, "error");
+            } catch(Exception e) {
+                LOGGER.error("InstantiationThread exception, instanceId: " + instanceId, e);
+                RecordProgress.setStatus(instanceId, "error");
+                RecordProgress.setStatusDescription(instanceId, "error");
             }
 
         }
@@ -493,6 +497,10 @@ public class NslcmSvcRoaResource {
                 RecordProgress.setJobProgressFinish(instanceId);
             } catch(ServiceException e) {
                 LOGGER.error("TerminationThread failed, instanceId: " + instanceId, e);
+                RecordProgress.setStatus(instanceId, "error");
+                RecordProgress.setStatusDescription(instanceId, "error");
+            } catch(Exception e) {
+                LOGGER.error("TerminationThread exception, instanceId: " + instanceId, e);
                 RecordProgress.setStatus(instanceId, "error");
                 RecordProgress.setStatusDescription(instanceId, "error");
             }
