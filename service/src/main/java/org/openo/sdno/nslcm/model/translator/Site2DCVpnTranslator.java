@@ -288,7 +288,7 @@ public class Site2DCVpnTranslator implements VpnTranslator {
         vpc.setOsControllerId(queryOsControllerId(osDriverParamConfigReader.getVimName()));
         SubNet subNet = vpc.getSubNetList().get(0);
         subNet.setUuid(UuidUtils.createUuid());
-        subNet.setName(templateModel.getVpcName());
+        subNet.setName(templateModel.getVpcSubnetName());
         subNet.setVpcId(vpc.getUuid());
         subNet.setCidr(templateModel.getVpcSubnetCidr());
         subNet.setVni(templateModel.getVpcVni());
